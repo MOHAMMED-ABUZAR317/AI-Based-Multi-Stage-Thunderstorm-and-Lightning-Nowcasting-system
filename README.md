@@ -1,0 +1,2 @@
+# AI-Based-Multi-Stage-Thunderstorm-and-Lightning-Nowcasting-system
+AI-based multi-stage system for short-term thunderstorm and lightning nowcasting (0–6 hr lead time). Combines satellite, radar, and atmospheric data through staged detection, tracking, and risk-scoring to generate early lightning/storm alerts. Built for Smart India Hackathon (SIH) by a student team to support disaster preparedness. 🌩️
