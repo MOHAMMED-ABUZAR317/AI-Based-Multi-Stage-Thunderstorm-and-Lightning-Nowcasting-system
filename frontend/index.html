@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StormNow Pro — Nowcast Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Leaflet Real Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Chart.js for Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Production Consolidated Stylesheet -->
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<header class="nav" role="banner">
+  <div class="nav-left">
+    <div class="logo-icon" aria-hidden="true">⛈</div>
+    <div>
+      <div class="logo-text">StormNow Pro</div>
+    </div>
+    <div class="logo-badge" title="Tactical Emergency Weather Nowcast System">NOWCAST INTELLIGENCE</div>
+  </div>
+
+  <nav class="nav-tabs" role="tablist" aria-label="Main Dashboards">
+    <button class="ntab active" role="tab" aria-selected="true" data-tab="map" onclick="window.app.switchTab('map')" title="Keyboard: 1">
+      🗺️ Live Map
+    </button>
+    <button class="ntab" role="tab" aria-selected="false" data-tab="analytics" onclick="window.app.switchTab('analytics')" title="Keyboard: 2">
+      📊 Analytics
+    </button>
+    <button class="ntab" role="tab" aria-selected="false" data-tab="alerts" onclick="window.app.switchTab('alerts')" title="Keyboard: 3">
+      🚨 Alerts <span class="ntab-badge" id="alertsCountBadge" aria-label="Active critical alerts">2</span>
+    </button>
+    <button class="ntab" role="tab" aria-selected="false" data-tab="api" onclick="window.app.switchTab('api')" title="Keyboard: 4">
+      ⚙️ API Playground
+    </button>
+  </nav>
+
+  <div class="nav-right">
+    <!-- Demo Mode Toggle -->
+    <button class="demo-toggle-btn" id="btn-demo" onclick="window.app.toggleDemoMode()" title="Toggle deterministic 7-stage storm lifecycle simulation (Shortcut: D)">
+      🧪 DEMO MODE
+    </button>
+
+    <!-- Audio Mute Button -->
+    <button class="icon-btn" id="btn-mute" onclick="window.app.toggleAudioMute()" title="Mute/Unmute Alert Chime (Shortcut: M)" aria-label="Toggle Sound">
+      🔔
+    </button>
+
+    <!-- Connection Indicator -->
+    <div class="live-pill" id="conn-pill" onclick="window.app.toggleConnection()" title="Connection Status (Click to test offline/online)">
+      <div class="pulse" id="conn-pulse"></div>
+      <span id="conn-text">LIVE</span>
+    </div>
+
+    <!-- Clock -->
+    <div class="clk" id="clk" aria-label="Current system time">--:--:--</div>
+  </div>
+</header>
+
+<!-- DEMO MODE CONTROL BAR -->
+<div class="demo-banner-bar" id="demo-bar" role="region" aria-label="Demo Mode Controls">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span class="demo-step-badge">DEMO SIMULATION</span>
+    <span style="font-weight:700;color:var(--text);" id="demo-stage-name">Normal Baseline</span>
+    <span style="color:var(--text3);">· Stage <b id="demo-stage-step" style="color:var(--purple);">1/7</b></span>
+    <span style="color:var(--text2);font-size:0.7rem;" id="demo-stage-desc">Clear skies, low convective potential.</span>
+  </div>
+  <div class="demo-controls-wrap">
+    <button class="demo-ctrl-btn" onclick="window.app.demoPrev()" title="Previous Stage">◀ Prev</button>
+    <button class="demo-ctrl-btn" id="demo-play-btn" onclick="window.app.demoPlayPause()" title="Play / Pause Auto-advance">▶ Play</button>
+    <button class="demo-ctrl-btn" onclick="window.app.demoNext()" title="Next Stage">Next ▶</button>
+    <button class="demo-ctrl-btn" onclick="window.app.demoReset()" title="Reset to Stage 1">Reset</button>
+  </div>
+</div>
+
+<!-- EMERGENCY FLASH ALERT STRIP -->
+<div class="astrip" id="astrip" role="alert">
+  <div class="astrip-icon" aria-hidden="true">🚨</div>
+  <div class="astrip-txt" id="astrip-txt">Severe Weather Warning active across Hyderabad Met Area</div>
+  <button class="astrip-close" onclick="this.parentElement.classList.remove('show')" aria-label="Dismiss banner">✕ Dismiss</button>
+</div>
+
+<!-- MAIN VIEW CONTAINER -->
+<main class="view-container">
+
+  <!-- ==================== VIEW 1: LIVE MAP ==================== -->
+  <section id="view-map" class="tab-view active" role="tabpanel">
+
+    <!-- LEFT SIDEBAR: INGESTION MODULES -->
+    <aside class="sidebar" aria-label="Data Ingestion Modules">
+      <div class="slbl">
+        <span>📡 Live Data Feeds</span>
+        <span id="data-freshness-badge" style="font-size:0.55rem;border:1px solid #00e676;color:#00e676;padding:1px 6px;border-radius:10px;">LIVE (< 15s)</span>
+      </div>
+
+      <!-- Member 1: Weather Data -->
+      <div class="mod" id="mod-card-m1">
+        <div class="mod-top">
+          <div class="av av-b" aria-hidden="true">🌦️</div>
+          <div>
+            <div class="mod-name">Member 1 — Weather Data</div>
+            <div class="mod-sub">NWP Mesoscale Model Ingest</div>
+          </div>
+          <span class="sbadge s-ok" id="badge-m1">ONLINE</span>
+        </div>
+        <div class="mod-grid">
+          <div class="mval"><div class="mval-lbl">CAPE</div><div class="mval-v" id="v-cape">2450</div></div>
+          <div class="mval"><div class="mval-lbl">Humidity</div><div class="mval-v" id="v-hum">82%</div></div>
+          <div class="mval"><div class="mval-lbl">Wind</div><div class="mval-v" id="v-wind">48 km/h</div></div>
+          <div class="mval"><div class="mval-lbl">Pressure</div><div class="mval-v" id="v-pres">994 hPa</div></div>
+        </div>
+      </div>
+
+      <!-- Member 2: Storm Detection -->
+      <div class="mod" id="mod-card-m2">
+        <div class="mod-top">
+          <div class="av av-p" aria-hidden="true">⛈️</div>
+          <div>
+            <div class="mod-name">Member 2 — Storm Detection</div>
+            <div class="mod-sub">Doppler Radar & INSAT-3D</div>
+          </div>
+          <span class="sbadge s-ok" id="badge-m2">ONLINE</span>
+        </div>
+        <div class="mod-grid">
+          <div class="mval mval-full"><div class="mval-lbl">Centroid Location</div><div class="mval-v" id="v-loc">17.43°N 78.52°E</div></div>
+          <div class="mval"><div class="mval-lbl">Severity Metric</div><div class="mval-v" id="v-str">0.84 (58 dBZ)</div></div>
+          <div class="mval"><div class="mval-lbl">Confidence</div><div class="mval-v" id="v-conf">92%</div></div>
+        </div>
+      </div>
+
+      <!-- Member 3: Lightning AI -->
+      <div class="mod" id="mod-card-m3">
+        <div class="mod-top">
+          <div class="av av-y" aria-hidden="true">⚡</div>
+          <div>
+            <div class="mod-name">Member 3 — Lightning AI</div>
+            <div class="mod-sub">Deep Learning Strike Model</div>
+          </div>
+          <span class="sbadge s-ok" id="badge-m3">ONLINE</span>
+        </div>
+        <div class="mod-grid">
+          <div class="mval"><div class="mval-lbl">Prob 15m</div><div class="mval-v" id="v-l15" style="color:var(--yellow);">78%</div></div>
+          <div class="mval"><div class="mval-lbl">Prob 30m</div><div class="mval-v" id="v-l30" style="color:var(--yellow);">84%</div></div>
+          <div class="mval"><div class="mval-lbl">Prob 60m</div><div class="mval-v" id="v-l60" style="color:var(--yellow);">89%</div></div>
+          <div class="mval"><div class="mval-lbl">Confidence</div><div class="mval-v" id="v-lconf">92%</div></div>
+        </div>
+      </div>
+
+      <!-- Member 4: Storm Tracking -->
+      <div class="mod" id="mod-card-m4">
+        <div class="mod-top">
+          <div class="av av-c" aria-hidden="true">🛰️</div>
+          <div>
+            <div class="mod-name">Member 4 — Storm Tracking</div>
+            <div class="mod-sub">Optical Flow Motion Vector</div>
+          </div>
+          <span class="sbadge s-ok" id="badge-m4">ONLINE</span>
+        </div>
+        <div class="mod-grid">
+          <div class="mval"><div class="mval-lbl">Heading</div><div class="mval-v" id="v-dir">NE (45°)</div></div>
+          <div class="mval"><div class="mval-lbl">Speed</div><div class="mval-v" id="v-spd">38 km/h</div></div>
+          <div class="mval mval-full"><div class="mval-lbl">Arrival ETA</div><div class="mval-v" id="v-eta" style="color:var(--cyan);">22 min</div></div>
+        </div>
+      </div>
+
+      <div style="font-size:0.6rem;color:var(--text3);text-align:center;padding:4px;">
+        Last sync: <span id="last-updated-rel" style="color:var(--text2);">Just now</span>
+      </div>
+    </aside>
+
+    <!-- CENTER MAP AREA -->
+    <div class="map-area">
+      <!-- Real Base Maps Selector (Top Left) -->
+      <div class="basemap-selector-wrap" role="toolbar" aria-label="Real Map Styles">
+        <button class="basemap-btn active" data-base="satellite" onclick="window.app.setBaseMap('satellite')">🛰️ Satellite</button>
+        <button class="basemap-btn" data-base="streets" onclick="window.app.setBaseMap('streets')">🏙️ Streets</button>
+        <button class="basemap-btn" data-base="topo" onclick="window.app.setBaseMap('topo')">⛰️ Topo</button>
+        <button class="basemap-btn" data-base="dark" onclick="window.app.setBaseMap('dark')">🗺️ Dark</button>
+        <button class="basemap-btn" data-base="hydHD" onclick="window.app.setBaseMap('hydHD')">🏛️ Hyderabad</button>
+        <button class="basemap-btn" data-base="classic" onclick="window.app.setBaseMap('classic')">📟 Classic</button>
+      </div>
+
+      <div id="map" aria-label="Interactive Weather Radar & Lightning Strike Map"></div>
+      <!-- Classic Canvas Map Overlay (shown only in Classic mode) -->
+      <canvas id="classicMapCanvas" style="display:none;position:absolute;inset:0;z-index:450;pointer-events:none;width:100%;height:100%;"></canvas>
+
+      <!-- Real Doppler Radar Reflectivity dBZ Legend (Bottom Left) -->
+      <div class="radar-legend-bar" id="radar-legend" aria-label="Radar Reflectivity Scale">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <b style="color:var(--text2);font-size:0.6rem;">DOPPLER RADAR (dBZ)</b>
+          <span id="radar-live-timestamp" style="font-size:0.55rem;color:var(--cyan);font-weight:700;">LIVE RADAR</span>
+        </div>
+        <div class="radar-gradient-track"></div>
+        <div class="radar-legend-labels">
+          <span>15 Light</span>
+          <span>35 Mod</span>
+          <span>45 Hvy</span>
+          <span>55 Severe</span>
+          <span>65+ Hail</span>
+        </div>
+      </div>
+
+      <!-- Top Operator Stats HUD -->
+      <div class="map-top-stats" role="region" aria-label="High-Priority Threat Indicators">
+        <div class="stat-chip" title="Synthesized Multi-Hazard Emergency Score">
+          <div class="stat-chip-icon" aria-hidden="true">🌡️</div>
+          <div>
+            <div class="stat-chip-val" id="s-risk" style="color:var(--red);">82%</div>
+            <div class="stat-chip-label" id="s-risk-level" style="color:var(--red);font-weight:700;">HIGH RISK</div>
+          </div>
+        </div>
+
+        <div class="stat-chip" title="Estimated Time of Core Boundary Arrival">
+          <div class="stat-chip-icon" aria-hidden="true">🛰️</div>
+          <div>
+            <div class="stat-chip-val" id="s-eta" style="color:var(--cyan);">22 min</div>
+            <div class="stat-chip-label" id="s-heading">Vector: NE (38 km/h)</div>
+          </div>
+        </div>
+
+        <div class="stat-chip" title="30-min Strike Probability and Rate">
+          <div class="stat-chip-icon" aria-hidden="true">⚡</div>
+          <div>
+            <div class="stat-chip-val" id="s-light" style="color:var(--yellow);">84%</div>
+            <div class="stat-chip-label" id="s-stroke-rate">14 CG/min</div>
+          </div>
+        </div>
+
+        <div class="stat-chip" title="Unacknowledged Critical Warnings">
+          <div class="stat-chip-icon" aria-hidden="true">🚨</div>
+          <div>
+            <div class="stat-chip-val" id="s-alerts-count" style="color:var(--red);">2</div>
+            <div class="stat-chip-label">Active Alerts</div>
+          </div>
+        </div>
+
+        <div class="stat-chip" title="Data Feed Ingestion Pipeline Status">
+          <div class="stat-chip-icon" aria-hidden="true">📡</div>
+          <div>
+            <div class="stat-chip-val" id="s-feeds-online" style="color:var(--green);">6/6</div>
+            <div class="stat-chip-label">Feeds Online</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layer Control Switches -->
+      <div class="map-layer-ctrl" role="toolbar" aria-label="Map Visual Layers">
+        <button class="locate-btn" onclick="window.app.locateMe()" title="Locate your current device location via GPS">📍 Locate Me</button>
+        <button class="layer-btn on" id="lb-liveRadar" onclick="window.app.toggleLayer('liveRadar')">🛰️ Live Doppler</button>
+        <button class="layer-btn on" id="lb-risk" onclick="window.app.toggleLayer('risk')">🔴 Risk Zones</button>
+        <button class="layer-btn on" id="lb-lightning" onclick="window.app.toggleLayer('lightning')">⚡ Lightning</button>
+        <button class="layer-btn on" id="lb-track" onclick="window.app.toggleLayer('track')">🛰️ Tracking</button>
+        <button class="layer-btn on" id="lb-landmarks" onclick="window.app.toggleLayer('landmarks')">🏛️ Landmarks</button>
+        <button class="layer-btn on" id="lb-userLoc" onclick="window.app.toggleLayer('userLoc')">📍 EOC Station</button>
+      </div>
+
+      <!-- Nowcast Prediction Timeline Bottom HUD -->
+      <div class="nowcast-overlay" role="region" aria-label="Nowcast Forecast Horizon Timeline">
+        <div class="nc-header-row">
+          <div>
+            <div class="nc-title">🧠 Nowcast Engine — Prediction Horizon Timeline</div>
+            <div class="nc-subtitle">Member 5 Ensemble Fusion Engine · Synthesized Probabilities Across Time Horizons</div>
+          </div>
+          <div class="engine-tag">MEMBER 5 NOWCAST ENGINE</div>
+        </div>
+
+        <div class="nc-bars">
+          <!-- 15 MIN -->
+          <div class="nc-col">
+            <div class="nc-lbl">15 min</div>
+            <div class="nc-track"><div class="nc-fill" id="nf15" style="width:79%;background:var(--red);"></div></div>
+            <div class="nc-pct-row">
+              <span class="nc-pct" id="np15" style="color:var(--red);">79%</span>
+              <span id="na15" class="trend-arrow trend-up">↑</span>
+              <span class="nc-tag" id="nt15" style="color:var(--red);background:rgba(255,71,87,0.18);">HIGH</span>
+            </div>
+            <div class="nc-threat-label" id="nth15">Frequent CG Lightning</div>
+          </div>
+
+          <!-- 30 MIN -->
+          <div class="nc-col">
+            <div class="nc-lbl">30 min</div>
+            <div class="nc-track"><div class="nc-fill" id="nf30" style="width:82%;background:var(--red);"></div></div>
+            <div class="nc-pct-row">
+              <span class="nc-pct" id="np30" style="color:var(--red);">82%</span>
+              <span id="na30" class="trend-arrow trend-up">↑</span>
+              <span class="nc-tag" id="nt30" style="color:var(--red);background:rgba(255,71,87,0.18);">HIGH</span>
+            </div>
+            <div class="nc-threat-label" id="nth30">Cell Propagation & Rain</div>
+          </div>
+
+          <!-- 60 MIN -->
+          <div class="nc-col">
+            <div class="nc-lbl">60 min</div>
+            <div class="nc-track"><div class="nc-fill" id="nf60" style="width:86%;background:var(--red);"></div></div>
+            <div class="nc-pct-row">
+              <span class="nc-pct" id="np60" style="color:var(--red);">86%</span>
+              <span id="na60" class="trend-arrow trend-up">↑</span>
+              <span class="nc-tag" id="nt60" style="color:var(--red);background:rgba(255,71,87,0.18);">CRITICAL</span>
+            </div>
+            <div class="nc-threat-label" id="nth60">Secondary Cell Ingress</div>
+          </div>
+
+          <!-- 3 HOURS -->
+          <div class="nc-col">
+            <div class="nc-lbl">3 hours</div>
+            <div class="nc-track"><div class="nc-fill" id="nf3h" style="width:74%;background:var(--orange);"></div></div>
+            <div class="nc-pct-row">
+              <span class="nc-pct" id="np3h" style="color:var(--orange);">74%</span>
+              <span id="na3h" class="trend-arrow trend-down">↓</span>
+              <span class="nc-tag" id="nt3h" style="color:var(--orange);background:rgba(255,177,66,0.14);">HIGH</span>
+            </div>
+            <div class="nc-threat-label" id="nth3h">Squall Line Reorg</div>
+          </div>
+
+          <!-- 6 HOURS -->
+          <div class="nc-col">
+            <div class="nc-lbl">6 hours</div>
+            <div class="nc-track"><div class="nc-fill" id="nf6h" style="width:58%;background:var(--yellow);"></div></div>
+            <div class="nc-pct-row">
+              <span class="nc-pct" id="np6h" style="color:var(--yellow);">58%</span>
+              <span id="na6h" class="trend-arrow trend-down">↓</span>
+              <span class="nc-tag" id="nt6h" style="color:var(--yellow);background:rgba(255,211,42,0.14);">MEDIUM</span>
+            </div>
+            <div class="nc-threat-label" id="nth6h">Post-Frontal Clearing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR: PIPELINE & RECENT ALERTS -->
+    <aside class="right-bar" aria-label="Pipeline Architecture and Alerts Log">
+      <div class="slbl">🔄 Ingestion & Processing Flow</div>
+      <div class="flow">
+        <div class="fnode" id="fnode-m1">
+          <span>🌦️ M1 Weather Data (NWP)</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:0.6rem;color:var(--text3);" id="fnode-lat-m1">42ms</span>
+            <div class="fnode-dot" id="fnode-dot-m1"></div>
+          </div>
+        </div>
+        <div class="farr">↓</div>
+
+        <div class="fnode" id="fnode-m2">
+          <span>⛈️ M2 Storm Detection (Radar)</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:0.6rem;color:var(--text3);" id="fnode-lat-m2">68ms</span>
+            <div class="fnode-dot" id="fnode-dot-m2"></div>
+          </div>
+        </div>
+        <div class="farr">↓</div>
+
+        <div class="fnode" id="fnode-m3">
+          <span>⚡ M3 Lightning AI (Model)</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:0.6rem;color:var(--text3);" id="fnode-lat-m3">85ms</span>
+            <div class="fnode-dot" id="fnode-dot-m3"></div>
+          </div>
+        </div>
+        <div class="farr">↓</div>
+
+        <div class="fnode" id="fnode-m4">
+          <span>🛰️ M4 Storm Tracking (Vector)</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:0.6rem;color:var(--text3);" id="fnode-lat-m4">34ms</span>
+            <div class="fnode-dot" id="fnode-dot-m4"></div>
+          </div>
+        </div>
+        <div class="farr">↓</div>
+
+        <div class="fnode" id="fnode-m5">
+          <span>🧠 M5 Nowcast Engine</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:0.6rem;color:var(--text3);" id="fnode-lat-m5">120ms</span>
+            <div class="fnode-dot" id="fnode-dot-m5"></div>
+          </div>
+        </div>
+        <div class="farr">↓</div>
+
+        <div class="fnode hl" id="fnode-m6">
+          <span>🔗 M6 Integration Backend</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:0.6rem;color:var(--blue);" id="fnode-lat-m6">22ms</span>
+            <div class="fnode-dot" id="fnode-dot-m6"></div>
+          </div>
+        </div>
+        <div class="farr">↓</div>
+
+        <div class="frow">
+          <button class="fnode" onclick="window.app.switchTab('map')"><span>🗺️ Map</span></button>
+          <button class="fnode" onclick="window.app.switchTab('alerts')"><span>🚨 Alerts</span></button>
+        </div>
+      </div>
+
+      <div class="slbl" style="margin-top:4px;">
+        <span>🔗 Quick API Links</span>
+        <button style="background:transparent;border:none;color:var(--cyan);font-size:0.6rem;cursor:pointer;" onclick="window.app.switchTab('api')">Open Console ↗</button>
+      </div>
+      <div class="routes">
+        <div class="rt" onclick="window.app.switchTab('api');window.app.selectApiRoute('/api/weather')">
+          <span class="rm rm-g">GET</span><span class="rpath">/api/weather</span>
+        </div>
+        <div class="rt" onclick="window.app.switchTab('api');window.app.selectApiRoute('/api/storm')">
+          <span class="rm rm-g">GET</span><span class="rpath">/api/storm</span>
+        </div>
+        <div class="rt" onclick="window.app.switchTab('api');window.app.selectApiRoute('/api/lightning')">
+          <span class="rm rm-g">GET</span><span class="rpath">/api/lightning</span>
+        </div>
+        <div class="rt" onclick="window.app.switchTab('api');window.app.selectApiRoute('/api/nowcast')">
+          <span class="rm rm-p">POST</span><span class="rpath">/api/nowcast</span>
+        </div>
+      </div>
+
+      <div class="slbl" style="margin-top:4px;">
+        <span>🚨 Recent Incident Feed</span>
+      </div>
+      <div class="alog" id="alog" aria-live="polite">
+        <!-- Filled dynamically -->
+      </div>
+
+      <div class="btns">
+        <button class="btn btn-r" onclick="window.app.triggerCriticalAlert()">🚨 Flash Warning</button>
+        <button class="btn btn-b" onclick="DataService.refreshAll()">🔄 Force Refresh</button>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ==================== VIEW 2: ANALYTICS ==================== -->
+  <section id="view-analytics" class="tab-view" role="tabpanel" aria-label="Analytics & Evaluation Metrics">
+    <div class="page-header">
+      <div>
+        <div class="page-title"><span>📊</span> Predictive Analytics & Model Metrics</div>
+        <div class="page-desc">Telemetry across Member 1 NWP, Member 3 Lightning AI, and Member 5 Multimodal Nowcast Fusion</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-b" style="padding:6px 14px;flex:none;" onclick="window.app.switchTab('analytics')">🔄 Refresh Charts</button>
+      </div>
+    </div>
+
+    <!-- Analytics Key Metrics Cards -->
+    <div class="analytics-metrics-grid">
+      <div class="am-card blue">
+        <div class="am-lbl">Model Accuracy (M3 Lightning)</div>
+        <div class="am-val">94.8%</div>
+        <div class="am-sub" style="color:var(--green)">↑ +1.2% ROC-AUC 0.962</div>
+      </div>
+      <div class="am-card yellow">
+        <div class="am-lbl">Avg Lead Time Before Strike</div>
+        <div class="am-val">38.4 min</div>
+        <div class="am-sub" style="color:var(--yellow)">Target: > 30 mins</div>
+      </div>
+      <div class="am-card green">
+        <div class="am-lbl">False Alarm Ratio (FAR)</div>
+        <div class="am-val">5.2%</div>
+        <div class="am-sub" style="color:var(--green)">↓ -0.8% Critical Index 0.89</div>
+      </div>
+      <div class="am-card purple">
+        <div class="am-lbl">Pipeline Latency (M6 Integration)</div>
+        <div class="am-val">138 ms</div>
+        <div class="am-sub" style="color:var(--purple)">End-to-End WebSocket Stream</div>
+      </div>
+    </div>
+
+    <!-- 4 Charts Grid -->
+    <div class="analytics-charts-grid">
+      <!-- Chart 1: Instability vs Radar -->
+      <div class="chart-box">
+        <div class="chart-header">
+          <div class="chart-title">🌦️ Atmospheric Instability vs Reflectivity (dBZ)</div>
+          <div class="chart-tag">Member 1 & 2 Correlation</div>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="chart-cape"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Lightning AI Horizons -->
+      <div class="chart-box">
+        <div class="chart-header">
+          <div class="chart-title">⚡ Lightning Prediction Probability Horizon</div>
+          <div class="chart-tag">Member 3 GNN Strike Model</div>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="chart-lightning"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 3: Sector Threat Distribution -->
+      <div class="chart-box">
+        <div class="chart-header">
+          <div class="chart-title">🗺️ Sector Storm Threat Index</div>
+          <div class="chart-tag">Hyderabad Metropolitan Area</div>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="chart-sectors"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 4: Fusion Model Rating -->
+      <div class="chart-box">
+        <div class="chart-header">
+          <div class="chart-title">🧠 Nowcast Prediction Accuracy by Lead Time</div>
+          <div class="chart-tag">Member 5 Ensemble Performance</div>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="chart-accuracy"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== VIEW 3: ALERTS CONSOLE ==================== -->
+  <section id="view-alerts" class="tab-view" role="tabpanel" aria-label="Emergency Alerts and Warnings Console">
+    <div class="alerts-left">
+      <div class="page-header">
+        <div>
+          <div class="page-title"><span>🚨</span> Emergency Alerts & Warning Broadcast Console</div>
+          <div class="page-desc">Automated CAP protocol alerts, siren dispatch, and civil defense notifications</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-g" style="padding:6px 14px;flex:none;" onclick="window.app.exportAlertsCSV()">📥 Export CSV</button>
+          <button class="btn btn-b" style="padding:6px 14px;flex:none;" onclick="window.app.exportAlertsJSON()">📥 Export JSON</button>
+        </div>
+      </div>
+
+      <!-- Active Threat Banner -->
+      <div class="alert-banner-box">
+        <div>
+          <div class="ab-title"><span style="animation:shake .45s ease infinite alternate;display:inline-block">⚡</span> SEVERE WEATHER WARNING: HYDERABAD METROPOLITAN ZONE</div>
+          <div class="ab-desc">High lightning stroke density and rapid cell growth detected. Automated sirens & SMS broadcast triggered.</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-r" style="padding:6px 14px;flex:none" onclick="window.app.triggerCriticalAlert()">🚨 Flash Warning</button>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="alerts-filter-bar">
+        <span style="font-size:0.7rem;color:var(--text3);font-weight:700;">FILTER BY SEVERITY:</span>
+        <button class="filter-btn active" onclick="window.app.filterAlertsBySev('ALL', this)">All</button>
+        <button class="filter-btn" onclick="window.app.filterAlertsBySev('CRITICAL', this)">Critical (Red)</button>
+        <button class="filter-btn" onclick="window.app.filterAlertsBySev('HIGH', this)">High (Orange)</button>
+        <button class="filter-btn" onclick="window.app.filterAlertsBySev('MEDIUM', this)">Medium (Yellow)</button>
+        <button class="filter-btn" onclick="window.app.filterAlertsBySev('LOW', this)">Low (Green)</button>
+      </div>
+
+      <!-- Alerts Table -->
+      <div class="alerts-table-wrap">
+        <table class="alerts-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Incident ID</th>
+              <th>Sector / Region</th>
+              <th>Severity</th>
+              <th>Description</th>
+              <th>Lead Time</th>
+              <th>Channels</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="alerts-table-body">
+            <!-- Populated dynamically via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right Side: Manual Dispatch Simulator -->
+    <aside class="alerts-right" aria-label="Manual Warning Dispatch Form">
+      <div class="slbl">📡 Issue Emergency Broadcast</div>
+      <div class="dispatch-form">
+        <div class="form-group">
+          <label class="form-label" for="disp-sev">Alert Severity</label>
+          <select class="form-select" id="disp-sev">
+            <option value="CRITICAL">CRITICAL — Immediate Evacuation</option>
+            <option value="HIGH">HIGH — Severe Thunderstorm Warning</option>
+            <option value="MEDIUM">MEDIUM — Thunderstorm Watch</option>
+            <option value="LOW">LOW — Weather Advisory</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="disp-zone">Target Zone</label>
+          <select class="form-select" id="disp-zone">
+            <option value="Central Hyderabad (Charminar / Hussain Sagar)">Central Hyderabad (Charminar / Hussain Sagar)</option>
+            <option value="Cyberabad & HITEC City Corridor">Cyberabad & HITEC City Corridor</option>
+            <option value="Secunderabad / Cantonment">Secunderabad / Cantonment</option>
+            <option value="Shamshabad (RGIA Airport Zone)">Shamshabad (RGIA Airport Zone)</option>
+            <option value="All Metropolitan Sectors">All Metropolitan Sectors</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="disp-head">Warning Headline</label>
+          <input type="text" class="form-input" id="disp-head" value="Severe Lightning & Flash Flood Risk">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="disp-msg">Civil Advisory Instruction</label>
+          <textarea class="form-textarea" id="disp-msg">Seek grounded indoor shelter immediately. Avoid metallic poles, open terraces, and tree clusters.</textarea>
+        </div>
+        <button class="btn btn-r" style="margin-top:4px;" onclick="window.app.dispatchManualAlert()">🚨 Transmit Emergency Broadcast</button>
+      </div>
+
+      <div class="slbl">📡 Broadcast Delivery Gateways</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:0.72rem;">
+        <div style="display:flex;justify-content:space-between;padding:8px;background:var(--surface);border:1px solid var(--glass-b);border-radius:8px;">
+          <span>📱 Telecom SMS Gateway</span>
+          <span style="color:var(--green)">CONNECTED</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px;background:var(--surface);border:1px solid var(--glass-b);border-radius:8px;">
+          <span>📢 Outdoor Sirens Network</span>
+          <span style="color:var(--green)">READY (28/28)</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px;background:var(--surface);border:1px solid var(--glass-b);border-radius:8px;">
+          <span>🌐 NDMA CAP Feeder</span>
+          <span style="color:var(--cyan)">ACTIVE v1.2</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px;background:var(--surface);border:1px solid var(--glass-b);border-radius:8px;">
+          <span>✈️ ATC Aviation Notice</span>
+          <span style="color:var(--yellow)">STANDBY</span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ==================== VIEW 4: API PLAYGROUND ==================== -->
+  <section id="view-api" class="tab-view" role="tabpanel" aria-label="API Testing Playground & Documentation">
+    <!-- Left API endpoints navigation -->
+    <aside class="api-sidebar" aria-label="Backend Endpoints List">
+      <div class="slbl">Backend Endpoints (Member 6)</div>
+      <button class="api-item active" onclick="window.app.selectApiRoute('/api/weather', this)">
+        <span><span class="rm rm-g">GET</span> /api/weather</span>
+        <span style="color:var(--text3);font-size:0.6rem;">NWP</span>
+      </button>
+      <button class="api-item" onclick="window.app.selectApiRoute('/api/storm', this)">
+        <span><span class="rm rm-g">GET</span> /api/storm</span>
+        <span style="color:var(--text3);font-size:0.6rem;">Radar</span>
+      </button>
+      <button class="api-item" onclick="window.app.selectApiRoute('/api/lightning', this)">
+        <span><span class="rm rm-g">GET</span> /api/lightning</span>
+        <span style="color:var(--text3);font-size:0.6rem;">Model</span>
+      </button>
+      <button class="api-item" onclick="window.app.selectApiRoute('/api/tracking', this)">
+        <span><span class="rm rm-g">GET</span> /api/tracking</span>
+        <span style="color:var(--text3);font-size:0.6rem;">Vector</span>
+      </button>
+      <button class="api-item" onclick="window.app.selectApiRoute('/api/nowcast', this)">
+        <span><span class="rm rm-p">POST</span> /api/nowcast</span>
+        <span style="color:var(--text3);font-size:0.6rem;">Fusion</span>
+      </button>
+      <button class="api-item" onclick="window.app.selectApiRoute('/api/alerts', this)">
+        <span><span class="rm rm-g">GET</span> /api/alerts</span>
+        <span style="color:var(--text3);font-size:0.6rem;">CAP v1.2</span>
+      </button>
+    </aside>
+
+    <!-- Right API testing area -->
+    <div class="api-main">
+      <div class="endpoint-card">
+        <div class="endpoint-header">
+          <div class="endpoint-title">
+            <span class="rm rm-g" id="api-disp-method">GET</span>
+            <span id="api-disp-path" style="color:var(--text)">/api/weather</span>
+          </div>
+
+          <!-- Status Code Simulator & Execution Buttons -->
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <label for="simulate-status" style="font-size:0.65rem;color:var(--text3);font-weight:700;">SIMULATE STATUS:</label>
+              <select id="simulate-status" class="form-select" style="padding:4px 8px;font-size:0.7rem;" onchange="window.app.setApiSimulateStatus(this.value)">
+                <option value="200">200 OK (Success)</option>
+                <option value="400">400 Bad Request</option>
+                <option value="404">404 Not Found</option>
+                <option value="500">500 Server Error</option>
+                <option value="504">504 Gateway Timeout</option>
+              </select>
+            </div>
+            <button class="btn btn-b" style="padding:6px 14px;flex:none" onclick="window.app.executeApiTest()">▶ Send Request</button>
+            <button class="btn btn-g" style="padding:6px 14px;flex:none" onclick="window.app.copyCurl()">📋 Copy cURL</button>
+          </div>
+        </div>
+
+        <div style="font-size:0.78rem;color:var(--text2);" id="api-disp-desc">
+          Fetches real-time Numerical Weather Prediction (NWP) parameters ingested from Member 1.
+        </div>
+
+        <!-- Live Response Viewer -->
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="slbl">LIVE JSON RESPONSE (<span id="api-status-code" style="color:var(--green)">200 OK</span> · <span id="api-latency">24 ms</span>)</span>
+          </div>
+          <div class="code-box">
+            <button class="copy-btn" onclick="window.app.copyJsonResponse()">Copy JSON</button>
+            <pre id="api-response-json">Loading response...</pre>
+          </div>
+        </div>
+
+        <!-- Schema Table -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <span class="slbl">Response Schema & Member Attribution</span>
+          <table class="schema-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Provider</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody id="api-schema-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- TOAST MESSAGE CONTAINER -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span>✓</span> <span id="toast-text">Action completed</span>
+</div>
+
+<!-- SCRIPTS: MODULAR ARCHITECTURE -->
+<script src="js/risk-engine.js"></script>
+<script src="js/data-service.js"></script>
+<script src="js/alert-manager.js"></script>
+<script src="js/map-manager.js"></script>
+<script src="js/demo-mode.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
