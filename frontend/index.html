@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1728">
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+    <title>Hyderabad storm scenario | Local prototype</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+    <script src="/assets/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Hyderabad storm scenario home">
+        <span class="brand-mark" aria-hidden="true">H</span>
+        <span>HYD<span class="muted"> / STORM LAB</span></span>
+      </a>
+      <span class="env-tag"><span class="env-dot"></span> LOCAL DEMO</span>
+    </header>
+
+    <main>
+      <section class="safety-banner" role="note">
+        <strong>DEMO ONLY — NOT AN OPERATIONAL WARNING</strong>
+        <span>Synthetic scenario values and unvalidated estimates. No citizen alerts are sent.</span>
+      </section>
+
+      <section class="intro">
+        <div>
+          <p class="eyebrow">HYDERABAD · DETERMINISTIC SCENARIO</p>
+          <h1>Thunderstorm early-warning prototype</h1>
+          <p class="intro-copy">Step through a scripted storm lifecycle and inspect the API-backed tracking and data availability.</p>
+        </div>
+        <span id="connection-state" class="status-chip" role="status">Connecting to local API…</span>
+      </section>
+
+      <section class="scenario-panel panel" aria-labelledby="scenario-title">
+        <div class="scenario-heading">
+          <div>
+            <p class="eyebrow">SCENARIO CONTROLS</p>
+            <h2 id="scenario-title">Lifecycle playback</h2>
+          </div>
+          <span id="step-count" class="step-count">Step — / —</span>
+        </div>
+        <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
+        <div class="scenario-controls">
+          <button id="previous-button" class="button secondary" type="button">← Previous</button>
+          <button id="play-button" class="button primary" type="button">▶ Play scenario</button>
+          <button id="next-button" class="button secondary" type="button">Next →</button>
+          <button id="reset-button" class="button quiet" type="button">Reset</button>
+        </div>
+        <div class="stage-copy">
+          <span id="stage-marker" class="stage-marker"></span>
+          <div>
+            <h3 id="stage-label">Loading scenario…</h3>
+            <p id="stage-description"></p>
+            <span id="scenario-time" class="muted"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="metric-grid" aria-label="Scenario summary">
+        <article class="panel metric-card">
+          <span class="metric-label">Scenario risk index</span>
+          <strong id="risk-index" class="metric-value">—</strong>
+          <span id="risk-level" class="metric-detail">Scenario-authored demo value</span>
+        </article>
+        <article class="panel metric-card">
+          <span class="metric-label">Lightning scenario values</span>
+          <strong id="lightning-value" class="metric-value">—</strong>
+          <span class="metric-detail">15 / 30 / 60 min · simulated only</span>
+        </article>
+        <article class="panel metric-card">
+          <span class="metric-label">Active tracked storms</span>
+          <strong id="storm-count" class="metric-value">—</strong>
+          <span id="motion-detail" class="metric-detail">No operational feed connected</span>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel map-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">ILLUSTRATIVE POSITION VIEW</p>
+              <h2>Storm track near Hyderabad</h2>
+            </div>
+            <span class="mini-tag">SCHEMATIC · NOT A LIVE MAP</span>
+          </div>
+          <div id="map-view" class="map-view" role="img" aria-label="Schematic storm track and Hyderabad city location"></div>
+          <div class="map-legend">
+            <span><i class="legend-dot storm-dot"></i> Synthetic storm position</span>
+            <span><i class="legend-dot city-dot"></i> Hyderabad reference</span>
+            <span id="forecast-legend"><i class="legend-line"></i> Constant-motion estimate</span>
+          </div>
+        </article>
+
+        <article class="panel sources-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">MEMBER CONTRACT STATUS</p>
+              <h2>Inputs &amp; processing</h2>
+            </div>
+          </div>
+          <div id="member-list" class="member-list" aria-live="polite"></div>
+        </article>
+      </section>
+
+      <section id="alert-panel" class="alert-panel" aria-live="polite" hidden>
+        <span class="alert-icon" aria-hidden="true">!</span>
+        <div>
+          <strong id="alert-title">Simulated demonstration alert</strong>
+          <p id="alert-description"></p>
+        </div>
+        <span class="mini-tag">NOT SENT</span>
+      </section>
+
+      <p id="error-message" class="error-message" role="alert" hidden></p>
+      <footer>
+        <span>Prototype for local demonstration · not for safety decisions</span>
+        <a href="/docs" target="_blank" rel="noreferrer">API documentation ↗</a>
+      </footer>
+    </main>
+  </body>
+</html>
