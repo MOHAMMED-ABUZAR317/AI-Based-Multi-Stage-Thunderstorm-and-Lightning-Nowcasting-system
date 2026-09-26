@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+outputs/plots/*.png
+outputs/results/*.json

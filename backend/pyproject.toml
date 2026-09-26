@@ -1,0 +1,11 @@
+[project]
+name = "member4-storm-tracking"
+version = "0.1.0"
+description = "Storm tracking, trajectory prediction and arrival-time estimation for the AI thunderstorm/lightning nowcasting project."
+requires-python = ">=3.9"
+dependencies = [
+    "matplotlib>=3.5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
