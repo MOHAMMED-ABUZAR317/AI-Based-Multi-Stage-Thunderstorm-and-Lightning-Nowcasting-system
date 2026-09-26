@@ -7,6 +7,8 @@ from pathlib import Path
 import sys
 from typing import Any
 
+from backend.app.archive_data import load_archive_references
+
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BACKEND_DIR / "src"))
 
@@ -117,6 +119,7 @@ def _frame(step: int) -> dict[str, Any]:
 def build_nowcast(step: int) -> dict[str, Any]:
     """Build one stable nowcast by replaying scenario frames from the start."""
     stage = STAGES[step]
+    archives = load_archive_references()
     tracker = StormTracker()
     current_time = START_TIME
 
@@ -181,25 +184,29 @@ def build_nowcast(step: int) -> dict[str, Any]:
             {
                 "member": 1,
                 "role": "Weather observations / NWP",
-                "status": "UNAVAILABLE",
-                "data": None,
-                "note": "No current weather feed is connected.",
+                "status": "HISTORICAL_ARCHIVE_ONLY",
+                "data": archives["member1_weather"],
+                "note": "Bundled reference is dated and provenance is unverified; current weather remains unavailable.",
             },
             {
                 "member": 2,
                 "role": "Storm detection",
-                "status": "SYNTHETIC_DEMO",
-                "data": _frame(step)["storms"],
-                "note": "Demo detections only; no live satellite or radar feed.",
+                "status": "ARCHIVED_SATELLITE_PLUS_SYNTHETIC_DEMO",
+                "data": {
+                    "satellite_reference": archives["member2_satellite"],
+                    "demo_detections": _frame(step)["storms"],
+                },
+                "note": "Satellite temperatures are archived measurements, not detections; scenario cells are synthetic. No live radar feed.",
             },
             {
                 "member": 3,
                 "role": "Lightning guidance",
                 "status": "SIMULATED_DEMO_ONLY",
-                "data": None,
+                "data": {"historical_ctp_reference": archives["member3_ctp"]},
                 "note": (
-                    "The displayed percentages are authored scenario values, "
-                    "not model predictions or validated probabilities."
+                    "No defensible lightning source/model is available. The historical "
+                    "CTP extract is reference data only; displayed percentages are "
+                    "scripted scenario values, not predictions or validated probabilities."
                 ),
             },
             {
@@ -243,7 +250,8 @@ def build_nowcast(step: int) -> dict[str, Any]:
             "weather": {
                 "status": "UNAVAILABLE",
                 "values": None,
-                "note": "No current meteorological observations or NWP feed connected.",
+                "historical_reference": archives["member1_weather"],
+                "note": "Current weather/NWP data unavailable. Archive reference is not used as current input.",
             },
             "radar": {
                 "status": "UNAVAILABLE",
@@ -252,6 +260,7 @@ def build_nowcast(step: int) -> dict[str, Any]:
             },
             "active_storm_count": len(tracked_storms),
         },
+        "archives": archives,
         "tracking": {
             "status": "DEMO_TRACKING" if tracked_storms else "NO_ACTIVE_STORM",
             "storms": tracked_storms,

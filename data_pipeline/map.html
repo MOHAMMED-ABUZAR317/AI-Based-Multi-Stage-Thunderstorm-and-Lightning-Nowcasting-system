@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Hyderabad Metro Thunderstorm Safety Hub</title>
+    <title>Hyderabad Route Demonstration — Not Operational</title>
 
     <link
       rel="stylesheet"
@@ -164,16 +164,35 @@
       .blueDot {
         background: #1976d2;
       }
+
+      .demo-notice {
+        position: fixed;
+        z-index: 10000;
+        top: 8px;
+        left: 50%;
+        width: min(680px, calc(100% - 360px));
+        transform: translateX(-50%);
+        padding: 9px 12px;
+        border: 1px solid #795d31;
+        border-radius: 8px;
+        background: #342a1a;
+        color: #f6d397;
+        font: 700 12px/1.4 sans-serif;
+      }
     </style>
   </head>
 
   <body>
+    <div class="demo-notice" role="note">
+      DEMO ONLY — synthetic storm zones and illustrative routes; not a live warning,
+      verified shelter list, or official evacuation route.
+    </div>
     <div id="map"></div>
 
     <div class="panel">
-      <h2>⛈️ Hyderabad Metro Safety Hub</h2>
+      <h2>⛈️ Hyderabad Route Demonstration</h2>
 
-      <div class="subtitle">Thunderstorm & Lightning Safety Navigation</div>
+      <div class="subtitle">Synthetic storm-zone and route visualization · not operational</div>
 
       <div class="region">
         <b>MAP REGION</b><br />
@@ -189,11 +208,11 @@
       </button>
 
       <button class="green" onclick="findSafeRegion()">
-        🛡️ Find Nearest Safe Region
+        🛡️ Find Demo Destination
       </button>
 
       <button class="purple" onclick="routeRiskToSafe()">
-        🚨 Risk → Safe Route
+        🧭 Demo Zone → Destination Route
       </button>
 
       <button class="dark" onclick="startVoiceNavigation()">
@@ -214,7 +233,7 @@
 
       <div class="legend">
         <span class="dot redDot"></span>
-        Thunderstorm Risk
+        Synthetic Storm Zone
 
         <br />
 
@@ -1119,9 +1138,9 @@
         });
 
         document.getElementById("status").innerHTML =
-          "⚠️ Thunderstorm demo zones displayed. Click a red zone, then Risk → Safe Route.";
+          "DEMO ONLY: Synthetic zones displayed. The route is illustrative, not an official safety instruction.";
 
-        speak("Thunderstorm warning. Please move toward a safe region.");
+        speak("Demonstration only. This simulated route is not an official safety instruction.");
       }
 
       /* =========================================================
@@ -1256,7 +1275,7 @@
       }
 
       /* =========================================================
-   LIVE GPS VOICE NAVIGATION
+   DEMO GPS VOICE NAVIGATION
 ========================================================= */
 
       function navigationGPS(position) {

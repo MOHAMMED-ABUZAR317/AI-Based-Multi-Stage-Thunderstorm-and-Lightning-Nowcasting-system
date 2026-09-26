@@ -42,6 +42,16 @@ class NowcastApiTests(unittest.TestCase):
             self.assertIsNone(payload["nowcast"]["weather"]["values"])
             self.assertIsNone(payload["nowcast"]["radar"]["values"])
             self.assertEqual(
+                payload["members"][0]["status"], "HISTORICAL_ARCHIVE_ONLY"
+            )
+            self.assertEqual(
+                payload["archives"]["member2_satellite"]["status"], "ARCHIVED_EXTRACT"
+            )
+            self.assertIn(
+                "Data provenance",
+                payload["archives"]["member1_weather"]["note"],
+            )
+            self.assertEqual(
                 payload["nowcast"]["lightning"]["status"], "SIMULATED_DEMO_ONLY"
             )
             self.assertFalse(payload["nowcast"]["lightning"]["valid_for_decisions"])
@@ -58,6 +68,15 @@ class NowcastApiTests(unittest.TestCase):
         self.assertEqual(responses[6]["alert"]["status"], "SIMULATED_CLEARED")
         self.assertEqual(responses[6]["tracking"]["storms"], [])
 
+    def test_archives_endpoint_serves_historical_reference_data(self):
+        response = client.get("/api/v1/archives")
+        self.assertEqual(response.status_code, 200)
+        archives = response.json()
+        self.assertEqual(archives["member1_weather"]["record_count"], 1106)
+        self.assertEqual(len(archives["member2_satellite"]["samples"]), 8)
+        self.assertEqual(archives["member3_ctp"]["record_count"], 16)
+        self.assertTrue(archives["member3_ctp"]["as_of"].startswith("01-MAY-2025"))
+
     def test_invalid_scenario_step_is_rejected(self):
         self.assertEqual(client.get("/api/v1/nowcast", params={"step": -1}).status_code, 422)
         self.assertEqual(client.get("/api/v1/nowcast", params={"step": 7}).status_code, 422)
@@ -67,6 +86,7 @@ class NowcastApiTests(unittest.TestCase):
         self.assertEqual(dashboard_response.status_code, 200)
         self.assertIn("DEMO ONLY", dashboard_response.text)
         self.assertEqual(client.get("/assets/app.js").status_code, 200)
+        self.assertEqual(client.get("/assets/js/data-service.js").status_code, 200)
         self.assertEqual(client.get("/assets/styles.css").status_code, 200)
         self.assertEqual(client.get("/assets/favicon.svg").status_code, 200)
 

@@ -35,6 +35,11 @@ def nowcast(step: int = Query(default=0, ge=0, le=len(STAGES) - 1)) -> dict:
     return build_nowcast(step)
 
 
+@app.get("/api/v1/archives")
+def archives() -> dict:
+    return build_nowcast(0)["archives"]
+
+
 @app.get("/", include_in_schema=False)
 def dashboard() -> FileResponse:
     return FileResponse(FRONTEND_DIR / "index.html")

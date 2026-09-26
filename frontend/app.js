@@ -77,19 +77,84 @@
   }
 
   function renderMembers(members) {
-    $("member-list").innerHTML = members
-      .map((member) => {
-        const statusClass = member.status.includes("INTEGRATED") ? "available" : "";
-        return `<div class="member-row">
-          <span class="member-number">M${member.member}</span>
-          <div>
-            <div class="member-role">${member.role}</div>
-            <div class="member-note">${member.note}</div>
-          </div>
-          <span class="member-status ${statusClass}">${member.status.replaceAll("_", " ")}</span>
-        </div>`;
-      })
-      .join("");
+    const list = $("member-list");
+    list.replaceChildren();
+    members.forEach((member) => {
+      const row = document.createElement("div");
+      row.className = "member-row";
+      const number = document.createElement("span");
+      number.className = "member-number";
+      number.textContent = `M${member.member}`;
+      const details = document.createElement("div");
+      const role = document.createElement("div");
+      role.className = "member-role";
+      role.textContent = member.role;
+      const note = document.createElement("div");
+      note.className = "member-note";
+      note.textContent = member.note;
+      details.append(role, note);
+      const status = document.createElement("span");
+      status.className = `member-status ${member.status.includes("INTEGRATED") ? "available" : ""}`;
+      status.textContent = member.status.replaceAll("_", " ");
+      row.append(number, details, status);
+      list.append(row);
+    });
+  }
+
+  function renderArchives(archives) {
+    const list = $("archive-list");
+    list.replaceChildren();
+    const weather = archives.member1_weather;
+    const weatherCard = createArchiveCard(
+      "M1 · Weather archive",
+      weather.as_of,
+      `${weather.record_count} rows · CAPE ${weather.values.cape_j_kg} J/kg · humidity ${weather.values.humidity_percent}%`,
+      weather.note,
+    );
+    list.append(weatherCard);
+
+    const satellite = archives.member2_satellite;
+    const latestTime = satellite.as_of;
+    const latestSamples = satellite.samples.filter((sample) => sample.timestamp === latestTime);
+    const satelliteSummary = latestSamples
+      .map((sample) => `${sample.band}: point ${sample.point_temperature_k.toFixed(1)} K · 3×3 mean ${sample.neighborhood_mean_temperature_k.toFixed(1)} K`)
+      .join(" · ");
+    list.append(
+      createArchiveCard(
+        "M2 · INSAT-3DR archive",
+        latestTime,
+        satelliteSummary || "No point samples available",
+        satellite.note,
+      ),
+    );
+
+    const ctp = archives.member3_ctp;
+    list.append(
+      createArchiveCard(
+        "M3 · Historical CTP input",
+        ctp.as_of,
+        `${ctp.record_count} rows · cloud-top temperature ${ctp.values.cloud_top_temperature_k.toFixed(1)} K · pressure ${ctp.values.cloud_top_pressure_hpa.toFixed(1)} hPa`,
+        ctp.note,
+      ),
+    );
+  }
+
+  function createArchiveCard(title, timestamp, values, note) {
+    const card = document.createElement("article");
+    card.className = "archive-card";
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    const date = document.createElement("time");
+    date.className = "archive-date";
+    date.textContent = timestamp;
+    const summary = document.createElement("div");
+    summary.className = "archive-values";
+    summary.textContent = values;
+    const detail = document.createElement("p");
+    detail.className = "archive-note";
+    detail.textContent = note;
+    card.append(heading, date, summary, detail);
+    return card;
   }
 
   function render(payload) {
@@ -118,22 +183,14 @@
     $("previous-button").disabled = step === 0;
     $("next-button").disabled = step === totalSteps - 1;
     renderMembers(payload.members);
+    renderArchives(payload.archives);
     renderMap(payload);
   }
 
   async function loadScenario(nextStep) {
     $("error-message").hidden = true;
     try {
-      const response = await fetch(`/api/v1/nowcast?step=${nextStep}`, {
-        headers: { Accept: "application/json" },
-      });
-      if (!response.ok) {
-        throw new Error(`Nowcast API returned HTTP ${response.status}.`);
-      }
-      const payload = await response.json();
-      if (!payload.demo || payload.operational !== false) {
-        throw new Error("API response did not declare the required demo-only status.");
-      }
+      const payload = await window.StormDataService.getNowcast(nextStep);
       step = nextStep;
       render(payload);
       setConnection(true, "LOCAL API CONNECTED · DEMO");
