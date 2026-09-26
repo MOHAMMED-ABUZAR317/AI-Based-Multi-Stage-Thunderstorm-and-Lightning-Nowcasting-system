@@ -1,6 +1,7 @@
 """API and end-to-end scenario contract tests."""
 
 import unittest
+from pathlib import Path
 
 from fastapi.testclient import TestClient
 
@@ -89,6 +90,12 @@ class NowcastApiTests(unittest.TestCase):
         self.assertEqual(client.get("/assets/js/data-service.js").status_code, 200)
         self.assertEqual(client.get("/assets/styles.css").status_code, 200)
         self.assertEqual(client.get("/assets/favicon.svg").status_code, 200)
+        self.assertEqual(client.get("/api/v1/nowcast/live").status_code, 404)
+        frontend = Path(__file__).resolve().parents[2] / "frontend"
+        index = (frontend / "index.html").read_text(encoding="utf-8")
+        app_script = (frontend / "app.js").read_text(encoding="utf-8")
+        self.assertNotIn("dispatchManualAlert", index)
+        self.assertNotIn("Math.random", app_script)
 
 
 if __name__ == "__main__":
