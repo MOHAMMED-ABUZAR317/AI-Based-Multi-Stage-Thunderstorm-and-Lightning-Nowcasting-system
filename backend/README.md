@@ -1,91 +1,35 @@
-# Member 4 — Storm Tracking, Trajectory Prediction & Arrival-Time Estimation
+# Backend and Member 4 tracker
 
-Part of the AI-based thunderstorm/lightning nowcasting project for India.
-This module sits between **Storm Detection (Member 2)** and the
-**Nowcast Engine (Member 5)**.
+The repository-level `README.md` is the canonical setup and run guide for the integrated FastAPI application. From the repository root, start the API and dashboard with:
 
-It answers:
-1. Which detection belongs to which storm, across time?
-2. What is each storm's direction and speed?
-3. Where will it be in 15 / 30 / 60 / (optionally 180) minutes?
-4. When will it reach a given location?
-5. How confident should we be in that trajectory?
-
-## Quick start
-
-```bash
-cd member4
-python3 demo_tracking.py
+```powershell
+python -m pip install -r backend\requirements.txt
+python -m uvicorn backend.app.main:app --reload
 ```
 
-This generates a synthetic storm, tracks it, predicts its trajectory,
-estimates an arrival time, evaluates the tracker against all 11 synthetic
-scenarios, generates plots, and writes JSON results — all in one command,
-with no external services or real Member 2 data required.
+The tracker library is under `src/storm_tracking/`. Run its deterministic, synthetic evaluation demo from the backend directory:
 
-## Run the tests
-
-```bash
-python3 tests/run_all.py
+```powershell
+python demo_tracking.py
 ```
 
-(See "A note on tooling" below — this uses `unittest`, not `pytest`.)
+Run the integrated tracker and API tests from the repository root:
 
-## Project layout
-
-```
-member4/
-├── README.md
-├── requirements.txt
-├── pyproject.toml
-├── src/storm_tracking/       # the tracking engine itself (source-agnostic)
-│   ├── models.py             # Detection / Frame / TrackPoint / StormTrack
-│   ├── geo.py                # haversine distance/bearing/destination-point
-│   ├── config.py             # all tunable thresholds, in one place
-│   ├── validation.py         # input data quality checks
-│   ├── motion.py             # smoothing + speed/direction estimation
-│   ├── tracker.py            # nearest-neighbour matching, persistent IDs
-│   ├── trajectory.py         # +15/30/60/180 min forecasts
-│   ├── arrival.py            # arrival-time estimation vs a target location
-│   ├── confidence.py         # trajectory_confidence heuristic
-│   └── events.py             # possible_merge / possible_split heuristics
-├── adapters/
-│   ├── synthetic_adapter.py  # synthetic generator -> Detection objects
-│   └── member2_adapter.py    # placeholder for Member 2's real output
-├── synthetic/generator.py    # scenarios A-K synthetic data + ground truth
-├── tests/                    # unittest-based test suite (48 tests)
-├── evaluation/
-│   ├── evaluate.py           # position/motion/tracking-quality metrics
-│   └── visualize.py          # the 5 required plots
-├── outputs/
-│   ├── plots/                # generated PNGs
-│   └── results/              # generated JSON (evaluation.json, demo_output.json)
-├── docs/
-│   ├── member4_architecture.md
-│   ├── member4_limitations.md
-│   └── integration_contract.md
-└── demo_tracking.py
+```powershell
+python -m unittest discover -s backend\tests -p "test_*.py" -v
 ```
 
-## A note on tooling
+`adapters/member2_adapter.py` maps the documented `timestamp` + `storms[]` JSON contract to tracker detections. Current team data provides archived INSAT brightness-temperature samples, not an operational storm detector. The runnable web scenario therefore uses the deterministic synthetic adapter; it does not convert satellite brightness temperatures into live storm detections.
 
-The task brief for this module specified `pytest`. This sandbox has **no
-network access**, so `pip install pytest` fails here
-(`ERROR: No matching distribution found for pytest`). All 48 tests are
-written with Python's built-in `unittest` module instead, using
-pytest-style file/function naming (`test_*.py`), so they will also run
-under `pytest tests/` unmodified on a machine with internet access.
-Similarly, no geospatial library (e.g. `geopy`) is used — `src/storm_tracking/geo.py`
-implements standard haversine/bearing/destination-point formulas directly,
-which keeps the module dependency-free (`requirements.txt` only needs
-`matplotlib`, already used for plotting, since `numpy` isn't strictly
-required by this module).
+**Demo/research only:** motion, confidence, and arrival outputs are baseline estimates without operational validation. Synthetic demo observations and unverified archive data must not be used for safety decisions. See `docs/member4_limitations.md`.
 
-## Status
-
-Baseline implementation complete: matching, motion estimation with
-configurable smoothing, trajectory prediction, arrival-time estimation,
-transparent confidence scoring, merge/split heuristics, input validation,
-an 11-scenario synthetic data generator, a full evaluation framework, 5
-required plots, and a working end-to-end demo. See the final report for
-current metrics and next steps.
+```text
+backend/
+├── app/                    # FastAPI service and archive-backed scenario
+├── adapters/               # Member 2 contract and synthetic fixture adapter
+├── src/storm_tracking/     # Member 4 library
+├── synthetic/              # Reproducible scenario generators
+├── tests/                  # Tracker, archive, API, and dashboard contract tests
+├── evaluation/             # Optional synthetic evaluation and plots
+└── docs/                   # Integration contracts and tracker limitations
+```

@@ -1,28 +1,36 @@
+"""Inspect the top-level datasets and attributes of a supplied INSAT HDF5 file."""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
 import h5py
-import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DIR = os.path.join(BASE_DIR, "raw_insat")
 
-# Pick the first available file from your downloaded collection
-files = [f for f in os.listdir(RAW_DIR) if f.endswith(('.h5', '.hdf'))]
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source_file", type=Path, help="Path to a supplied .h5/.hdf file")
+    args = parser.parse_args()
+    source_path = args.source_file.expanduser().resolve()
+    if not source_path.is_file():
+        parser.error(f"source file does not exist: {source_path}")
 
-if not files:
-    print(" No satellite data files found in your data_pipeline/raw_insat folder.")
-    exit()
+    with h5py.File(source_path, "r") as source:
+        print(f"Datasets in {source_path.name}:")
 
-sample_file = os.path.join(RAW_DIR, files[0])
-print(f" Opening database sample file entry: {files[0]}\n")
+        def report(name: str, value: object) -> None:
+            if isinstance(value, h5py.Dataset):
+                print(f"  {name}: shape={value.shape}, dtype={value.dtype}")
+            elif isinstance(value, h5py.Group):
+                print(f"  {name}/")
 
-with h5py.File(sample_file, 'r') as f:
-    print("---  Root System Data Arrays & Matrices ---")
-    for key in f.keys():
-        try:
-            shape = f[key].shape
-            print(f" Matrix Key: '{key}' | Shape Dimension: {shape} | Data Type: {f[key].dtype}")
-        except AttributeError:
-            print(f" Group/Meta Key: '{key}' (Contains nested sub-datasets)")
+        source.visititems(report)
+        print("Root attributes:")
+        for name, value in source.attrs.items():
+            print(f"  {name}: {value}")
+    return 0
 
-    print("\n---  Checking Internal File Metadata Attributes ---")
-    for attr_name in f.attrs.keys():
-        print(f" Attribute: {attr_name} = {f.attrs[attr_name]}")
+
+if __name__ == "__main__":
+    raise SystemExit(main())

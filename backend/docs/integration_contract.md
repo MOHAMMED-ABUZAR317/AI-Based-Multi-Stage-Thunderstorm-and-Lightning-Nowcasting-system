@@ -1,5 +1,17 @@
 # Integration Contract
 
+## Integrated prototype status
+
+This document describes the Member 4 tracker interface; it does not claim a
+live Member 2 detector or Member 5 nowcast engine is connected. The available
+Member 2 output is an archived INSAT-3DR brightness-temperature CSV, not a
+storm-detection feed. The runnable API uses the synthetic adapter for its
+deterministic demonstration, returns the Member 1/2/3 archives separately as
+dated reference data, and explicitly marks current weather/radar inputs and
+defensible lightning predictions unavailable. Demo lightning percentages
+and risk levels are scripted scenario fields only. Nothing here dispatches
+citizen alerts.
+
 ## From Member 2 (Storm Detection) -> Member 4 (this module)
 
 One JSON object per timestamp:
