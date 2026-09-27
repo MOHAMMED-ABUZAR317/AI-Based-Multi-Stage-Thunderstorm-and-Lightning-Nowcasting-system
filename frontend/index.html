@@ -14,737 +14,765 @@
   <script src="app.js" defer></script>
 </head>
 <body>
-  <!-- Master Mission Control Telemetry Topbar -->
-  <header class="topbar">
-    <div class="brand-container">
-      <div class="brand-emblem" aria-hidden="true">⚡</div>
-      <div class="brand-text">
-        <div class="brand-agency">NDMA · IMD · GHMC DISASTER MANAGEMENT CENTER</div>
-        <h1>AI Thunderstorm Nowcasting Command Center</h1>
-        <div class="brand-location">GREATER HYDERABAD METROPOLITAN REGION (17.14°N - 17.58°N, 78.08°E - 78.62°E)</div>
-      </div>
-    </div>
-    
-    <div class="topbar-telemetry">
-      <div class="telemetry-node">
-        <span class="telemetry-label">UTC CLOCK</span>
-        <span id="telemetry-clock-utc" class="telemetry-value">--:--:-- UTC</span>
-      </div>
-      <div class="telemetry-node">
-        <span class="telemetry-label">IST CLOCK</span>
-        <span id="telemetry-clock-ist" class="telemetry-value">--:--:-- IST</span>
-      </div>
-      <div class="telemetry-node">
-        <span class="telemetry-label">SATELLITE</span>
-        <span class="telemetry-value text-cyan">INSAT-3DR GEO</span>
-      </div>
-      <div class="telemetry-node">
-        <span class="telemetry-label">DOPPLER RADAR</span>
-        <span class="telemetry-value text-emerald">DWR-HYD ACTIVE</span>
-      </div>
-      <div class="live-indicator">
-        <span class="live-dot"></span>
-        <span id="connection-state">DEFCON-1 MONITORING</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Mission Control Navigation Tab Bar -->
-  <nav class="command-nav" role="tablist" aria-label="Mission Operations Navigation">
-    <button class="nav-tab active" data-tab="tab-executive" role="tab" aria-selected="true" aria-controls="tab-executive">
-      <span class="tab-icon">🛰️</span>
-      <span class="tab-title">1. Executive Command Center</span>
-    </button>
-    <button class="nav-tab" data-tab="tab-pipeline" role="tab" aria-selected="false" aria-controls="tab-pipeline">
-      <span class="tab-icon">⚡</span>
-      <span class="tab-title">2. AI Engine Pipeline</span>
-    </button>
-    <button class="nav-tab" data-tab="tab-lifecycle" role="tab" aria-selected="false" aria-controls="tab-lifecycle">
-      <span class="tab-icon">🔄</span>
-      <span class="tab-title">3. Thunderstorm Lifecycle</span>
-    </button>
-    <button class="nav-tab" data-tab="tab-alert" role="tab" aria-selected="false" aria-controls="tab-alert">
-      <span class="tab-icon">📢</span>
-      <span class="tab-title">4. Citizen Alert Center</span>
-    </button>
-    <button class="nav-tab" data-tab="tab-data" role="tab" aria-selected="false" aria-controls="tab-data">
-      <span class="tab-icon">🗄️</span>
-      <span class="tab-title">5. Data &amp; Audit</span>
-    </button>
-  </nav>
-
-  <!-- Prominent Safety Disclaimer Strip (Required by Test Contract) -->
-  <section class="safety-banner" role="note">
-    <div class="safety-tag">
-      <span class="safety-icon">⚠️</span>
-      <strong>DEMO ONLY — NOT AN OPERATIONAL WARNING SERVICE</strong>
-    </div>
-    <span class="safety-notice-copy">
-      Calibrated Convective AI Prototype · Fusing NWP thermodynamic sounding, INSAT-3DR geostationary infrared physics, supervised XGBoost lightning AI, and Doppler cell tracking.
-    </span>
-    <div class="safety-feed-badges">
-      <span class="sensor-chip">M1: 15-YR SOUNDING ECDF</span>
-      <span class="sensor-chip">M2: TIR1/TIR2 BT</span>
-      <span class="sensor-chip">M3: XGBOOST ML</span>
-      <span class="sensor-chip">M4: HAVERSINE KINEMATICS</span>
-      <span class="sensor-chip">M5: FUSED RISK</span>
-    </div>
-  </section>
-
-  <main class="main-content">
+  <div class="app-layout">
     
     <!-- =====================================================================
-         TAB 1: EXECUTIVE COMMAND CENTER (Hero Threat HUD & GIS Map Centerpiece)
+         PERMANENT LEFT SIDEBAR NAVIGATION
          ===================================================================== -->
-    <section id="tab-executive" class="tab-pane active" role="tabpanel">
-      <!-- Dynamic Hero Threat Banner -->
-      <div id="hero-threat-banner" class="hero-threat-banner severity-normal">
-        <div class="threat-banner-icon" id="threat-banner-icon">🛡️</div>
-        <div class="threat-banner-content">
-          <div class="threat-badge-row">
-            <span id="threat-level-badge" class="threat-level-badge">NORMAL</span>
-            <span class="threat-location-tag">GHMC URBAN DEFENSE SECTOR</span>
-          </div>
-          <h2 id="threat-headline" class="threat-headline">Atmospheric Equilibrium — No Convective Hazard Active</h2>
-          <p id="threat-advisory" class="threat-advisory">
-            Thermodynamic sounding parameters within normal baseline. Background radar monitoring active over the Deccan Plateau.
-          </p>
-        </div>
-        <div class="threat-banner-metric">
-          <span class="metric-caption">COMPOSITE RISK</span>
-          <div class="metric-value-row">
-            <span id="hero-risk-score" class="hero-metric-val">12</span>
-            <span class="metric-unit">/100</span>
-          </div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-emblem-mini">⚡</div>
+        <div class="brand-meta">
+          <span class="agency-title">NDMA · IMD · GHMC</span>
+          <span class="system-title">HYDERABAD NOWCAST</span>
         </div>
       </div>
 
-      <!-- Executive KPI Cards Grid -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-label">ARRIVAL COUNTDOWN</span>
-            <span class="kpi-icon">⏱️</span>
-          </div>
-          <div class="kpi-value-row">
-            <span id="kpi-eta-val" class="kpi-val text-cyan">--</span>
-            <span class="kpi-unit">MIN</span>
-          </div>
-          <div class="kpi-desc" id="kpi-eta-desc">Trajectory not intercepting urban core</div>
-        </div>
+      <!-- Navigation Tabs -->
+      <nav class="sidebar-nav" role="tablist" aria-label="Operations Navigation">
+        <button class="nav-item active" data-view="view-command" role="tab" aria-selected="true">
+          <span class="nav-icon">⚡</span>
+          <span class="nav-label">Command Center</span>
+        </button>
+        <button class="nav-item" data-view="view-executive" role="tab" aria-selected="false">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Executive Dashboard</span>
+        </button>
+        <button class="nav-item" data-view="view-prediction" role="tab" aria-selected="false">
+          <span class="nav-icon">🧠</span>
+          <span class="nav-label">Prediction Engine</span>
+        </button>
+        <button class="nav-item" data-view="view-monitoring" role="tab" aria-selected="false">
+          <span class="nav-icon">🛰️</span>
+          <span class="nav-label">Live Monitoring</span>
+        </button>
+        <button class="nav-item" data-view="view-alerts" role="tab" aria-selected="false">
+          <span class="nav-icon">🚨</span>
+          <span class="nav-label">Alert Center</span>
+        </button>
+        <button class="nav-item" data-view="view-impact" role="tab" aria-selected="false">
+          <span class="nav-icon">🗺️</span>
+          <span class="nav-label">Impact &amp; Arrival</span>
+        </button>
+        <button class="nav-item" data-view="view-history" role="tab" aria-selected="false">
+          <span class="nav-icon">📁</span>
+          <span class="nav-label">Historical Events</span>
+        </button>
+        <button class="nav-item" data-view="view-status" role="tab" aria-selected="false">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">System Status</span>
+        </button>
+      </nav>
 
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-label">LIGHTNING PROBABILITY</span>
-            <span class="kpi-icon">⚡</span>
-          </div>
-          <div class="kpi-value-row">
-            <span id="kpi-lightning-val" class="kpi-val text-amber">0</span>
-            <span class="kpi-unit">%</span>
-          </div>
-          <div class="kpi-desc" id="kpi-lightning-desc">XGBoost charge separation likelihood</div>
+      <!-- Dataset Library / Event Scenario Explorer -->
+      <div class="dataset-library">
+        <div class="dataset-header">
+          <span class="dataset-title">DATASET LIBRARY</span>
+          <span class="dataset-sub">Event Scenarios</span>
         </div>
-
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-label">POPULATION AT RISK</span>
-            <span class="kpi-icon">👥</span>
-          </div>
-          <div class="kpi-value-row">
-            <span id="kpi-population-val" class="kpi-val text-primary">0</span>
-            <span class="kpi-unit">CITIZENS</span>
-          </div>
-          <div class="kpi-desc" id="kpi-population-desc">Cumulative target sector density</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span class="kpi-label">CONVECTIVE ENERGY (CAPE)</span>
-            <span class="kpi-icon">🌡️</span>
-          </div>
-          <div class="kpi-value-row">
-            <span id="kpi-cape-val" class="kpi-val text-crimson">450</span>
-            <span class="kpi-unit">J/kg</span>
-          </div>
-          <div class="kpi-desc" id="kpi-cape-desc">Thermodynamic buoyant parcel energy</div>
-        </div>
-      </div>
-
-      <!-- Centerpiece Tactical GIS Radar Canvas -->
-      <div class="tactical-gis-panel">
-        <div class="gis-panel-header">
-          <div class="gis-title-group">
-            <span class="gis-badge">TACTICAL GIS CANVAS</span>
-            <h3>Doppler Radar (DWR-HYD) &amp; GHMC Sector Vulnerability Grid</h3>
-          </div>
-          <div class="gis-controls-telemetry">
-            <span class="gis-coord">CENTER: 17.3850°N, 78.4867°E</span>
-            <span class="gis-range">RANGE: 100 KM POLAR GRID</span>
-            <div class="gis-live-tag">
-              <span class="radar-blip"></span>
-              <span>RADAR SWEEP ACTIVE</span>
+        <div class="dataset-list">
+          <button class="dataset-btn active" data-event="0">
+            <span class="event-indicator">●</span>
+            <div class="event-details">
+              <span class="event-name">Normal Summer Day</span>
+              <span class="event-time">08:00 AM · Baseline</span>
             </div>
-          </div>
-        </div>
-
-        <!-- The Canvas Centerpiece -->
-        <div class="canvas-viewport-wrapper">
-          <canvas id="tactical-radar-canvas" width="1100" height="540"></canvas>
-          <div class="radar-legend-overlay">
-            <div class="legend-item"><span class="legend-dot dot-cell"></span> Storm Centroid Core</div>
-            <div class="legend-item"><span class="legend-dot dot-track"></span> Extrapolated Vector</div>
-            <div class="legend-item"><span class="legend-dot dot-cone"></span> Uncertainty Impact Cone</div>
-            <div class="legend-item"><span class="legend-dot dot-sector"></span> GHMC Administrative Wards</div>
-          </div>
-        </div>
-
-        <!-- Integrated Quick Controller Strip Below Map -->
-        <div class="map-quick-toolbar">
-          <div class="quick-status">
-            <span class="quick-label">ACTIVE SCENARIO:</span>
-            <span id="quick-scenario-name" class="quick-value">Stage 0: Pre-Convective Inflow</span>
-          </div>
-          <div class="quick-actions">
-            <button id="quick-btn-prev" class="action-btn">◀ PREV STAGE</button>
-            <button id="quick-btn-play" class="action-btn btn-primary">▶ RUN SIMULATION</button>
-            <button id="quick-btn-next" class="action-btn">NEXT STAGE ▶</button>
-            <button id="quick-btn-reset" class="action-btn">↺ RESET BASELINE</button>
-          </div>
-        </div>
-
-        <!-- Target Sectors Vulnerability Chips -->
-        <div class="sector-threat-strip">
-          <span class="sector-strip-label">TARGET SECTORS UNDER MONITORING:</span>
-          <div id="target-sectors-container" class="sector-chips-row">
-            <span class="sector-chip status-normal">Serilingampally (0.95M)</span>
-            <span class="sector-chip status-normal">Kukatpally (0.85M)</span>
-            <span class="sector-chip status-normal">Charminar (0.78M)</span>
-            <span class="sector-chip status-normal">Khairatabad (0.72M)</span>
-            <span class="sector-chip status-normal">Secunderabad (0.68M)</span>
-            <span class="sector-chip status-normal">LB Nagar (0.82M)</span>
-          </div>
+          </button>
+          <button class="dataset-btn" data-event="1">
+            <span class="event-indicator">●</span>
+            <div class="event-details">
+              <span class="event-name">Developing Thunderstorm</span>
+              <span class="event-time">08:15 AM · Cloud Growth</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-event="2">
+            <span class="event-indicator">●</span>
+            <div class="event-details">
+              <span class="event-name">Rapid Intensification</span>
+              <span class="event-time">08:30 AM · Glaciation</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-event="3">
+            <span class="event-indicator text-amber">●</span>
+            <div class="event-details">
+              <span class="event-name">Severe Lightning Event</span>
+              <span class="event-time">08:45 AM · Strike Surge</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-event="4">
+            <span class="event-indicator text-crimson">●</span>
+            <div class="event-details">
+              <span class="event-name">Urban Flash Flood Risk</span>
+              <span class="event-time">09:00 AM · City Impact</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-event="5">
+            <span class="event-indicator text-crimson">●</span>
+            <div class="event-details">
+              <span class="event-name">Extreme Convective Outbreak</span>
+              <span class="event-time">09:15 AM · Peak Storm</span>
+            </div>
+          </button>
         </div>
       </div>
-    </section>
 
+      <!-- Sidebar Footer Telemetry -->
+      <div class="sidebar-footer">
+        <div class="conn-badge">
+          <span class="conn-dot"></span>
+          <span>DEFCON-1 ONLINE</span>
+        </div>
+        <span class="license-tag">DEMO ONLY · RESEARCH &amp; DEFENSE SYSTEM</span>
+      </div>
+    </aside>
 
     <!-- =====================================================================
-         TAB 2: AI ENGINE PIPELINE (Visual Architecture & Explainability)
+         MAIN COMMAND WORKSPACE
          ===================================================================== -->
-    <section id="tab-pipeline" class="tab-pane" role="tabpanel">
-      <div class="section-intro">
-        <span class="section-badge">PIPELINE ARCHITECTURE</span>
-        <h2>Multi-Stage Convective Early Warning Engine</h2>
-        <p>
-          Unlike pure black-box models, this platform combines thermodynamic parcel physics, satellite cloud glaciation, supervised XGBoost charge prediction, and Doppler radar kinematics into an explainable, auditable decision matrix.
-        </p>
-      </div>
-
-      <!-- Animated Pipeline Flow Nodes -->
-      <div class="pipeline-flow-diagram">
-        <div class="flow-step">
-          <div class="step-circle step-env">0</div>
-          <div class="step-info">
-            <span class="step-name">Atmosphere</span>
-            <span class="step-sub">Sounding &amp; Surface</span>
+    <div class="main-workspace">
+      
+      <!-- Top Operations Telemetry Header -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="platform-meta">
+            <h1>AI-Powered Thunderstorm Monitoring Platform</h1>
+            <p class="platform-subtitle">
+              Real-time weather intelligence using Atmospheric Conditions · Satellite Observations · Lightning Forecasting · Radar Tracking · Risk Assessment
+            </p>
           </div>
         </div>
-        <div class="flow-arrow">➔</div>
+
+        <div class="topbar-right">
+          <div class="telemetry-node">
+            <span class="t-lbl">UTC TIME</span>
+            <span id="clock-utc" class="t-val">--:--:--</span>
+          </div>
+          <div class="telemetry-node">
+            <span class="t-lbl">IST TIME</span>
+            <span id="clock-ist" class="t-val">--:--:--</span>
+          </div>
+          <div class="telemetry-node">
+            <span class="t-lbl">RADAR STATION</span>
+            <span class="t-val text-emerald">DWR-HYD ACTIVE</span>
+          </div>
+          <div class="telemetry-node">
+            <span class="t-lbl">SATELLITE</span>
+            <span class="t-val text-cyan">INSAT-3DR GEO</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <main class="content-body">
         
-        <div class="flow-step">
-          <div class="step-circle step-m1">1</div>
-          <div class="step-info">
-            <span class="step-name">Member 1</span>
-            <span class="step-sub">Thermodynamics</span>
-          </div>
-        </div>
-        <div class="flow-arrow">➔</div>
-
-        <div class="flow-step">
-          <div class="step-circle step-m2">2</div>
-          <div class="step-info">
-            <span class="step-name">Member 2</span>
-            <span class="step-sub">INSAT-3DR Satellite</span>
-          </div>
-        </div>
-        <div class="flow-arrow">➔</div>
-
-        <div class="flow-step">
-          <div class="step-circle step-m3">3</div>
-          <div class="step-info">
-            <span class="step-name">Member 3</span>
-            <span class="step-sub">XGBoost Lightning</span>
-          </div>
-        </div>
-        <div class="flow-arrow">➔</div>
-
-        <div class="flow-step">
-          <div class="step-circle step-m4">4</div>
-          <div class="step-info">
-            <span class="step-name">Member 4</span>
-            <span class="step-sub">Doppler Tracking</span>
-          </div>
-        </div>
-        <div class="flow-arrow">➔</div>
-
-        <div class="flow-step">
-          <div class="step-circle step-m5">5</div>
-          <div class="step-info">
-            <span class="step-name">Member 5</span>
-            <span class="step-sub">Fusion Decision</span>
-          </div>
-        </div>
-        <div class="flow-arrow">➔</div>
-
-        <div class="flow-step">
-          <div class="step-circle step-m6">6</div>
-          <div class="step-info">
-            <span class="step-name">Member 6</span>
-            <span class="step-sub">Citizen Warning</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Member Engine Detail Cards (Clear, Operational, Non-Cluttered) -->
-      <div class="pipeline-cards-grid">
-        <!-- Card 1 -->
-        <div class="engine-card">
-          <div class="engine-header">
-            <span class="engine-tag tag-m1">MEMBER 1</span>
-            <h4>Weather Instability Engine</h4>
-          </div>
-          <p class="engine-purpose">
-            Evaluates vertical buoyant acceleration and atmospheric moisture availability over the Deccan Plateau using 15-year empirical distribution functions.
-          </p>
-          <div class="engine-metrics-box">
-            <div class="metric-row">
-              <span class="lbl">CAPE (Buoyancy):</span>
-              <span id="pipe-cape" class="val text-cyan">-- J/kg</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Relative Humidity:</span>
-              <span id="pipe-humidity" class="val">-- %</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Instability Assessment:</span>
-              <span id="pipe-instability-badge" class="val-badge">NORMAL</span>
-            </div>
-          </div>
-          <div class="engine-footer">
-            <span class="formula-caption">CAPE = ∫ g (Tv,parcel - Tv,env) / Tv,env dz</span>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="engine-card">
-          <div class="engine-header">
-            <span class="engine-tag tag-m2">MEMBER 2</span>
-            <h4>Satellite Storm Evolution</h4>
-          </div>
-          <p class="engine-purpose">
-            Measures geostationary Thermal Infrared (TIR1/TIR2) cloud top temperature and rapid cooling rates to detect homogeneous freezing and updraft intensification.
-          </p>
-          <div class="engine-metrics-box">
-            <div class="metric-row">
-              <span class="lbl">Cloud Top Temperature:</span>
-              <span id="pipe-ctt" class="val text-cyan">-- °C</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Updraft Cooling Rate:</span>
-              <span id="pipe-cooling" class="val text-amber">-- °C/hr</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Convective Shield Growth:</span>
-              <span id="pipe-growth-badge" class="val-badge">QUIESCENT</span>
-            </div>
-          </div>
-          <div class="engine-footer">
-            <span class="formula-caption">Rapid Glaciation: Cooling ≤ -10°C/hr at CTT &lt; -40°C</span>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="engine-card">
-          <div class="engine-header">
-            <span class="engine-tag tag-m3">MEMBER 3</span>
-            <h4>AI Lightning Hazard Model</h4>
-          </div>
-          <p class="engine-purpose">
-            Gradient-boosted decision trees (XGBoost) trained on non-inductive charge separation features (graupel-ice collision dynamics) to output calibrated strike probability.
-          </p>
-          <div class="engine-metrics-box">
-            <div class="metric-row">
-              <span class="lbl">Lightning Probability:</span>
-              <span id="pipe-lightning-prob" class="val text-crimson">-- %</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Hazard Classification:</span>
-              <span id="pipe-lightning-band" class="val-badge">LOW</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Model Architecture:</span>
-              <span class="val">Supervised XGBoost Classifier</span>
-            </div>
-          </div>
-          <div class="engine-footer">
-            <span class="formula-caption">Validated on Historical Monsoon Flash Density Datasets</span>
-          </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="engine-card">
-          <div class="engine-header">
-            <span class="engine-tag tag-m4">MEMBER 4</span>
-            <h4>Radar Storm Tracking &amp; Kinematics</h4>
-          </div>
-          <p class="engine-purpose">
-            Applies spherical Haversine geodesy and vector kinematics to radar reflectivity centroids, extrapolating velocity vectors and calculating GHMC ward arrival times.
-          </p>
-          <div class="engine-metrics-box">
-            <div class="metric-row">
-              <span class="lbl">Translation Velocity:</span>
-              <span id="pipe-tracking-speed" class="val text-cyan">-- km/h</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Heading Direction:</span>
-              <span id="pipe-tracking-dir" class="val">--</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Urban Center ETA:</span>
-              <span id="pipe-tracking-eta" class="val-badge">-- MIN</span>
-            </div>
-          </div>
-          <div class="engine-footer">
-            <span class="formula-caption">Haversine Geodesy &amp; Cross-Track Sector Interception</span>
-          </div>
-        </div>
-
-        <!-- Card 5 -->
-        <div class="engine-card">
-          <div class="engine-header">
-            <span class="engine-tag tag-m5">MEMBER 5</span>
-            <h4>Multi-Stage Nowcast Fusion Engine</h4>
-          </div>
-          <p class="engine-purpose">
-            Multi-criteria weighted decision engine fusing Member 1–4 outputs into a calibrated composite threat score (0–100) and triggering civil defense warnings.
-          </p>
-          <div class="engine-metrics-box">
-            <div class="metric-row">
-              <span class="lbl">Composite Risk Score:</span>
-              <span id="pipe-fusion-score" class="val text-crimson">-- /100</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Warning Threshold:</span>
-              <span id="pipe-fusion-level" class="val-badge">NORMAL</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Alert Trigger Decision:</span>
-              <span id="pipe-fusion-alert" class="val text-amber">STANDBY</span>
-            </div>
-          </div>
-          <div class="engine-footer">
-            <span class="formula-caption">Risk = 0.20·M1 + 0.25·M2 + 0.30·M3 + 0.25·M4</span>
-          </div>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="engine-card">
-          <div class="engine-header">
-            <span class="engine-tag tag-m6">MEMBER 6</span>
-            <h4>Civil Defense &amp; Dissemination</h4>
-          </div>
-          <p class="engine-purpose">
-            Formats official bilingual warning broadcasts (English &amp; Telugu) for telecommunications cell broadcast, street sirens, and records telemetry to persistent storage.
-          </p>
-          <div class="engine-metrics-box">
-            <div class="metric-row">
-              <span class="lbl">Dissemination Status:</span>
-              <span id="pipe-dispatch-status" class="val text-emerald">READY</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Active Channels:</span>
-              <span class="val">SMS · SIRENS · PUSH · VHF</span>
-            </div>
-            <div class="metric-row">
-              <span class="lbl">Database Audit Log:</span>
-              <span class="val text-cyan">SQLAlchemy SQLite / Postgres</span>
-            </div>
-          </div>
-          <div class="engine-footer">
-            <span class="formula-caption">Standardized Common Alerting Protocol (CAP) Architecture</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- =====================================================================
-         TAB 3: THUNDERSTORM LIFECYCLE (Interactive 7-Stage Progression)
-         ===================================================================== -->
-    <section id="tab-lifecycle" class="tab-pane" role="tabpanel">
-      <div class="section-intro">
-        <span class="section-badge">CONVECTIVE EVOLUTION</span>
-        <h2>7-Stage Thunderstorm Lifecycle Controller</h2>
-        <p>
-          Observe how the platform transitions through every stage of severe convective storm initiation, intensification, severe impact, and dissipation over Greater Hyderabad.
-        </p>
-      </div>
-
-      <!-- Stage Stepper Timeline -->
-      <div class="stage-stepper-container">
-        <div class="stepper-progress-bar">
-          <div id="stepper-progress-fill" class="stepper-progress-fill" style="width: 14%;"></div>
-        </div>
-        <div class="stepper-buttons-row">
-          <button class="step-node active" data-step="0">
-            <span class="node-idx">0</span>
-            <span class="node-title">Inflow</span>
-          </button>
-          <button class="step-node" data-step="1">
-            <span class="node-idx">1</span>
-            <span class="node-title">Congestus</span>
-          </button>
-          <button class="step-node" data-step="2">
-            <span class="node-idx">2</span>
-            <span class="node-title">Glaciation</span>
-          </button>
-          <button class="step-node" data-step="3">
-            <span class="node-idx">3</span>
-            <span class="node-title">Lightning Surge</span>
-          </button>
-          <button class="step-node" data-step="4">
-            <span class="node-idx">4</span>
-            <span class="node-title">Severe Impact</span>
-          </button>
-          <button class="step-node" data-step="5">
-            <span class="node-idx">5</span>
-            <span class="node-title">Peak Storm</span>
-          </button>
-          <button class="step-node" data-step="6">
-            <span class="node-idx">6</span>
-            <span class="node-title">Dissipation</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Active Stage Detailed Card -->
-      <div class="active-stage-card">
-        <div class="stage-card-header">
-          <div class="stage-card-title-group">
-            <span id="lifecycle-phase-tag" class="stage-phase-tag">PHASE 0: PRE-CONVECTIVE</span>
-            <h3 id="lifecycle-stage-title">Stage 0: Pre-Convective Inflow</h3>
-          </div>
-          <div class="stage-card-actions">
-            <button id="lifecycle-prev-btn" class="action-btn">◀ PREV</button>
-            <button id="lifecycle-play-btn" class="action-btn btn-primary">▶ AUTO PLAY</button>
-            <button id="lifecycle-next-btn" class="action-btn">NEXT ▶</button>
-          </div>
-        </div>
-
-        <p id="lifecycle-stage-desc" class="stage-card-description">
-          Solar heating warms boundary layer; moisture advection from Bay of Bengal increases surface dewpoints. Stable capping inversion persists.
-        </p>
-
-        <!-- Comparative Metrics at this stage -->
-        <div class="stage-telemetry-grid">
-          <div class="stage-metric-box">
-            <span class="box-label">INSTABILITY (CAPE)</span>
-            <span id="stage-m1-val" class="box-val text-cyan">450 J/kg</span>
-            <span class="box-sub">Thermodynamics</span>
-          </div>
-          <div class="stage-metric-box">
-            <span class="box-label">CLOUD TOP TEMP</span>
-            <span id="stage-m2-val" class="box-val text-cyan">-10°C</span>
-            <span class="box-sub">INSAT-3DR TIR</span>
-          </div>
-          <div class="stage-metric-box">
-            <span class="box-label">LIGHTNING PROB</span>
-            <span id="stage-m3-val" class="box-val text-amber">0%</span>
-            <span class="box-sub">XGBoost ML</span>
-          </div>
-          <div class="stage-metric-box">
-            <span class="box-label">RADAR TRACK SPEED</span>
-            <span id="stage-m4-val" class="box-val text-cyan">0 km/h</span>
-            <span class="box-sub">Doppler Kinematics</span>
-          </div>
-          <div class="stage-metric-box">
-            <span class="box-label">FUSED RISK SCORE</span>
-            <span id="stage-m5-val" class="box-val text-emerald">12 / 100</span>
-            <span class="box-sub">Composite Level</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- =====================================================================
-         TAB 4: CITIZEN ALERT CENTER (Bilingual Broadcast & Workflow)
-         ===================================================================== -->
-    <section id="tab-alert" class="tab-pane" role="tabpanel">
-      <div class="section-intro">
-        <span class="section-badge">CIVIL DEFENSE TERMINAL</span>
-        <h2>Citizen Alert &amp; Warning Dissemination Center</h2>
-        <p>
-          Automated bilingual disaster broadcast engine formatting official early warnings in English and Telugu for GHMC citizens, municipal authorities, and emergency response teams.
-        </p>
-      </div>
-
-      <div class="alert-center-layout">
-        <!-- Dual Language Alert Cards -->
-        <div class="alert-cards-column">
-          <!-- English Broadcast Card -->
-          <div class="alert-panel alert-en">
-            <div class="alert-panel-header">
-              <span class="lang-flag">🇬🇧</span>
-              <h4>OFFICIAL CIVIL DEFENSE WARNING (ENGLISH)</h4>
-              <span id="alert-en-badge" class="alert-status-badge badge-normal">STANDBY</span>
-            </div>
-            <h3 id="alert-en-title" class="alert-title">Normal Weather Conditions — Hyderabad</h3>
-            <p id="alert-en-body" class="alert-body">
-              No severe convective storm or lightning hazard active across the Greater Hyderabad Municipal Corporation region. Normal civil activities may proceed.
-            </p>
-            <div class="alert-footer">
-              <span class="alert-timestamp" id="alert-en-timestamp">BROADCAST UTC: --:--:--</span>
-              <span class="alert-target-sectors" id="alert-en-sectors">ZONES: ALL MONITORING SECTORS</span>
-            </div>
-          </div>
-
-          <!-- Telugu Broadcast Card (తెలుగు హెచ్చరిక) -->
-          <div class="alert-panel alert-te">
-            <div class="alert-panel-header">
-              <span class="lang-flag">🇮🇳</span>
-              <h4>అధికారిక విపత్తు నిర్వహణ హెచ్చరిక (తెలుగు)</h4>
-              <span id="alert-te-badge" class="alert-status-badge badge-normal">సాధారణం</span>
-            </div>
-            <h3 id="alert-te-title" class="alert-title-te">హైదరాబాద్ నగర వాతావరణ సమాచారం</h3>
-            <p id="alert-te-body" class="alert-body-te">
-              ప్రస్తుతం హైదరాబాద్ జిహెచ్ఎంసి పరిధిలో ఎటువంటి ఉరుములు, మెరుపుల లేదా బలమైన ఈదురు గాలుల ముప్పు లేదు. పౌరులు సాధారణ కార్యకలాపాలు కొనసాగించవచ్చు.
-            </p>
-            <div class="alert-footer">
-              <span class="alert-timestamp">జారీ చేసిన సమయం: తక్షణ ప్రత్యక్ష ప్రసారం</span>
-              <span class="alert-target-sectors">రక్షిత ప్రాంతాలు: సమగ్ర నగర పర్యవేక్షణ</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dissemination Workflow & Dispatch Panel -->
-        <div class="dissemination-column">
-          <div class="dissemination-card">
-            <h4>Dissemination Channel Status</h4>
-            <div class="channel-status-list">
-              <div class="channel-row">
-                <span class="channel-name">📱 Emergency Cell Broadcast (SMS)</span>
-                <span class="channel-state state-ready">STANDBY</span>
+        <!-- =================================================================
+             1. COMMAND CENTER VIEW (Tactical Map Centerpiece & Live Telemetry)
+             ================================================================= -->
+        <section id="view-command" class="view-pane active">
+          
+          <!-- Hero Threat Banner -->
+          <div id="hero-threat-banner" class="hero-threat-banner severity-normal">
+            <div class="banner-left">
+              <div class="banner-status-chip">
+                <span id="threat-level-badge" class="level-badge">NORMAL</span>
+                <span id="banner-timestamp" class="time-tag">CURRENT EVENT TIME: 08:00 AM</span>
               </div>
-              <div class="channel-row">
-                <span class="channel-name">🚨 Municipal Urban Siren System</span>
-                <span class="channel-state state-ready">ARMED</span>
-              </div>
-              <div class="channel-row">
-                <span class="channel-name">📲 NDMA Sachet / Push Notification</span>
-                <span class="channel-state state-ready">CONNECTED</span>
-              </div>
-              <div class="channel-row">
-                <span class="channel-name">📻 Civil Defense Emergency VHF Radio</span>
-                <span class="channel-state state-ready">STREAMING</span>
-              </div>
-            </div>
-
-            <!-- Manual Emergency Alert Simulation Broadcast -->
-            <div class="dispatch-action-box">
-              <p class="dispatch-notice">
-                Simulate emergency broadcast dispatch to connected municipal channels and record to persistent audit database.
+              <h2 id="threat-headline" class="banner-headline">Atmospheric Equilibrium — No Threat Active</h2>
+              <p id="threat-advisory" class="banner-advisory">
+                Thermodynamic parameters remain below initiation thresholds. Background monitoring active across the Greater Hyderabad Metropolitan Region.
               </p>
-              <button id="btn-broadcast-alert" class="action-btn btn-danger">
-                📢 SIMULATE EMERGENCY BROADCAST
-              </button>
-              <div id="dispatch-feedback" class="dispatch-feedback"></div>
+            </div>
+            <div class="banner-right">
+              <span class="threat-score-caption">COMPOSITE THREAT SCORE</span>
+              <div class="threat-score-display">
+                <span id="hero-threat-score" class="score-number">12</span>
+                <span class="score-denom">/100</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
 
+          <!-- Quick Metrics Bar -->
+          <div class="quick-kpi-row">
+            <div class="q-kpi-card">
+              <span class="q-lbl">NEAREST IMPACT ETA</span>
+              <span id="kpi-eta" class="q-val text-cyan">-- MIN</span>
+              <span id="kpi-eta-sub" class="q-sub">Cell tracking outside urban bounds</span>
+            </div>
+            <div class="q-kpi-card">
+              <span class="q-lbl">LIGHTNING PROBABILITY</span>
+              <span id="kpi-lightning" class="q-val text-amber">0%</span>
+              <span id="kpi-lightning-sub" class="q-sub">Electrical charge separation</span>
+            </div>
+            <div class="q-kpi-card">
+              <span class="q-lbl">POPULATION EXPOSED</span>
+              <span id="kpi-population" class="q-val text-primary">0</span>
+              <span id="kpi-population-sub" class="q-sub">Citizens in active impact sectors</span>
+            </div>
+            <div class="q-kpi-card">
+              <span class="q-lbl">ATMOSPHERIC ENERGY</span>
+              <span id="kpi-cape" class="q-val text-crimson">450 J/kg</span>
+              <span id="kpi-cape-sub" class="q-sub">Convective Available Potential Energy</span>
+            </div>
+          </div>
 
-    <!-- =====================================================================
-         TAB 5: DATA & AUDIT (Database Logs, Telemetry & System Health)
-         ===================================================================== -->
-    <section id="tab-data" class="tab-pane" role="tabpanel">
-      <div class="section-intro">
-        <span class="section-badge">AUDIT REPOSITORY</span>
-        <h2>System Telemetry &amp; Database Audit Records</h2>
-        <p>
-          Immutable nowcast execution logs persisted to SQLite / PostgreSQL database through SQLAlchemy ORM for post-event meteorological forensic review and accountability.
-        </p>
-      </div>
+          <!-- Tactical GIS Radar Canvas Centerpiece -->
+          <div class="gis-container">
+            <div class="gis-header">
+              <div class="gis-title">
+                <span class="gis-badge">TACTICAL GIS RADAR CANVAS</span>
+                <h3>Hyderabad Metropolitan Radar Scope &amp; Ward Vulnerability</h3>
+              </div>
+              <div class="gis-telemetry">
+                <span>BEGUMPET RADAR: 17.3850°N, 78.4867°E</span>
+                <span>RANGE: 100 KM POLAR GRID</span>
+                <span class="radar-live-indicator"><span class="blip"></span> RADAR SWEEP 60 FPS</span>
+              </div>
+            </div>
 
-      <!-- System Health Diagnostics -->
-      <div class="diagnostics-grid">
-        <div class="diag-card">
-          <span class="diag-lbl">DATABASE ENGINE</span>
-          <span class="diag-val text-cyan">SQLAlchemy SQLite / PostgreSQL</span>
-          <span class="diag-sub">Table: nowcast_runs &amp; alert_logs</span>
-        </div>
-        <div class="diag-card">
-          <span class="diag-lbl">API GATEWAY</span>
-          <span class="diag-val text-emerald">FastAPI 2.0.0 High-Performance</span>
-          <span class="diag-sub">REST Endpoints: 15 Active Routes</span>
-        </div>
-        <div class="diag-card">
-          <span class="diag-lbl">INFERENCE LATENCY</span>
-          <span class="diag-val text-cyan">&lt; 15 ms</span>
-          <span class="diag-sub">Sub-Second UI &amp; Dispatch Response</span>
-        </div>
-        <div class="diag-card">
-          <span class="diag-lbl">TOTAL LOGGED RUNS</span>
-          <span id="audit-total-count" class="diag-val text-primary">--</span>
-          <span class="diag-sub">Persistent Telemetry Snapshots</span>
-        </div>
-      </div>
+            <!-- Canvas Viewport -->
+            <div class="canvas-viewport">
+              <canvas id="tactical-radar-canvas" width="1120" height="520"></canvas>
+              <div class="radar-legend">
+                <div class="legend-entry"><span class="dot dot-cell"></span> Storm Cell Centroid</div>
+                <div class="legend-entry"><span class="dot dot-vector"></span> Projected Trajectory</div>
+                <div class="legend-entry"><span class="dot dot-cone"></span> Uncertainty Impact Cone</div>
+                <div class="legend-entry"><span class="dot dot-ward"></span> GHMC Municipal Wards</div>
+              </div>
+            </div>
 
-      <!-- Live Database Table -->
-      <div class="database-table-panel">
-        <div class="table-header-row">
-          <h3>Recent Nowcast Execution Telemetry</h3>
-          <button id="btn-refresh-history" class="action-btn">🔄 REFRESH DATABASE</button>
-        </div>
-        <div class="table-scroll-container">
-          <table class="telemetry-table">
-            <thead>
-              <tr>
-                <th>RUN ID</th>
-                <th>TIMESTAMP (UTC)</th>
-                <th>STAGE</th>
-                <th>THREAT LEVEL</th>
-                <th>RISK SCORE</th>
-                <th>LIGHTNING %</th>
-                <th>CAPE (J/kg)</th>
-                <th>CTT (°C)</th>
-                <th>ALERT DISPATCH</th>
-              </tr>
-            </thead>
-            <tbody id="telemetry-table-body">
-              <tr>
-                <td colspan="9" class="table-loading">Querying database records...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+            <!-- Map Controls & Timeline Controller -->
+            <div class="gis-controls">
+              <div class="timeline-stepper">
+                <span class="stepper-label">TIMELINE PROGRESSION:</span>
+                <div class="timeline-buttons">
+                  <button id="btn-timeline-prev" class="btn-ctrl">◀ EARLIER</button>
+                  <button id="btn-timeline-play" class="btn-ctrl btn-play">▶ AUTO SIMULATION</button>
+                  <button id="btn-timeline-next" class="btn-ctrl">LATER ▶</button>
+                  <button id="btn-timeline-reset" class="btn-ctrl">↺ RESET</button>
+                </div>
+              </div>
 
-  </main>
+              <!-- Active Wards Status Strip -->
+              <div class="wards-strip">
+                <span class="wards-label">TARGET GHMC WARDS:</span>
+                <div id="wards-container" class="wards-row">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-  <!-- Command Center Global Footer -->
-  <footer class="command-footer">
-    <div class="footer-left">
-      <span>AI-BASED THUNDERSTORM &amp; LIGHTNING NOWCASTING PLATFORM · HYDERABAD</span>
-      <span class="footer-dot">·</span>
-      <span>NATIONAL SMART INDIA HACKATHON MISSION</span>
+        <!-- =================================================================
+             2. EXECUTIVE DASHBOARD VIEW
+             ================================================================= -->
+        <section id="view-executive" class="view-pane">
+          <div class="section-title">
+            <span class="badge-accent">EXECUTIVE OVERVIEW</span>
+            <h2>Disaster Management Incident Commander Summary</h2>
+            <p>High-level situational awareness for GHMC commissioners, emergency coordinators, and response commanders.</p>
+          </div>
+
+          <!-- 6 Large KPI Cards -->
+          <div class="exec-kpi-grid">
+            <div class="exec-card">
+              <span class="exec-label">OVERALL THREAT SCORE</span>
+              <div class="exec-num-wrap">
+                <span id="exec-score" class="exec-num text-primary">12</span>
+                <span class="exec-unit">/100</span>
+              </div>
+              <div class="progress-track"><div id="exec-score-bar" class="progress-bar" style="width: 12%;"></div></div>
+              <span class="exec-sub">Weighted multi-criteria physical risk score</span>
+            </div>
+
+            <div class="exec-card">
+              <span class="exec-label">CURRENT RISK LEVEL</span>
+              <span id="exec-risk-level" class="exec-badge badge-normal">NORMAL</span>
+              <span id="exec-risk-desc" class="exec-sub">Baseline conditions; no evacuation required</span>
+            </div>
+
+            <div class="exec-card">
+              <span class="exec-label">LIGHTNING PROBABILITY</span>
+              <div class="exec-num-wrap">
+                <span id="exec-lightning" class="exec-num text-amber">0</span>
+                <span class="exec-unit">%</span>
+              </div>
+              <div class="progress-track"><div id="exec-lightning-bar" class="progress-bar bar-amber" style="width: 0%;"></div></div>
+              <span class="exec-sub">AI strike likelihood in next 45 minutes</span>
+            </div>
+
+            <div class="exec-card">
+              <span class="exec-label">NEAREST IMPACT ETA</span>
+              <div class="exec-num-wrap">
+                <span id="exec-eta" class="exec-num text-cyan">--</span>
+                <span class="exec-unit">MIN</span>
+              </div>
+              <span id="exec-eta-sub" class="exec-sub">Countdown to urban core boundary arrival</span>
+            </div>
+
+            <div class="exec-card">
+              <span class="exec-label">AFFECTED REGIONS</span>
+              <span id="exec-regions" class="exec-num-text text-primary">0 Wards</span>
+              <span id="exec-regions-sub" class="exec-sub">Serilingampally, Kukatpally, HITEC City</span>
+            </div>
+
+            <div class="exec-card">
+              <span class="exec-label">ACTIVE EMERGENCY ALERTS</span>
+              <span id="exec-alerts" class="exec-num-text text-emerald">STANDBY (0)</span>
+              <span class="exec-sub">Civil sirens, push alerts, and SMS broadcasts</span>
+            </div>
+          </div>
+
+          <!-- How The Prediction Works Simplified Guide -->
+          <div class="how-it-works-panel">
+            <h3>How The Prediction Works</h3>
+            <div class="steps-flow">
+              <div class="flow-item">
+                <div class="step-num">1</div>
+                <div class="step-icon">🌡️</div>
+                <h4>Weather Analyzed</h4>
+                <p>Ground stations measure temperature, humidity, and rising warm air energy.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">2</div>
+                <div class="step-icon">🛰️</div>
+                <h4>Satellite Tracking</h4>
+                <p>Space sensors track rapid cloud freezing and vertical growth speed.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">3</div>
+                <div class="step-icon">⚡</div>
+                <h4>Lightning AI</h4>
+                <p>Machine learning estimates strike probability from ice collision dynamics.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">4</div>
+                <div class="step-icon">📡</div>
+                <h4>Radar Movement</h4>
+                <p>Doppler radar calculates storm speed, direction, and city arrival times.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">5</div>
+                <div class="step-icon">🧠</div>
+                <h4>Risk Calculated</h4>
+                <p>All measurements fuse into a single composite threat score.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">6</div>
+                <div class="step-icon">🚨</div>
+                <h4>Alerts Broadcast</h4>
+                <p>Citizens receive immediate bilingual alerts before severe impact.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             3. PREDICTION ENGINE VIEW
+             ================================================================= -->
+        <section id="view-prediction" class="view-pane">
+          <div class="section-title">
+            <span class="badge-accent">PREDICTION INPUTS &amp; EXPLAINABILITY</span>
+            <h2>Atmospheric &amp; Kinematic Threat Matrix</h2>
+            <p>Every prediction input, current measured value, operational status, and contribution to the final risk score.</p>
+          </div>
+
+          <!-- 12 Prediction Input Cards -->
+          <div class="prediction-grid">
+            
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">🌧️ Rainfall Rate</span>
+                <span id="pred-rain-status" class="pred-status status-ok">NORMAL</span>
+              </div>
+              <div class="pred-val" id="pred-rain-val">0.0 mm/hr</div>
+              <div class="pred-contrib">Contributes <span id="pred-rain-contrib">4%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">🌡️ Surface Temperature</span>
+                <span id="pred-temp-status" class="pred-status status-ok">WARM</span>
+              </div>
+              <div class="pred-val" id="pred-temp-val">26.6 °C</div>
+              <div class="pred-contrib">Contributes <span id="pred-temp-contrib">6%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">💧 Relative Humidity</span>
+                <span id="pred-hum-status" class="pred-status status-ok">NORMAL</span>
+              </div>
+              <div class="pred-val" id="pred-hum-val">82%</div>
+              <div class="pred-contrib">Contributes <span id="pred-hum-contrib">12%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">🌬️ Wind Shear (0-6 km)</span>
+                <span id="pred-shear-status" class="pred-status status-ok">MODERATE</span>
+              </div>
+              <div class="pred-val" id="pred-shear-val">25.7 m/s</div>
+              <div class="pred-contrib">Contributes <span id="pred-shear-contrib">8%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">☁️ Cloud Development</span>
+                <span id="pred-cloud-status" class="pred-status status-ok">QUIESCENT</span>
+              </div>
+              <div class="pred-val" id="pred-cloud-val">350 km²</div>
+              <div class="pred-contrib">Contributes <span id="pred-cloud-contrib">10%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">🛰️ Satellite Cloud Top Temp</span>
+                <span id="pred-sat-status" class="pred-status status-ok">WARM</span>
+              </div>
+              <div class="pred-val" id="pred-sat-val">-10.0 °C</div>
+              <div class="pred-contrib">Contributes <span id="pred-sat-contrib">15%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">⚡ Lightning Probability</span>
+                <span id="pred-light-status" class="pred-status status-ok">LOW</span>
+              </div>
+              <div class="pred-val" id="pred-light-val">0%</div>
+              <div class="pred-contrib">Contributes <span id="pred-light-contrib">30%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">📡 Radar Reflectivity</span>
+                <span id="pred-radar-status" class="pred-status status-ok">CLEAR</span>
+              </div>
+              <div class="pred-val" id="pred-radar-val">15 dBZ</div>
+              <div class="pred-contrib">Contributes <span id="pred-radar-contrib">5%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">📍 Storm Cell Distance</span>
+                <span id="pred-dist-status" class="pred-status status-ok">FAR</span>
+              </div>
+              <div class="pred-val" id="pred-dist-val">48 km</div>
+              <div class="pred-contrib">Contributes <span id="pred-dist-contrib">10%</span> to overall threat score</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">🧭 Storm Heading Direction</span>
+                <span id="pred-dir-status" class="pred-status status-ok">N/A</span>
+              </div>
+              <div class="pred-val" id="pred-dir-val">NE (45°)</div>
+              <div class="pred-contrib">Heading toward Greater Hyderabad</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">⏱️ Estimated Urban Arrival</span>
+                <span id="pred-eta-status" class="pred-status status-ok">SAFE</span>
+              </div>
+              <div class="pred-val" id="pred-eta-val">-- MIN</div>
+              <div class="pred-contrib">Arrival countdown timer to city limits</div>
+            </div>
+
+            <div class="pred-card">
+              <div class="pred-top">
+                <span class="pred-name">🚨 Composite Threat Score</span>
+                <span id="pred-score-status" class="pred-status status-ok">NORMAL</span>
+              </div>
+              <div class="pred-val" id="pred-score-val">12 / 100</div>
+              <div class="pred-contrib">Fused multi-sensor warning trigger score</div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- =================================================================
+             4. LIVE MONITORING VIEW
+             ================================================================= -->
+        <section id="view-monitoring" class="view-pane">
+          <div class="section-title">
+            <span class="badge-accent">SENSOR INGESTION</span>
+            <h2>Space &amp; Ground Observation Network</h2>
+            <p>Real-time telemetry feeds connecting ISRO INSAT-3DR geostationary satellites and IMD Doppler Weather Radar.</p>
+          </div>
+
+          <div class="sensor-grid">
+            <div class="sensor-card">
+              <div class="sensor-card-header">
+                <h4>🛰️ INSAT-3DR Geostationary Satellite</h4>
+                <span class="sensor-live-pill">LIVE 15-MIN CYCLE</span>
+              </div>
+              <p class="sensor-desc">Monitors cloud top infrared brightness temperatures (TIR1 10.8µm &amp; TIR2 12.0µm) over the Deccan Plateau.</p>
+              <div class="sensor-stats">
+                <div class="s-row"><span>Orbit Position:</span><strong>74°E Geostationary</strong></div>
+                <div class="s-row"><span>Spatial Resolution:</span><strong>4 km Infrared</strong></div>
+                <div class="s-row"><span>Cloud Top Temperature:</span><strong id="live-ctt">-- °C</strong></div>
+                <div class="s-row"><span>Updraft Cooling Velocity:</span><strong id="live-cooling">-- °C/hr</strong></div>
+              </div>
+            </div>
+
+            <div class="sensor-card">
+              <div class="sensor-card-header">
+                <h4>📡 Doppler Weather Radar (DWR-HYD)</h4>
+                <span class="sensor-live-pill">LIVE SWEEP ACTIVE</span>
+              </div>
+              <p class="sensor-desc">S-band polarimetric radar at Begumpet measuring precipitation echoes, reflectivity cores, and velocity fields.</p>
+              <div class="sensor-stats">
+                <div class="s-row"><span>Operating Frequency:</span><strong>2.8 GHz (S-Band)</strong></div>
+                <div class="s-row"><span>Coverage Radius:</span><strong>100 km Tactical Nowcasting</strong></div>
+                <div class="s-row"><span>Tracked Storm Speed:</span><strong id="live-speed">-- km/h</strong></div>
+                <div class="s-row"><span>Centroid Heading:</span><strong id="live-heading">--</strong></div>
+              </div>
+            </div>
+
+            <div class="sensor-card">
+              <div class="sensor-card-header">
+                <h4>🌡️ Surface Automated Weather Stations (AWS)</h4>
+                <span class="sensor-live-pill">GROUND NETWORK</span>
+              </div>
+              <p class="sensor-desc">Automated sensor array across GHMC zones recording surface pressure, temperature, dewpoints, and gusts.</p>
+              <div class="sensor-stats">
+                <div class="s-row"><span>Active Stations:</span><strong>24 Municipal Sites</strong></div>
+                <div class="s-row"><span>Mean Surface Pressure:</span><strong>1000.6 hPa</strong></div>
+                <div class="s-row"><span>Convective Instability (CAPE):</span><strong id="live-cape">-- J/kg</strong></div>
+                <div class="s-row"><span>Convective Inhibition (CIN):</span><strong>10.0 J/kg</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             5. ALERT CENTER VIEW (Bilingual Broadcast & Dynamic XAI Panel)
+             ================================================================= -->
+        <section id="view-alerts" class="view-pane">
+          <div class="section-title">
+            <span class="badge-accent">CIVIL PROTECTION</span>
+            <h2>Citizen Alert &amp; Warning Dissemination Center</h2>
+            <p>Official emergency bulletins formatted in English and Telugu, complete with automated explainable AI justifications.</p>
+          </div>
+
+          <!-- Dynamic Explainable AI Panel: Why Alert Was Generated -->
+          <div class="xai-alert-panel" id="xai-panel">
+            <div class="xai-header">
+              <span class="xai-icon">🔍</span>
+              <h3>Why This Alert Was Generated</h3>
+              <span id="xai-state-tag" class="xai-tag">REAL-TIME SYSTEM DIAGNOSTIC</span>
+            </div>
+            <div class="xai-reasons-list" id="xai-reasons">
+              <!-- Dynamically generated reasons from real data -->
+            </div>
+          </div>
+
+          <!-- Dual Language Alert Cards -->
+          <div class="alert-cards-row">
+            <!-- English Broadcast Card -->
+            <div class="alert-box alert-en">
+              <div class="alert-box-header">
+                <span class="flag">🇬🇧</span>
+                <h4>OFFICIAL EMERGENCY BULLETIN (ENGLISH)</h4>
+                <span id="alert-en-badge" class="alert-pill pill-normal">NORMAL</span>
+              </div>
+              <h3 id="alert-en-title" class="alert-h3">Normal Weather Conditions — Hyderabad</h3>
+              <p id="alert-en-body" class="alert-p">
+                No severe convective storm or lightning hazard active across the Greater Hyderabad Municipal Corporation region. Normal civil activities may proceed.
+              </p>
+              <div class="alert-meta-footer">
+                <span id="alert-en-time">BROADCAST UTC: --:--:--</span>
+                <span id="alert-en-zones">TARGET: ALL MONITORING WARDS</span>
+              </div>
+            </div>
+
+            <!-- Telugu Broadcast Card (తెలుగు హెచ్చరిక) -->
+            <div class="alert-box alert-te">
+              <div class="alert-box-header">
+                <span class="flag">🇮🇳</span>
+                <h4>అధికారిక విపత్తు నిర్వహణ హెచ్చరిక (తెలుగు)</h4>
+                <span id="alert-te-badge" class="alert-pill pill-normal">సాధారణం</span>
+              </div>
+              <h3 id="alert-te-title" class="alert-h3-te">హైదరాబాద్ నగర వాతావరణ సమాచారం</h3>
+              <p id="alert-te-body" class="alert-p-te">
+                ప్రస్తుతం హైదరాబాద్ జిహెచ్ఎంసి పరిధిలో ఎటువంటి ఉరుములు, మెరుపుల లేదా బలమైన ఈదురు గాలుల ముప్పు లేదు. పౌరులు సాధారణ కార్యకలాపాలు కొనసాగించవచ్చు.
+              </p>
+              <div class="alert-meta-footer">
+                <span>జారీ చేసిన సమయం: తక్షణ ప్రత్యక్ష ప్రసారం</span>
+                <span>రక్షిత ప్రాంతాలు: సమగ్ర నగర పర్యవేక్షణ</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dissemination Channels Bar -->
+          <div class="dissemination-panel">
+            <h4>Connected Emergency Dissemination Channels</h4>
+            <div class="channel-chips">
+              <div class="c-chip"><span class="c-dot dot-green"></span> 📱 Telecom Cell Broadcast (SMS) — ARMED</div>
+              <div class="c-chip"><span class="c-dot dot-green"></span> 🚨 Municipal Urban Siren Network — READY</div>
+              <div class="c-chip"><span class="c-dot dot-green"></span> 📲 NDMA Sachet Push Notification — ACTIVE</div>
+              <div class="c-chip"><span class="c-dot dot-green"></span> 📻 Civil Defense Emergency VHF Radio — STREAMING</div>
+            </div>
+            
+            <div class="manual-dispatch-wrap">
+              <button id="btn-broadcast-alert" class="btn-broadcast">
+                📢 SIMULATE EMERGENCY BROADCAST TO CITIZENS
+              </button>
+              <div id="dispatch-feedback" class="dispatch-msg"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             6. IMPACT & ARRIVAL CENTER VIEW (Dedicated Timetable & Countdowns)
+             ================================================================= -->
+        <section id="view-impact" class="view-pane">
+          <div class="section-title">
+            <span class="badge-accent">URBAN IMPACT TIMETABLE</span>
+            <h2>Regional Arrival Projections &amp; Countdowns</h2>
+            <p>Hyper-local arrival times and threat levels calculated by Doppler radar kinematic extrapolation for Hyderabad municipal sectors.</p>
+          </div>
+
+          <!-- Impact Timetable -->
+          <div class="impact-table-wrap">
+            <table class="impact-table">
+              <thead>
+                <tr>
+                  <th>MUNICIPAL WARD</th>
+                  <th>POPULATION</th>
+                  <th>DISTANCE FROM STORM</th>
+                  <th>EXPECTED ARRIVAL</th>
+                  <th>COUNTDOWN</th>
+                  <th>SECTOR THREAT LEVEL</th>
+                  <th>ACTIONS RECOMMENDED</th>
+                </tr>
+              </thead>
+              <tbody id="impact-table-body">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             7. HISTORICAL EVENTS VIEW (Database Audit Telemetry)
+             ================================================================= -->
+        <section id="view-history" class="view-pane">
+          <div class="section-title">
+            <span class="badge-accent">AUDIT REPOSITORY</span>
+            <h2>Database Event Telemetry &amp; Verification Logs</h2>
+            <p>Immutable execution records persisted to SQLite/PostgreSQL for post-event forensic review and disaster management auditing.</p>
+          </div>
+
+          <div class="history-controls">
+            <span id="history-count-badge" class="history-badge">-- RECORDS RECORDED</span>
+            <button id="btn-refresh-history" class="btn-ctrl">🔄 REFRESH DATABASE</button>
+          </div>
+
+          <div class="history-table-wrap">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>RUN ID</th>
+                  <th>TIMESTAMP (UTC)</th>
+                  <th>EVENT PHASE</th>
+                  <th>THREAT LEVEL</th>
+                  <th>RISK SCORE</th>
+                  <th>LIGHTNING PROB</th>
+                  <th>CAPE (J/kg)</th>
+                  <th>CLOUD TOP TEMP</th>
+                  <th>ALERT BROADCAST</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body">
+                <tr><td colspan="9" class="table-loading">Querying database telemetry...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =================================================================
+             8. SYSTEM STATUS CENTER VIEW (Service Health & Diagnostics)
+             ================================================================= -->
+        <section id="view-status" class="view-pane">
+          <div class="section-title">
+            <span class="badge-accent">INFRASTRUCTURE HEALTH</span>
+            <h2>System Status &amp; Operational Telemetry</h2>
+            <p>Live health metrics across all microservices, databases, ML inference engines, and external sensor data streams.</p>
+          </div>
+
+          <div class="status-grid">
+            <div class="status-card">
+              <div class="status-top">
+                <span class="status-name">Backend API Gateway</span>
+                <span class="status-pill pill-green">OPERATIONAL</span>
+              </div>
+              <p class="status-detail">FastAPI high-performance server running version 2.0.0 on Python 3.14.</p>
+              <span class="status-metric">Response Latency: &lt; 12 ms</span>
+            </div>
+
+            <div class="status-card">
+              <div class="status-top">
+                <span class="status-name">Database Engine</span>
+                <span class="status-pill pill-green">CONNECTED</span>
+              </div>
+              <p class="status-detail">SQLAlchemy ORM with persistent SQLite / PostgreSQL table logging.</p>
+              <span class="status-metric">Connection Pool: Active</span>
+            </div>
+
+            <div class="status-card">
+              <div class="status-top">
+                <span class="status-name">Satellite Ingestion Feed</span>
+                <span class="status-pill pill-green">STREAMING</span>
+              </div>
+              <p class="status-detail">ISRO MOSDAC INSAT-3DR geostationary infrared thermal data stream.</p>
+              <span class="status-metric">Ingestion Interval: 15 Minutes</span>
+            </div>
+
+            <div class="status-card">
+              <div class="status-top">
+                <span class="status-name">Doppler Radar Station</span>
+                <span class="status-pill pill-green">ONLINE</span>
+              </div>
+              <p class="status-detail">IMD Begumpet (DWR-HYD) S-band dual-polarization volume scan.</p>
+              <span class="status-metric">Scan Radius: 100 km</span>
+            </div>
+
+            <div class="status-card">
+              <div class="status-top">
+                <span class="status-name">Prediction ML Engine</span>
+                <span class="status-pill pill-green">LOADED</span>
+              </div>
+              <p class="status-detail">Supervised XGBoost lightning model calibrated against Deccan soundings.</p>
+              <span class="status-metric">Inference Time: 3.2 ms</span>
+            </div>
+
+            <div class="status-card">
+              <div class="status-top">
+                <span class="status-name">Alert Dissemination Hub</span>
+                <span class="status-pill pill-green">STANDBY</span>
+              </div>
+              <p class="status-detail">Municipal cell broadcast SMS and street siren audio system gateway.</p>
+              <span class="status-metric">Channels: 4 Active</span>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Global Footer -->
+      <footer class="app-footer">
+        <div class="footer-meta">
+          <span>AI-POWERED THUNDERSTORM &amp; LIGHTNING NOWCASTING PLATFORM · HYDERABAD</span>
+          <span>·</span>
+          <span>NATIONAL SMART INDIA HACKATHON GRAND FINALE</span>
+        </div>
+        <div class="footer-legal">
+          <span>ENGINEERED FOR CIVIL PROTECTION &amp; ZERO DISASTER CASUALTIES</span>
+        </div>
+      </footer>
     </div>
-    <div class="footer-right">
-      <span>ENGINEERED FOR CIVIL PROTECTION &amp; ZERO CASUALTIES</span>
-    </div>
-  </footer>
+  </div>
 </body>
 </html>
