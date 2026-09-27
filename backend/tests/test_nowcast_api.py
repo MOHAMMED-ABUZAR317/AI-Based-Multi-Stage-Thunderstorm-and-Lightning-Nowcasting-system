@@ -97,6 +97,10 @@ class NowcastApiTests(unittest.TestCase):
         frontend = Path(__file__).resolve().parents[2] / "frontend"
         index = (frontend / "index.html").read_text(encoding="utf-8")
         app_script = (frontend / "app.js").read_text(encoding="utf-8")
+        self.assertIn('href="/assets/styles.css"', index)
+        self.assertIn('href="/assets/favicon.svg"', index)
+        self.assertIn('src="/assets/js/data-service.js" defer', index)
+        self.assertIn('src="/assets/app.js" defer', index)
         self.assertNotIn("dispatchManualAlert", index)
         self.assertNotIn("Math.random", app_script)
 
