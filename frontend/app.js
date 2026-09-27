@@ -179,7 +179,7 @@
         : "Motion unavailable until two detections"
       : `${activeStorm.motion.speed_kmh.toFixed(1)} km/h ${activeStorm.motion.direction} · unvalidated`;
     $("alert-panel").hidden = !payload.alert.active;
-    $("alert-description").textContent = payload.alert.message;
+    $("alert-description").textContent = payload.alert.message_en;
     $("previous-button").disabled = step === 0;
     $("next-button").disabled = step === totalSteps - 1;
     renderMembers(payload.members);

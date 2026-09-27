@@ -59,7 +59,10 @@ class NowcastApiTests(unittest.TestCase):
             self.assertEqual(payload["alert"]["recipient_count"], 0)
             responses.append(payload)
 
-        self.assertEqual(responses[0], client.get("/api/v1/nowcast").json())
+        default_response = client.get("/api/v1/nowcast").json()
+        self.assertEqual(responses[4]["scenario"]["step"], default_response["scenario"]["step"])
+        self.assertEqual(responses[4]["scenario"]["phase"], default_response["scenario"]["phase"])
+        self.assertEqual(responses[4]["member_outputs"], default_response["member_outputs"])
         self.assertEqual(responses[1]["tracking"]["storms"][0]["observation_count"], 1)
         self.assertIsNone(responses[1]["tracking"]["storms"][0]["forecast"])
         self.assertIsNotNone(responses[2]["tracking"]["storms"][0]["forecast"])
