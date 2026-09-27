@@ -103,6 +103,27 @@ class TestFullPipelineAPI(unittest.TestCase):
         self.assertIn("count", data)
         self.assertIn("history", data)
 
+    def test_tracking_post_endpoint(self):
+        payload = {
+            "timestamp": "2026-09-27T12:00:00Z",
+            "detections": [
+                {
+                    "detection_id": "test_cell_01",
+                    "latitude": 17.25,
+                    "longitude": 78.20,
+                    "intensity": 0.85,
+                    "area_km2": 320.0,
+                    "confidence": 0.92,
+                }
+            ],
+        }
+        resp = self.client.post("/api/v1/tracking/vectors", json=payload)
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertIn("direction", data)
+        self.assertIn("speed_kmh", data)
+        self.assertIn("active_track_count", data)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -112,20 +112,35 @@ def log_nowcast_run(payload: Dict[str, Any]) -> int:
         arrival = primary_storm.get("estimated_city_arrival") or {}
         scenario = payload.get("scenario") or {}
 
+        member_outputs = payload.get("member_outputs") or {}
+        m1_vals = member_outputs.get("member1_weather") or {}
+        m2_vals = member_outputs.get("member2_satellite") or {}
+        m3_vals = member_outputs.get("member3_lightning") or {}
+        m4_vals = member_outputs.get("member4_tracking") or {}
+
+        cape_val = m1_vals.get("cape") if m1_vals.get("cape") is not None else weather_val.get("cape_j_kg")
+        humidity_val = m1_vals.get("humidity") if m1_vals.get("humidity") is not None else weather_val.get("humidity_percent")
+        ctt_val = m2_vals.get("cloud_top_temp")
+        cool_rate_val = m2_vals.get("cooling_rate")
+        lightning_val_prob = m3_vals.get("lightning_probability") if m3_vals.get("lightning_probability") is not None else lightning_val.get("30min")
+        storm_speed_val = m4_vals.get("speed_kmh") if m4_vals.get("speed_kmh") is not None else motion.get("speed_kmh")
+        storm_dir_val = m4_vals.get("direction") if m4_vals.get("direction") is not None else motion.get("direction")
+        eta_val = m4_vals.get("eta_minutes") if m4_vals.get("eta_minutes") is not None else arrival.get("minutes_until_arrival")
+
         record = NowcastLog(
             step=scenario.get("step"),
             phase=scenario.get("phase"),
             risk_score=risk.get("index", 0),
             risk_level=risk.get("level", "NORMAL"),
             alert_active=payload.get("alert", {}).get("active", False),
-            cape=weather_val.get("cape_j_kg"),
-            humidity=weather_val.get("humidity_percent"),
-            cloud_top_temp=None,
-            cooling_rate=None,
-            lightning_prob=lightning_val.get("30min"),
-            storm_speed=motion.get("speed_kmh"),
-            storm_direction=motion.get("direction"),
-            eta_minutes=arrival.get("minutes_until_arrival"),
+            cape=float(cape_val) if cape_val is not None else None,
+            humidity=float(humidity_val) if humidity_val is not None else None,
+            cloud_top_temp=float(ctt_val) if ctt_val is not None else None,
+            cooling_rate=float(cool_rate_val) if cool_rate_val is not None else None,
+            lightning_prob=int(lightning_val_prob) if lightning_val_prob is not None else None,
+            storm_speed=float(storm_speed_val) if storm_speed_val is not None else None,
+            storm_direction=str(storm_dir_val) if storm_dir_val is not None else None,
+            eta_minutes=float(eta_val) if eta_val is not None else None,
             details_json=json.dumps(
                 {
                     "members": payload.get("members"),
@@ -200,6 +215,10 @@ def get_recent_nowcasts(limit: int = 15) -> List[Dict[str, Any]]:
                 "risk_score": r.risk_score,
                 "risk_level": r.risk_level,
                 "alert_active": r.alert_active,
+                "cape": r.cape,
+                "humidity": r.humidity,
+                "cloud_top_temp": r.cloud_top_temp,
+                "cooling_rate": r.cooling_rate,
                 "lightning_prob": r.lightning_prob,
                 "storm_speed": r.storm_speed,
                 "storm_direction": r.storm_direction,

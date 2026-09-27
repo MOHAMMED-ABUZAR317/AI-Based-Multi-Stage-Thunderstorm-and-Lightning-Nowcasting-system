@@ -11,6 +11,21 @@
     return response.json();
   }
 
+  async function postJson(path, payload) {
+    const response = await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      throw new Error(`Local API request failed (${response.status} ${response.statusText}).`);
+    }
+    return response.json();
+  }
+
   window.StormDataService = Object.freeze({
     async getNowcast(step) {
       if (!Number.isInteger(step) || step < 0 || step > 6) {
@@ -21,6 +36,18 @@
         throw new Error("The API response is not explicitly marked as a non-operational demo.");
       }
       return payload;
+    },
+
+    async getHistory(limit = 10) {
+      return getJson(`/api/v1/database/history?limit=${limit}`);
+    },
+
+    async getZones() {
+      return getJson("/api/v1/zones/hyderabad");
+    },
+
+    async dispatchAlert(alertData) {
+      return postJson("/api/v1/alerts/dispatch", alertData);
     },
   });
 })();

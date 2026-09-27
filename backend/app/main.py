@@ -34,6 +34,10 @@ from backend.app.demo_scenario import (
     satellite_detector,
     weather_analyzer,
 )
+from backend.src.storm_tracking.service import StormTrackingService
+from storm_tracking.models import Detection
+
+tracking_service = StormTrackingService()
 from backend.app.database import (
     get_recent_nowcasts,
     init_db,
@@ -90,6 +94,20 @@ class LightningInput(BaseModel):
     cloud_top_pressure_hpa: float = Field(750.0, description="Cloud top pressure level in hPa")
     cooling_rate_per_hour: float = Field(-12.0, description="Updraft cooling rate in °C/hour")
     cape: Optional[float] = Field(2400.0, description="Convective Available Potential Energy in J/kg")
+
+
+class RadarDetectionItem(BaseModel):
+    detection_id: str = Field("det_01", description="Detection identifier")
+    latitude: float = Field(17.28, description="Cell centroid latitude")
+    longitude: float = Field(78.23, description="Cell centroid longitude")
+    intensity: float = Field(0.85, description="Reflectivity/intensity normalized 0-1")
+    area_km2: float = Field(450.0, description="Storm cell area in km²")
+    confidence: float = Field(0.90, description="Detection confidence 0-1")
+
+
+class TrackingFrameRequest(BaseModel):
+    timestamp: Optional[str] = Field(None, description="ISO-8601 UTC timestamp")
+    detections: List[RadarDetectionItem] = Field(default_factory=list, description="List of radar cell detection objects")
 
 
 class TrackingInput(BaseModel):
@@ -296,9 +314,9 @@ def post_ml_lightning(payload: LightningInput) -> dict[str, Any]:
 # =============================================================================
 
 @app.get("/api/v1/tracking/vectors")
-def get_tracking_vectors() -> dict[str, Any]:
+def get_tracking_vectors(step: int = Query(4, ge=0, le=len(STAGES_METRICS) - 1)) -> dict[str, Any]:
     """Member 4: Returns active storm translation speed, direction, and ETA to Hyderabad."""
-    nowcast_data = build_nowcast(4)
+    nowcast_data = build_nowcast(step)
     m4 = nowcast_data["member_outputs"]["member4_tracking"]
     tracking = nowcast_data["tracking"]
     return {
@@ -311,14 +329,39 @@ def get_tracking_vectors() -> dict[str, Any]:
     }
 
 
+@app.post("/api/v1/tracking/vectors")
+def post_tracking_vectors(payload: TrackingFrameRequest) -> dict[str, Any]:
+    """Member 4: Ingests custom radar detection frame, updates tracks, and computes ETA & motion."""
+    ts = datetime.now(timezone.utc)
+    if payload.timestamp:
+        try:
+            ts = datetime.fromisoformat(payload.timestamp.replace("Z", "+00:00"))
+        except Exception:
+            pass
+
+    det_objs = [
+        Detection(
+            detection_id=d.detection_id,
+            timestamp=ts,
+            latitude=d.latitude,
+            longitude=d.longitude,
+            intensity=d.intensity,
+            area_km2=d.area_km2,
+            confidence=d.confidence,
+        )
+        for d in payload.detections
+    ]
+    return tracking_service.process_frame(timestamp=ts, detections=det_objs)
+
+
 # =============================================================================
 # MEMBER 5: Nowcasting Fusion Engine
 # =============================================================================
 
 @app.get("/api/v1/nowcast/fusion")
-def get_nowcast_fusion() -> dict[str, Any]:
+def get_nowcast_fusion(step: int = Query(4, ge=0, le=len(STAGES_METRICS) - 1)) -> dict[str, Any]:
     """Member 5: Fuses all member predictions into final risk score and alert decision."""
-    nowcast_data = build_nowcast(4)
+    nowcast_data = build_nowcast(step)
     m5 = nowcast_data["member_outputs"]["member5_fusion"]
     contributions = nowcast_data["nowcast"]["risk"]["contributions"]
     return {

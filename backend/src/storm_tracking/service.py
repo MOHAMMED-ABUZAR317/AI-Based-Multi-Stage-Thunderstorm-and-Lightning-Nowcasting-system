@@ -55,9 +55,8 @@ class StormTrackingService:
         forecast = predict_trajectory(primary_track)
         arrival = estimate_arrival_time(primary_track, self.target_lat, self.target_lon)
 
-        motion = primary_track.motion
-        direction = motion.direction if motion else "NE"
-        speed = int(round(motion.speed_kmh)) if motion else 42
+        direction = primary_track.direction_name or "NE"
+        speed = int(round(primary_track.speed_kmh)) if primary_track.speed_kmh is not None else 42
         eta = (
             int(round(arrival["minutes_until_arrival"]))
             if arrival and arrival.get("will_reach") and arrival.get("minutes_until_arrival") is not None
@@ -76,14 +75,18 @@ class StormTrackingService:
                 }
             )
 
+        latest_pt = primary_track.latest()
+        curr_lat = latest_pt.smoothed_latitude if latest_pt else self.target_lat
+        curr_lon = latest_pt.smoothed_longitude if latest_pt else self.target_lon
+
         return {
             "direction": direction,
             "speed_kmh": speed,
             "eta_minutes": eta,
             "trajectory_confidence": round(primary_track.trajectory_confidence or 0.85, 2),
             "current_position": {
-                "latitude": primary_track.latest_point.smoothed_latitude,
-                "longitude": primary_track.latest_point.smoothed_longitude,
+                "latitude": curr_lat,
+                "longitude": curr_lon,
             },
             "forecast_waypoints": forecast.get("predictions", {}) if forecast else {},
             "active_track_count": len(active_tracks),
