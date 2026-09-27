@@ -249,26 +249,49 @@
   // =========================================================================
 
   function initNavigation() {
-    DOM.navItems.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const targetView = btn.getAttribute('data-view');
-        switchView(targetView);
+    const navItems = document.querySelectorAll('.nav-item');
+    const datasetBtns = document.querySelectorAll('.dataset-btn');
+
+    navItems.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetView = btn.getAttribute('data-view') || (e.currentTarget && e.currentTarget.getAttribute('data-view'));
+        if (targetView) {
+          switchView(targetView);
+          try {
+            history.replaceState(null, null, `#${targetView}`);
+          } catch (_) {}
+        }
       });
     });
 
-    DOM.datasetBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
+    datasetBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
         const eventIndex = parseInt(btn.getAttribute('data-event'), 10);
         setStep(eventIndex);
       });
     });
+
+    // Check if initial URL hash requests a specific view
+    if (window.location.hash) {
+      const hashView = window.location.hash.replace('#', '');
+      const validViews = ['view-command', 'view-executive', 'view-prediction', 'view-monitoring', 'view-alerts', 'view-impact', 'view-history', 'view-status'];
+      if (validViews.includes(hashView)) {
+        switchView(hashView);
+      }
+    }
   }
 
   function switchView(viewId) {
     if (!viewId) return;
 
-    DOM.navItems.forEach((btn) => {
-      if (btn.getAttribute('data-view') === viewId) {
+    const navItems = document.querySelectorAll('.nav-item');
+    const viewPanes = document.querySelectorAll('.view-pane');
+
+    navItems.forEach((btn) => {
+      const btnView = btn.getAttribute('data-view');
+      if (btnView === viewId) {
         btn.classList.add('active');
         btn.setAttribute('aria-selected', 'true');
       } else {
@@ -277,13 +300,19 @@
       }
     });
 
-    DOM.viewPanes.forEach((pane) => {
+    viewPanes.forEach((pane) => {
       if (pane.id === viewId) {
         pane.classList.add('active');
       } else {
         pane.classList.remove('active');
       }
     });
+
+    // Scroll to top of main workspace on view change
+    const mainWorkspace = document.querySelector('.main-workspace');
+    if (mainWorkspace) {
+      mainWorkspace.scrollTop = 0;
+    }
 
     if (viewId === 'view-history') {
       loadDatabaseTelemetry();
@@ -522,7 +551,7 @@
     if (DOM.predTempVal) DOM.predTempVal.textContent = `${temp.toFixed(1)} °C`;
     if (DOM.predTempStatus) {
       DOM.predTempStatus.textContent = temp > 32 ? 'HIGH HEAT' : 'WARM';
-      DOM.predTempStatus.className = `pred-status ${temp > 32 ? 'status-warn' : 'status-ok')}`;
+      DOM.predTempStatus.className = `pred-status ${temp > 32 ? 'status-warn' : 'status-ok'}`;
     }
 
     // 3. Humidity
