@@ -480,4 +480,22 @@ def dashboard() -> FileResponse:
     return FileResponse(FRONTEND_DIR / "index.html")
 
 
+@app.get("/styles.css", include_in_schema=False)
+def root_styles() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "styles.css")
+
+
+@app.get("/app.js", include_in_schema=False)
+def root_app_js() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "app.js")
+
+
+@app.get("/favicon.svg", include_in_schema=False)
+def root_favicon() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "favicon.svg")
+
+
+if (FRONTEND_DIR / "js").is_dir():
+    app.mount("/js", StaticFiles(directory=FRONTEND_DIR / "js"), name="js")
+
 app.mount("/assets", StaticFiles(directory=FRONTEND_DIR), name="assets")

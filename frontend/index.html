@@ -1,262 +1,470 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1728">
+  <meta name="theme-color" content="#040911">
   <link rel="icon" href="favicon.svg">
-  <title>AI Thunderstorm &amp; Lightning Early Warning System — Hyderabad</title>
+  <title>AI Thunderstorm &amp; Lightning Nowcasting Command Center — Hyderabad</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="js/data-service.js"></script>
-  <script src="app.js"></script>
-
+  <script src="js/data-service.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
-
 <body>
+  <!-- Top Command Header -->
   <header class="topbar">
-    <a class="brand" href="/" aria-label="Hyderabad storm scenario home">
-      <span class="brand-mark" aria-hidden="true">⚡</span>
-      <span>HYD<span class="muted"> / CONVECTIVE NOWCAST LAB</span></span>
-    </a>
-    <div class="topbar-right">
-      <span class="env-tag"><span class="env-dot"></span> 6-MEMBER FUSED</span>
-      <span id="connection-state" class="status-chip" role="status">Connecting to API…</span>
+    <div class="brand-container">
+      <div class="brand-emblem" aria-hidden="true">⚡</div>
+      <div class="brand-text">
+        <h1>AI Thunderstorm Nowcasting Command Center</h1>
+        <div class="brand-subtitle">HYDERABAD METROPOLITAN REGION · GHMC CIVIL DEFENSE</div>
+      </div>
+    </div>
+    <div class="topbar-telemetry">
+      <div class="telemetry-node">
+        <span class="telemetry-label">OPERATIONS CLOCK</span>
+        <span id="telemetry-clock" class="telemetry-value">--:--:-- UTC</span>
+      </div>
+      <div class="telemetry-node">
+        <span class="telemetry-label">SATELLITE ORBIT</span>
+        <span class="telemetry-value" style="color: var(--cyan);">INSAT-3DR GEO</span>
+      </div>
+      <div class="telemetry-node">
+        <span class="telemetry-label">DOPPLER RADAR</span>
+        <span class="telemetry-value" style="color: var(--emerald);">DWR-HYD ACTIVE</span>
+      </div>
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span id="connection-state">DEFCON-1 MONITORING</span>
+      </div>
     </div>
   </header>
 
   <main>
-    <!-- Safety Banner -->
+    <!-- Safety Notice Strip -->
     <section class="safety-banner" role="note">
-      <strong>DEMO ONLY — NOT AN OPERATIONAL WARNING</strong>
-      <span>Synthetic scenario values and unvalidated estimates. Calibrated multi-stage nowcast engine fusing
-        thermodynamic sounding, INSAT-3DR geostationary satellite, XGBoost lightning AI, and Doppler radar
-        tracking.</span>
-    </section>
-
-    <!-- Intro Section -->
-    <section class="intro">
-      <div>
-        <p class="eyebrow">HYDERABAD METROPOLITAN REGION · MULTI-STAGE NOWCAST</p>
-        <h1>AI-Based Thunderstorm &amp; Lightning Early Warning</h1>
-        <p class="intro-copy">Deterministic 7-step convective lifecycle demonstration with real-time multi-sensor fusion
-          and bilingual alert generation.</p>
+      <div class="safety-tag">
+        <span>⚠</span>
+        <strong>DEMO ONLY — NOT AN OPERATIONAL WARNING SERVICE</strong>
+      </div>
+      <span class="safety-notice-copy">
+        Simulated multi-stage early warning demonstration. Fusing NWP thermodynamic sounding, INSAT-3DR geostationary infrared physics, supervised XGBoost lightning AI, and Doppler cell tracking.
+      </span>
+      <div class="safety-feed-badges">
+        <span class="sensor-chip">M1: 15-YR ECDF</span>
+        <span class="sensor-chip">M2: TIR1/TIR2 BT</span>
+        <span class="sensor-chip">M3: XGBOOST ML</span>
+        <span class="sensor-chip">M4: HAVERSINE KINEMATICS</span>
+        <span class="sensor-chip">M5: FUSED RISK</span>
       </div>
     </section>
 
-    <!-- Scenario Lifecycle Controls -->
-    <section class="scenario-panel panel" aria-labelledby="scenario-title">
-      <div class="scenario-heading">
-        <div>
-          <p class="eyebrow">CONVECTIVE LIFECYCLE PROGRESSION</p>
-          <h2 id="scenario-title">Stage Playback Controller</h2>
+    <!-- Convective Lifecycle Playback Controller -->
+    <section class="panel lifecycle-controller" aria-labelledby="controller-title">
+      <div class="panel-header">
+        <div class="panel-title-group">
+          <p class="panel-eyebrow">CONVECTIVE EVOLUTION LIFECYCLE</p>
+          <h2 id="controller-title" class="panel-title">Deterministic Stage Playback Controller</h2>
         </div>
-        <span id="step-count" class="step-count">Step — / —</span>
-      </div>
-      <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
-      <div class="scenario-controls">
-        <button id="previous-button" class="button secondary" type="button">← Previous Step</button>
-        <button id="play-button" class="button primary" type="button">▶ Play Scenario</button>
-        <button id="next-button" class="button secondary" type="button">Next Step →</button>
-        <button id="reset-button" class="button quiet" type="button">↺ Reset to Baseline</button>
-      </div>
-      <div class="stage-copy">
-        <span id="stage-marker" class="stage-marker"></span>
-        <div>
-          <h3 id="stage-label">Loading scenario…</h3>
-          <p id="stage-description"></p>
-          <span id="scenario-time" class="muted"></span>
+        <div class="stage-badge-container">
+          <span id="stage-phase-chip" class="stage-phase-chip">BASELINE</span>
+          <span id="step-count-display" class="telemetry-value">STAGE 1 OF 7</span>
         </div>
       </div>
-    </section>
-
-    <!-- Primary Metrics Grid -->
-    <section class="metric-grid" aria-label="Scenario summary">
-      <article class="panel metric-card">
-        <span class="metric-label">Composite Risk Index (M5)</span>
-        <strong id="risk-index" class="metric-value">—</strong>
-        <span id="risk-level" class="metric-detail">Multi-stage fusion calculation</span>
-      </article>
-      <article class="panel metric-card">
-        <span class="metric-label">Lightning Probability (M3)</span>
-        <strong id="lightning-value" class="metric-value">—</strong>
-        <span id="lightning-horizons" class="metric-detail">15m / 30m / 60m horizons</span>
-      </article>
-      <article class="panel metric-card">
-        <span class="metric-label">Tracking Vector &amp; ETA (M4)</span>
-        <strong id="tracking-speed" class="metric-value">—</strong>
-        <span id="motion-detail" class="metric-detail">Heading and arrival time</span>
-      </article>
-      <article class="panel metric-card">
-        <span class="metric-label">Atmospheric Instability (M1)</span>
-        <strong id="cape-value" class="metric-value">—</strong>
-        <span id="instability-detail" class="metric-detail">CAPE &amp; Relative Humidity</span>
-      </article>
-    </section>
-
-    <!-- Fusion Breakdown Bar -->
-    <section class="panel fusion-breakdown-panel" aria-labelledby="fusion-title">
-      <div class="panel-heading">
-        <div>
-          <p class="eyebrow">STAGE 5: MULTI-STAGE WEIGHTED FUSION</p>
-          <h2 id="fusion-title">Member Contributions to Composite Threat Score</h2>
-        </div>
-        <span id="fusion-badge" class="mini-tag">CALCULATED</span>
+      <div class="lifecycle-track" aria-hidden="true">
+        <div id="lifecycle-progress-fill" class="lifecycle-fill"></div>
       </div>
-      <div class="fusion-bars" id="fusion-bars">
-        <div class="fusion-bar-item">
-          <div class="fusion-bar-header">
-            <span>M1 Instability (20%)</span>
-            <span id="score-m1">—</span>
-          </div>
-          <div class="bar-track">
-            <div id="bar-fill-m1" class="bar-fill m1-fill"></div>
-          </div>
+      <div class="lifecycle-controls">
+        <div class="btn-group">
+          <button id="btn-prev" class="tactical-btn" type="button">◀ PREV STEP</button>
+          <button id="btn-play" class="tactical-btn btn-play" type="button">▶ RUN SIMULATION</button>
+          <button id="btn-next" class="tactical-btn" type="button">NEXT STEP ▶</button>
+          <button id="btn-reset" class="tactical-btn" type="button">↺ RESET BASELINE</button>
         </div>
-        <div class="fusion-bar-item">
-          <div class="fusion-bar-header">
-            <span>M2 Satellite Cooling (25%)</span>
-            <span id="score-m2">—</span>
-          </div>
-          <div class="bar-track">
-            <div id="bar-fill-m2" class="bar-fill m2-fill"></div>
-          </div>
-        </div>
-        <div class="fusion-bar-item">
-          <div class="fusion-bar-header">
-            <span>M3 Lightning ML (30%)</span>
-            <span id="score-m3">—</span>
-          </div>
-          <div class="bar-track">
-            <div id="bar-fill-m3" class="bar-fill m3-fill"></div>
-          </div>
-        </div>
-        <div class="fusion-bar-item">
-          <div class="fusion-bar-header">
-            <span>M4 Tracking Proximity (25%)</span>
-            <span id="score-m4">—</span>
-          </div>
-          <div class="bar-track">
-            <div id="bar-fill-m4" class="bar-fill m4-fill"></div>
-          </div>
+        <div class="stage-meta">
+          <span id="stage-name-display" style="font-weight: 800; font-size: 13px; color: #fff;">Loading stage...</span>
+          <span id="stage-desc-display" style="color: var(--text-secondary); font-size: 11px;">Initializing nowcast feed...</span>
+          <span id="stage-time-display" class="stage-time">--</span>
         </div>
       </div>
     </section>
 
-    <!-- Bilingual Citizen Alert Panel -->
-    <section id="alert-panel" class="alert-panel" aria-live="polite" hidden>
-      <div class="alert-header">
-        <span class="alert-icon" aria-hidden="true">🚨</span>
-        <div class="alert-titles">
-          <strong id="alert-title">EMERGENCY THUNDERSTORM ALERT</strong>
-          <span id="alert-zones-tag" class="alert-badge">TARGET SECTORS</span>
-        </div>
-        <span class="mini-tag active-badge">DISPATCHED</span>
+    <!-- Tactical HUD 3-Column Grid -->
+    <div class="hud-grid">
+      <!-- Left Column: Real-Time Threat Telemetry -->
+      <div class="telemetry-col">
+        <!-- Threat Index Card -->
+        <article class="panel threat-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <p class="panel-eyebrow">STAGE 5 FUSION ENGINE</p>
+              <h3 class="panel-title">Composite Threat Score</h3>
+            </div>
+            <span id="threat-level-badge" class="stage-phase-chip">NORMAL</span>
+          </div>
+          <div class="risk-dial-container">
+            <div class="risk-number-display">
+              <span id="risk-score-num" class="risk-score-value normal">0</span>
+              <span class="cell-subtext">Composite Threat Index (0–100)</span>
+            </div>
+            <div style="text-align: right;">
+              <span class="cell-label">THRESHOLD</span>
+              <div id="risk-threshold-text" style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #cbd5e1;">Normal (&lt; 30)</div>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-cell">
+              <span class="cell-label">LIGHTNING PROB (30m)</span>
+              <span id="lightning-prob-main" class="cell-value" style="color: var(--amber);">--%</span>
+              <span class="cell-subtext" id="lightning-band-sub">Low Hazard</span>
+            </div>
+            <div class="metric-cell">
+              <span class="cell-label">HYDERABAD ETA</span>
+              <span id="eta-main" class="cell-value" style="color: var(--cyan);">--</span>
+              <span class="cell-subtext" id="eta-sub">Clear of boundary</span>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-cell">
+              <span class="cell-label">STORM SPEED</span>
+              <span id="speed-main" class="cell-value">-- km/h</span>
+              <span class="cell-subtext" id="heading-sub">Heading: --</span>
+            </div>
+            <div class="metric-cell">
+              <span class="cell-label">ATMOSPHERIC CAPE</span>
+              <span id="cape-main" class="cell-value" style="color: #60a5fa;">-- J/kg</span>
+              <span class="cell-subtext" id="instability-level-sub">Instability: --</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Multi-Horizon Lightning Risk Matrix -->
+        <article class="panel threat-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <p class="panel-eyebrow">MEMBER 3 ML INFERENCE</p>
+              <h3 class="panel-title">Lightning Horizon Forecast</h3>
+            </div>
+            <span class="sensor-chip">XGBOOST + GLACIATION</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+              <span>15-Minute Lookahead:</span>
+              <span id="prob-15m" class="telemetry-value" style="color: #7dd3fc;">--%</span>
+            </div>
+            <div class="lifecycle-track" style="height: 6px;"><div id="bar-15m" class="lifecycle-fill" style="width: 0%; background: #38bdf8;"></div></div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-top: 4px;">
+              <span>30-Minute Primary Lead:</span>
+              <span id="prob-30m" class="telemetry-value" style="color: var(--amber);">--%</span>
+            </div>
+            <div class="lifecycle-track" style="height: 6px;"><div id="bar-30m" class="lifecycle-fill" style="width: 0%; background: var(--amber);"></div></div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-top: 4px;">
+              <span>60-Minute Horizon:</span>
+              <span id="prob-60m" class="telemetry-value" style="color: var(--crimson);">--%</span>
+            </div>
+            <div class="lifecycle-track" style="height: 6px;"><div id="bar-60m" class="lifecycle-fill" style="width: 0%; background: var(--crimson);"></div></div>
+          </div>
+          <div style="margin-top: 6px; font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); line-height: 1.4;">
+            Model evaluated over geostationary cloud-top temperature &amp; barometric updraft penetration.
+          </div>
+        </article>
       </div>
-      <div class="alert-body">
-        <div class="alert-text-block">
-          <span class="lang-tag">ENGLISH WARNING</span>
-          <p id="alert-description-en"></p>
+
+      <!-- Center Column: Tactical GIS Map (Centerpiece) -->
+      <div class="map-col">
+        <article class="panel gis-map-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <p class="panel-eyebrow">HYDERABAD METROPOLITAN GIS RADAR SITUATION DISPLAY</p>
+              <h3 class="panel-title">Tactical Convective Cell Tracking &amp; Trajectory Vector</h3>
+            </div>
+            <div class="map-controls-toolbar">
+              <div class="map-toggle-group">
+                <label class="map-toggle-label"><input type="checkbox" id="toggle-radar" checked> Radar Reflectivity</label>
+                <label class="map-toggle-label"><input type="checkbox" id="toggle-cone" checked> Impact Cone</label>
+                <label class="map-toggle-label"><input type="checkbox" id="toggle-sectors" checked> GHMC Sectors</label>
+                <label class="map-toggle-label"><input type="checkbox" id="toggle-sweep" checked> Sweep</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tactical SVG Canvas -->
+          <div id="map-container" class="map-canvas-wrapper" role="img" aria-label="Tactical GIS Radar Map of Hyderabad">
+            <svg id="gis-svg" class="gis-svg" viewBox="0 0 720 480" preserveAspectRatio="none">
+              <!-- Defs for gradients, radar sweep and markers -->
+              <defs>
+                <radialGradient id="radarSweepGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.35"/>
+                  <stop offset="60%" stop-color="#00f0ff" stop-opacity="0.08"/>
+                  <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="stormCoreGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ff1744" stop-opacity="0.95"/>
+                  <stop offset="45%" stop-color="#ff5722" stop-opacity="0.6"/>
+                  <stop offset="85%" stop-color="#ff9800" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#ffb300" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <!-- Range Rings & Radar Grid -->
+              <g id="radar-grid-group"></g>
+
+              <!-- Radar Sweep Rotating Beam -->
+              <g id="radar-sweep-beam" class="radar-sweep-center">
+                <path d="M 360 240 L 720 240 A 360 360 0 0 0 614 38 Z" fill="url(#radarSweepGrad)"/>
+                <line x1="360" y1="240" x2="720" y2="240" stroke="#00f0ff" stroke-width="1.5" stroke-opacity="0.7"/>
+              </g>
+
+              <!-- GHMC Sectors Polygons -->
+              <g id="ghmc-sectors-group"></g>
+
+              <!-- Convective Impact Cone -->
+              <g id="impact-cone-group"></g>
+
+              <!-- Storm Past Track & Predicted Trajectory Line -->
+              <path id="storm-past-track" class="storm-track-line" d=""/>
+              <line id="storm-forecast-vector" class="trajectory-forecast-line" x1="0" y1="0" x2="0" y2="0"/>
+
+              <!-- Waypoints & ETA Flags -->
+              <g id="trajectory-waypoints-group"></g>
+
+              <!-- Active Storm Cell Core -->
+              <g id="storm-cell-group"></g>
+
+              <!-- Hyderabad Central Operations Node -->
+              <g id="city-center-group">
+                <circle cx="510" cy="240" r="28" class="city-buffer-ring"/>
+                <circle cx="510" cy="240" r="7" class="city-core-node"/>
+                <text x="522" y="244" class="city-text-label">HYDERABAD CORE (17.385°N, 78.487°E)</text>
+              </g>
+
+              <!-- Reticle Coordinates Overlay -->
+              <g id="reticle-group" opacity="0.65">
+                <text x="16" y="24" fill="#64748b" font-family="var(--font-mono)" font-size="9">RANGE: 80 KM RADIUS</text>
+                <text x="16" y="468" fill="#64748b" font-family="var(--font-mono)" font-size="9">GRID: 0.1° LAT/LON WGS84</text>
+                <text x="580" y="468" fill="#64748b" font-family="var(--font-mono)" font-size="9">TELANGANA STATE</text>
+              </g>
+            </svg>
+          </div>
+        </article>
+      </div>
+
+      <!-- Right Column: Multi-Stage Pipeline & AI Explainability -->
+      <div class="analytics-col">
+        <!-- Pipeline Flow Card -->
+        <article class="panel pipeline-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <p class="panel-eyebrow">METEOROLOGICAL WORKFLOW</p>
+              <h3 class="panel-title">Multi-Stage Fusion Pipeline</h3>
+            </div>
+            <span class="sensor-chip">CALIBRATED</span>
+          </div>
+          <div class="pipeline-flow">
+            <div class="pipeline-node" id="node-m1">
+              <div class="node-badge">M1</div>
+              <div class="node-content">
+                <span class="node-name">Atmospheric Instability</span>
+                <span class="node-summary" id="m1-summary">Sounding ECDF percentile rank</span>
+              </div>
+              <span class="node-status-tag" id="m1-status">ACTIVE</span>
+            </div>
+            <div class="pipeline-node" id="node-m2">
+              <div class="node-badge">M2</div>
+              <div class="node-content">
+                <span class="node-name">Satellite Cloud Physics</span>
+                <span class="node-summary" id="m2-summary">INSAT-3DR dT/dt cooling rate</span>
+              </div>
+              <span class="node-status-tag" id="m2-status">ACTIVE</span>
+            </div>
+            <div class="pipeline-node" id="node-m3">
+              <div class="node-badge">M3</div>
+              <div class="node-content">
+                <span class="node-name">Lightning Hazard AI</span>
+                <span class="node-summary" id="m3-summary">XGBoost electrification probability</span>
+              </div>
+              <span class="node-status-tag" id="m3-status">ACTIVE</span>
+            </div>
+            <div class="pipeline-node" id="node-m4">
+              <div class="node-badge">M4</div>
+              <div class="node-content">
+                <span class="node-name">Radar Cell Tracking</span>
+                <span class="node-summary" id="m4-summary">Haversine kinematics &amp; ETA</span>
+              </div>
+              <span class="node-status-tag" id="m4-status">ACTIVE</span>
+            </div>
+            <div class="pipeline-node" id="node-m5">
+              <div class="node-badge">M5</div>
+              <div class="node-content">
+                <span class="node-name">Nowcasting Fusion Engine</span>
+                <span class="node-summary" id="m5-summary">Weighted risk classification</span>
+              </div>
+              <span class="node-status-tag" id="m5-status">ACTIVE</span>
+            </div>
+            <div class="pipeline-node" id="node-m6">
+              <div class="node-badge">M6</div>
+              <div class="node-content">
+                <span class="node-name">Disaster Alert Delivery</span>
+                <span class="node-summary" id="m6-summary">Bilingual citizen dissemination</span>
+              </div>
+              <span class="node-status-tag" id="m6-status">ACTIVE</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- AI Explainability Decomposition Matrix -->
+        <article class="panel explainability-card">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <p class="panel-eyebrow">AI EXPLAINABILITY ENGINE</p>
+              <h3 class="panel-title">Decision Factor Breakdown</h3>
+            </div>
+            <span class="sensor-chip">SHAP / ATTRIBUTION</span>
+          </div>
+          <table class="weight-breakdown-table">
+            <tbody>
+              <tr>
+                <td class="weight-factor-name">Thermodynamic CAPE (20%)</td>
+                <td id="factor-score-m1" style="font-family: var(--font-mono); font-weight: 700; text-align: right;">--</td>
+                <td class="weight-bar-cell">
+                  <div class="micro-bar"><div id="factor-bar-m1" class="micro-bar-fill" style="width: 0%; background: #38bdf8;"></div></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="weight-factor-name">Satellite Cooling Rate (25%)</td>
+                <td id="factor-score-m2" style="font-family: var(--font-mono); font-weight: 700; text-align: right;">--</td>
+                <td class="weight-bar-cell">
+                  <div class="micro-bar"><div id="factor-bar-m2" class="micro-bar-fill" style="width: 0%; background: var(--emerald);"></div></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="weight-factor-name">Lightning Strike AI (30%)</td>
+                <td id="factor-score-m3" style="font-family: var(--font-mono); font-weight: 700; text-align: right;">--</td>
+                <td class="weight-bar-cell">
+                  <div class="micro-bar"><div id="factor-bar-m3" class="micro-bar-fill" style="width: 0%; background: var(--amber);"></div></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="weight-factor-name">Radar Vector Proximity (25%)</td>
+                <td id="factor-score-m4" style="font-family: var(--font-mono); font-weight: 700; text-align: right;">--</td>
+                <td class="weight-bar-cell">
+                  <div class="micro-bar"><div id="factor-bar-m4" class="micro-bar-fill" style="width: 0%; background: var(--crimson);"></div></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div id="ai-reasoning-summary" style="margin-top: 10px; font-size: 11px; color: #cbd5e1; line-height: 1.45; padding: 8px 10px; background: rgba(8, 16, 28, 0.6); border-radius: 6px; border: 1px solid rgba(45, 75, 110, 0.3);">
+            Atmospheric state is currently evaluating...
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Bilingual Citizen Alert Command Deck -->
+    <section id="alert-command-deck" class="panel alert-command-deck" hidden>
+      <div class="panel-header" style="margin-bottom: 8px;">
+        <div class="panel-title-group">
+          <p class="panel-eyebrow" style="color: #ff99aa;">GOVERNMENT CITIZEN DISASTER DISPATCH</p>
+          <h2 id="alert-deck-headline" class="panel-title" style="color: #ff3355; font-size: 17px;">
+            🚨 SEVERE THUNDERSTORM &amp; LIGHTNING EMERGENCY WARNING
+          </h2>
         </div>
-        <div class="alert-text-block telugu-block">
-          <span class="lang-tag">తెలుగు హెచ్చరిక (TELUGU)</span>
-          <p id="alert-description-te"></p>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span id="target-sectors-badge" class="stage-phase-chip" style="background: rgba(255, 170, 0, 0.15); border-color: var(--amber); color: var(--amber);">TARGET SECTORS</span>
+          <span class="stage-phase-chip">ACTIVE BROADCAST</span>
         </div>
       </div>
-      <div id="alert-actions-container" class="alert-actions">
-        <strong>Recommended Public Safety Actions:</strong>
-        <ul id="alert-actions-list"></ul>
+      <div class="alert-terminal-grid">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span class="terminal-lang">ENGLISH CITIZEN BROADCAST</span>
+            <span class="sensor-chip">SMS · SIRENS · CBC</span>
+          </div>
+          <p id="alert-terminal-en" class="terminal-copy"></p>
+        </div>
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span class="terminal-lang">తెలుగు హెచ్చరిక (TELUGU BROADCAST)</span>
+            <span class="sensor-chip">CELL BROADCAST</span>
+          </div>
+          <p id="alert-terminal-te" class="terminal-copy telugu-copy"></p>
+        </div>
+      </div>
+      <div class="disaster-action-checklist">
+        <strong style="color: #fff; font-size: 11px;">Mandatory Public Safety Directives:</strong>
+        <div id="disaster-actions-container" style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;"></div>
       </div>
     </section>
 
-    <!-- Main Content Grid: GIS Map & Member Contracts -->
-    <section class="content-grid">
-      <article class="panel map-panel">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">HYDERABAD GIS TACTICAL SITUATION VIEW</p>
-            <h2>Storm Cell Position, Trajectory &amp; GHMC Sectors</h2>
+    <!-- Bottom Deck: GHMC Sector Threat Matrix & Database Persistence Audit -->
+    <div class="bottom-deck-grid">
+      <!-- Sector Threat Table -->
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <p class="panel-eyebrow">METROPOLITAN CIVIL PROTECTION</p>
+            <h3 class="panel-title">GHMC Administrative Sector Threat Matrix</h3>
           </div>
-          <span class="mini-tag">RADAR + GIS OVERLAY</span>
+          <span class="sensor-chip">7 SECTORS MONITORED</span>
         </div>
-        <div id="map-view" class="map-view" role="img" aria-label="Hyderabad GIS storm tracker and GHMC sectors"></div>
-        <div class="map-legend">
-          <span><i class="legend-dot storm-dot"></i> Convective Storm Core</span>
-          <span><i class="legend-dot city-dot"></i> City Center (17.385°N, 78.487°E)</span>
-          <span><i class="legend-dot ghmc-dot"></i> GHMC Administrative Sectors</span>
-          <span><i class="legend-line"></i> 60-min Projected Trajectory</span>
-        </div>
-      </article>
-
-      <article class="panel sources-panel">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">SYSTEM ARCHITECTURE</p>
-            <h2>6-Member Module Pipeline</h2>
-          </div>
-        </div>
-        <div id="member-list" class="member-list" aria-live="polite"></div>
-      </article>
-    </section>
-
-    <!-- GHMC Sector Threat Status & Database Audit -->
-    <section class="bottom-grid">
-      <article class="panel sector-panel">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">MUNICIPAL CIVIL DEFENSE</p>
-            <h2>GHMC Sector Threat Matrix</h2>
-          </div>
-          <span class="mini-tag">7 ADMINISTRATIVE ZONES</span>
-        </div>
-        <div id="sector-table-container" class="sector-table-container">
-          <table class="data-table">
+        <div class="data-table-container">
+          <table class="tactical-table">
             <thead>
               <tr>
-                <th>Zone</th>
-                <th>Key Areas</th>
+                <th>Zone ID</th>
+                <th>Administrative Sector</th>
+                <th>Key Localities</th>
                 <th>Population</th>
-                <th>Threat Status</th>
+                <th>Hazard Status</th>
               </tr>
             </thead>
-            <tbody id="sector-table-body"></tbody>
+            <tbody id="sector-matrix-body"></tbody>
           </table>
         </div>
       </article>
 
-      <article class="panel history-panel">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">SQLITE PERSISTENCE AUDIT LOG</p>
-            <h2>Recent Executions (/api/v1/database/history)</h2>
+      <!-- Database Persistence Audit -->
+      <article class="panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <p class="panel-eyebrow">TRANSACTIONAL AUDIT LOG</p>
+            <h3 class="panel-title">SQLAlchemy Persistence Stream (/api/v1/database/history)</h3>
           </div>
-          <button id="refresh-history-btn" class="button quiet" type="button">↻ Refresh</button>
+          <button id="btn-refresh-history" class="tactical-btn" style="height: 28px; padding: 0 10px; font-size: 10px;" type="button">↻ REFRESH LOGS</button>
         </div>
-        <div id="history-container" class="history-container">
-          <table class="data-table">
+        <div class="data-table-container">
+          <table class="tactical-table">
             <thead>
               <tr>
-                <th>Step</th>
+                <th>ID</th>
+                <th>Timestamp</th>
                 <th>Phase</th>
                 <th>Risk</th>
                 <th>CAPE</th>
+                <th>Cooling</th>
                 <th>Lightning</th>
                 <th>ETA</th>
-                <th>Alert</th>
               </tr>
             </thead>
-            <tbody id="history-table-body"></tbody>
+            <tbody id="db-history-body"></tbody>
           </table>
         </div>
       </article>
-    </section>
+    </div>
 
-    <p id="error-message" class="error-message" role="alert" hidden></p>
+    <!-- Error message alert bar -->
+    <div id="error-message" class="safety-banner" style="background: rgba(60, 15, 25, 0.9); border-color: var(--crimson); color: #ffccd5;" hidden></div>
+
+    <!-- Command Center Footer -->
     <footer>
-      <span>Hyderabad AI-Based Multi-Stage Thunderstorm Early Warning System · Prototype</span>
-      <a href="/docs" target="_blank" rel="noreferrer">Interactive OpenAPI Documentation ↗</a>
+      <span>AI-POWERED THUNDERSTORM NOWCASTING PLATFORM · HYDERABAD DEFENSE COMMAND</span>
+      <div style="display: flex; gap: 16px;">
+        <span>SQLAlchemy SQLite/PostgreSQL Engine</span>
+        <a href="/docs" target="_blank" rel="noreferrer">Interactive OpenAPI Documentation ↗</a>
+      </div>
     </footer>
   </main>
 </body>
-
 </html>
