@@ -163,6 +163,215 @@
              ================================================================= -->
         <section id="view-command" class="view-pane active">
           
+          <!-- =================================================================
+               EXECUTIVE TOP 4-KPI ROW (IMAGE 4 & 5 EXACT MATCH)
+               ================================================================= -->
+          <div class="top-kpi-row">
+            <div class="kpi-metric-card" id="kpi-card-risk">
+              <div class="kpi-card-top">
+                <span class="kpi-title">CURRENT ML RISK ASSESSMENT</span>
+                <span class="kpi-status-dot" id="kpi-risk-dot"></span>
+              </div>
+              <div class="kpi-value text-emerald" id="kpi-risk-val">LOW 11%</div>
+              <p class="kpi-sub" id="kpi-risk-sub">Normal environmental baseline. No active flood or lightning threat detected.</p>
+            </div>
+
+            <div class="kpi-metric-card">
+              <div class="kpi-card-top">
+                <span class="kpi-title">Active DB Alerts</span>
+                <span class="kpi-tag">Today</span>
+              </div>
+              <div class="kpi-value" id="kpi-active-alerts">0</div>
+              <p class="kpi-sub">Real-time alert dispatches logged to SQLite/PostgreSQL store.</p>
+            </div>
+
+            <div class="kpi-metric-card">
+              <div class="kpi-card-top">
+                <span class="kpi-title">Citizens Marked At Risk</span>
+                <span class="kpi-tag">Today</span>
+              </div>
+              <div class="kpi-value" id="kpi-citizens-risk">0</div>
+              <p class="kpi-sub">Aggregated population residing inside active convective polygons.</p>
+            </div>
+
+            <div class="kpi-metric-card">
+              <div class="kpi-card-top">
+                <span class="kpi-title">Dispatched SMS Logs</span>
+                <span class="kpi-tag">Today</span>
+              </div>
+              <div class="kpi-value" id="kpi-sms-logs">0</div>
+              <p class="kpi-sub">Bilingual cell broadcast alerts sent via CAP protocol.</p>
+            </div>
+          </div>
+
+          <!-- =================================================================
+               TOP WARNING ISSUED CARD (IMAGE 1 EXACT MATCH - AT VERY TOP)
+               ================================================================= -->
+          <div class="top-warning-issued-card" id="top-warning-issued-card">
+            <div class="twi-header">
+              <div class="twi-title-group">
+                <span class="twi-siren">🚨</span>
+                <div>
+                  <h2>WARNING ISSUED</h2>
+                  <p>CIVIL DEFENSE LEVEL · BILINGUAL CITIZEN ALERT GENERATED</p>
+                </div>
+              </div>
+              <span class="twi-badge-sent" id="top-warn-sent-badge">SENT TO CITIZENS</span>
+            </div>
+
+            <div class="twi-metrics-grid">
+              <div class="twi-metric-card">
+                <span class="twi-m-label">LIGHTNING PROBABILITY</span>
+                <strong class="twi-m-val-large text-crimson" id="top-warn-prob">84%</strong>
+                <span class="twi-m-sub">Dangerous Ground Strikes</span>
+              </div>
+              <div class="twi-metric-card">
+                <span class="twi-m-label">EXPECTED IMPACT</span>
+                <strong class="twi-m-val-large text-amber" id="top-warn-impact">Within 30 Minutes</strong>
+                <span class="twi-m-sub">Rapid Convective Motion</span>
+              </div>
+              <div class="twi-metric-card">
+                <span class="twi-m-label">AFFECTED AREAS</span>
+                <strong class="twi-m-val-large text-primary" id="top-warn-areas">Patancheru, Miyapur, Kukatpally, Secunderabad</strong>
+                <span class="twi-m-sub">High-Density Urban Wards</span>
+              </div>
+            </div>
+
+            <div class="twi-actions">
+              <button id="btn-top-warn-portal" class="btn-twi-portal">
+                📱 VIEW LIVE IN CITIZEN PORTAL →
+              </button>
+            </div>
+          </div>
+
+          <!-- =================================================================
+               XGBOOST V1 TIME-SERIES STREAM ENGINE (IMAGE 2, 4, 5 EXACT MATCH)
+               ================================================================= -->
+          <div class="stream-engine-card" id="stream-engine-card">
+            <div class="stream-engine-header">
+              <div class="stream-title-group">
+                <div class="stream-chip-icon">⚡</div>
+                <div>
+                  <h3>XGBoost V1 Time-Series Stream Engine (Half-Hourly CSV Playback)</h3>
+                  <p>Analyzes half-hourly temporal telemetry series, detects threats prior to failure, and calculates estimated time of disaster</p>
+                </div>
+              </div>
+
+              <div class="stream-header-actions">
+                <button class="stream-tab-btn active" id="tab-stream-csv">✓ CSV Stream Playback</button>
+                <button class="stream-tab-btn" id="tab-stream-form">⚡ V1 Feature Form</button>
+                <button class="stream-tab-btn" id="tab-stream-raw">&lt;&gt; Raw Text Format</button>
+              </div>
+            </div>
+
+            <div class="stream-main-grid">
+              <!-- Left Playback Controls -->
+              <div class="stream-controls-box">
+                <div class="stream-box-title">
+                  <div>
+                    <strong>⏱ Half-Hourly CSV Stream Playback Controls</strong>
+                    <p>Sequentially processes the loaded CSV rows and triggers siren instantly when threat threshold is crossed</p>
+                  </div>
+                  <button class="btn-upload-csv" id="btn-upload-custom-csv" title="Upload a custom telemetry CSV file">
+                    📤 Upload Custom CSV
+                  </button>
+                </div>
+
+                <div class="stream-slider-row">
+                  <span>Current Row [ <strong id="stream-row-curr" class="row-counter">4 / 192</strong> ]</span>
+                  <span>Timestamp: <strong id="stream-timestamp" class="row-timestamp">2026-09-03 01:30:00</strong></span>
+                </div>
+
+                <input type="range" id="stream-slider" class="stream-progress-slider" min="1" max="192" value="4" title="Seek to specific time-series telemetry row">
+
+                <div class="stream-buttons-row">
+                  <button id="btn-play-stream" class="btn-play-stream">
+                    ▶ PLAY TIME-SERIES STREAM
+                  </button>
+                  <button id="btn-step-stream" class="btn-step-next">
+                    ▷▷ Step Next (+30m)
+                  </button>
+
+                  <div class="stream-speed-pills">
+                    <span class="stream-speed-label">Speed:</span>
+                    <button class="speed-pill-btn active" data-speed="1">1x</button>
+                    <button class="speed-pill-btn" data-speed="2">2x</button>
+                    <button class="speed-pill-btn" data-speed="5">5x</button>
+                    <button class="speed-pill-btn" data-speed="10">10x</button>
+                  </div>
+                </div>
+
+                <!-- Telemetry Row Feature Values (Exact Image 2 Match) -->
+                <div class="stream-telemetry-row">
+                  <div class="st-node">
+                    <span class="st-lbl">rain_mm_per_hr</span>
+                    <strong class="st-val" id="st-rain-hr">2.3</strong>
+                  </div>
+                  <div class="st-node">
+                    <span class="st-lbl">rain_accum_24h</span>
+                    <strong class="st-val" id="st-accum-24">4.8 mm</strong>
+                  </div>
+                  <div class="st-node">
+                    <span class="st-lbl">rain_accum_7d</span>
+                    <strong class="st-val" id="st-accum-7d">4.8 mm</strong>
+                  </div>
+                  <div class="st-node">
+                    <span class="st-lbl">rain_current_hr</span>
+                    <strong class="st-val" id="st-current-hr">2.3</strong>
+                  </div>
+                  <div class="st-node">
+                    <span class="st-lbl">rain_accum_3d</span>
+                    <strong class="st-val" id="st-accum-3d">4.8 mm</strong>
+                  </div>
+                  <div class="st-node">
+                    <span class="st-lbl">soil_moisture</span>
+                    <strong class="st-val" id="st-soil-moist">2.5</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Stream Analysis Card -->
+              <div class="stream-analysis-card">
+                <div class="sa-header">
+                  <h4>⚡ Live stream analysis</h4>
+                  <span id="sa-status-badge" class="sa-status-badge">PLAYBACK PAUSED</span>
+                </div>
+
+                <div class="sa-details">
+                  <div class="sa-row-meta">
+                    <span class="text-muted">Row Being Analysed:</span>
+                    <strong id="sa-row-num" class="text-cyan">Row [ 4 / 192 ]</strong>
+                  </div>
+                  <div class="sa-row-meta">
+                    <span class="text-muted">Timestamp:</span>
+                    <strong id="sa-timestamp" class="text-amber">2026-09-03 01:30:00</strong>
+                  </div>
+                  <div class="sa-row-meta">
+                    <span class="text-muted">Live Risk Score:</span>
+                    <strong id="sa-risk-score" class="text-emerald">11%</strong>
+                  </div>
+                </div>
+
+                <div class="sa-pred-box">
+                  <span class="sa-pred-lbl">ML PREDICTED OUTPUT</span>
+                  <div id="sa-pred-badge" class="sa-pred-badge">NO PREDICTION YET</div>
+                </div>
+
+                <div class="sa-pred-box" style="margin-top: 2px;">
+                  <span class="sa-pred-lbl">⚡ LIVE TELEMETRY &amp; SCORE BREAKDOWN (EVERY ROW)</span>
+                  <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-secondary); display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px;">
+                    <div>rain_mm_per_hr: <span id="sb-rain-hr" class="text-white">2.3</span></div>
+                    <div>rain_current_hr: <span id="sb-current-hr" class="text-white">2.3</span></div>
+                    <div>rain_accum_24h: <span id="sb-accum-24" class="text-white">4.8 mm</span></div>
+                    <div>rain_accum_3d: <span id="sb-accum-3d" class="text-white">4.8 mm</span></div>
+                    <div>rain_accum_7d: <span id="sb-accum-7d" class="text-white">4.8 mm</span></div>
+                    <div>soil_moisture: <span id="sb-soil-moist" class="text-white">2.5</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Hero Simulation Controller Bar -->
           <div class="simulation-hero-banner">
             <div class="hero-left">
@@ -329,13 +538,14 @@
                ============================================================= -->
           <div class="storytelling-cascade-container">
             
-            <!-- STAGE 1: NUMERICAL WEATHER PREDICTION (NWP) -->
+            <!-- STAGE 1: FUEL BUILDING (NWP / Weather Models) -->
             <div class="story-stage-card" id="card-nwp">
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 1</span>
                   <div>
-                    <h3>Numerical Weather Prediction (NWP)</h3>
+                    <h3>1. Fuel Building 🔥</h3>
+                    <div class="stage-sensor-tag">NWP / WEATHER MODELS</div>
                     <div class="stage-status-sub">STATUS: <span id="status-nwp-text" class="status-live-text">Awaiting Activation</span></div>
                   </div>
                 </div>
@@ -347,14 +557,14 @@
                     </div>
                     <span id="prog-pct-nwp" class="stage-progress-pct">0%</span>
                   </div>
-                  <span class="stage-status-pill status-standby" id="status-nwp">🟡 NWP STANDBY</span>
+                  <span class="stage-status-pill status-standby" id="status-nwp">🟡 FUEL STANDBY</span>
                   <span class="card-time-badge" id="time-nwp">11:00 IST</span>
                 </div>
               </div>
 
               <div class="story-question-row">
-                <span class="q-badge">QUESTION</span>
-                <span class="q-text">Can a thunderstorm form?</span>
+                <span class="q-badge">PHYSICAL MECHANISM</span>
+                <span class="q-text">Air becomes hot + moist and unstable</span>
               </div>
 
               <!-- Animated Changing Values Ticker -->
@@ -413,8 +623,8 @@
                   <p id="nar-nwp" class="nar-text">Atmospheric soundings indicate baseline stability across Greater Hyderabad.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-nwp">
-                  <span class="alert-chip fuel-chip" id="chip-nwp" style="display: none;">🟡 FUEL ALERT: Thunderstorm ingredients present.</span>
-                  <span class="conditions-chip" id="cond-nwp" style="display: none;">✓ CONDITIONS FAVORABLE</span>
+                  <span class="alert-chip fuel-chip" id="chip-nwp" style="display: none;">🟡 FUEL BUILDING DETECTED: Hot, moist &amp; unstable atmosphere.</span>
+                  <span class="conditions-chip" id="cond-nwp" style="display: none;">✓ EVOLVING STAGE TRIGGERED</span>
                 </div>
               </div>
 
@@ -431,13 +641,14 @@
               <span class="arrow-pulse">↓</span>
             </div>
 
-            <!-- STAGE 2: INSAT-3DR SATELLITE ANALYSIS -->
+            <!-- STAGE 2: CLOUD GROWING (INSAT Satellite) -->
             <div class="story-stage-card" id="card-sat">
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 2</span>
                   <div>
-                    <h3>INSAT-3DR Geostationary Satellite</h3>
+                    <h3>2. Cloud Growing ☁️</h3>
+                    <div class="stage-sensor-tag">INSAT SATELLITE</div>
                     <div class="stage-status-sub">STATUS: <span id="status-sat-text" class="status-live-text">Standby (Awaiting Fuel Alert)</span></div>
                   </div>
                 </div>
@@ -455,8 +666,8 @@
               </div>
 
               <div class="story-question-row">
-                <span class="q-badge">QUESTION</span>
-                <span class="q-text">Is a storm cloud actually developing?</span>
+                <span class="q-badge">PHYSICAL MECHANISM</span>
+                <span class="q-text">Cloud starts rising rapidly</span>
               </div>
 
               <!-- Animated Changing Values Ticker -->
@@ -510,8 +721,8 @@
                   <p id="nar-sat" class="nar-text">Awaiting convective activation from numerical soundings.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-sat">
-                  <span class="alert-chip storm-chip" id="chip-sat" style="display: none;">🟠 STORM DEVELOPMENT ALERT: Satellite confirms active growth.</span>
-                  <span class="conditions-chip" id="cond-sat" style="display: none;">✓ RAPID CLOUD DEVELOPMENT DETECTED</span>
+                  <span class="alert-chip storm-chip" id="chip-sat" style="display: none;">🟠 CLOUD GROWING DETECTED: Rapid ascent confirmed.</span>
+                  <span class="conditions-chip" id="cond-sat" style="display: none;">✓ SATELLITE VALIDATED</span>
                 </div>
               </div>
 
@@ -528,13 +739,14 @@
               <span class="arrow-pulse">↓</span>
             </div>
 
-            <!-- STAGE 3: DWR-HYD RADAR ANALYSIS -->
+            <!-- STAGE 3: STORM GROWING (Satellite + Radar) -->
             <div class="story-stage-card" id="card-radar">
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 3</span>
                   <div>
-                    <h3>DWR-HYD Doppler Weather Radar</h3>
+                    <h3>3. Storm Growing ⬆️</h3>
+                    <div class="stage-sensor-tag">SATELLITE + RADAR</div>
                     <div class="stage-status-sub">STATUS: <span id="status-radar-text" class="status-live-text">Standby (Awaiting Satellite Trigger)</span></div>
                   </div>
                 </div>
@@ -552,8 +764,8 @@
               </div>
 
               <div class="story-question-row">
-                <span class="q-badge">QUESTION</span>
-                <span class="q-text">Is the cloud becoming a real thunderstorm?</span>
+                <span class="q-badge">PHYSICAL MECHANISM</span>
+                <span class="q-text">Cloud becomes tall, strong updrafts/ice develop</span>
               </div>
 
               <!-- Animated Changing Values Ticker -->
@@ -607,8 +819,8 @@
                   <p id="nar-radar" class="nar-text">Doppler radar monitoring background echoes.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-radar">
-                  <span class="alert-chip active-chip" id="chip-radar" style="display: none;">🔴 ACTIVE STORM ALERT: Radar confirms mature thunderstorm.</span>
-                  <span class="conditions-chip" id="cond-radar" style="display: none;">✓ ACTIVE THUNDERSTORM CONFIRMED</span>
+                  <span class="alert-chip active-chip" id="chip-radar" style="display: none;">🔴 STORM GROWING CONFIRMED: Strong updrafts &amp; ice cores.</span>
+                  <span class="conditions-chip" id="cond-radar" style="display: none;">✓ RADAR CONFIRMED</span>
                 </div>
               </div>
 
@@ -625,13 +837,14 @@
               <span class="arrow-pulse">↓</span>
             </div>
 
-            <!-- STAGE 4: LIGHTNING AI ANALYSIS (XGBoost) -->
+            <!-- STAGE 4: ELECTRIFYING (Lightning Sensors + Radar) -->
             <div class="story-stage-card" id="card-lightning">
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 4</span>
                   <div>
-                    <h3>XGBoost Lightning AI Prediction</h3>
+                    <h3>4. Electrifying ⚡</h3>
+                    <div class="stage-sensor-tag">LIGHTNING SENSORS + RADAR</div>
                     <div class="stage-status-sub">STATUS: <span id="status-ltg-text" class="status-live-text">Standby (Awaiting Radar Confirmation)</span></div>
                   </div>
                 </div>
@@ -649,8 +862,8 @@
               </div>
 
               <div class="story-question-row">
-                <span class="q-badge">QUESTION</span>
-                <span class="q-text">Has the storm become electrically dangerous?</span>
+                <span class="q-badge">PHYSICAL MECHANISM</span>
+                <span class="q-text">Ice/hail collisions create electrical charge</span>
               </div>
 
               <!-- Animated Changing Values Ticker -->
@@ -699,8 +912,8 @@
                   <p id="nar-lightning" class="nar-text">Atmospheric charge within baseline equilibrium limits.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-lightning">
-                  <span class="alert-chip lightning-chip" id="chip-lightning" style="display: none;">⚡ LIGHTNING RISK: Dangerous ground lightning likely.</span>
-                  <span class="conditions-chip" id="cond-lightning" style="display: none;">✓ HIGH LIGHTNING PROBABILITY</span>
+                  <span class="alert-chip lightning-chip" id="chip-lightning" style="display: none;">⚡ ELECTRIFYING DETECTED: Dangerous dipole ground lightning surge.</span>
+                  <span class="conditions-chip" id="cond-lightning" style="display: none;">✓ CHARGE SEPARATION CONFIRMED</span>
                 </div>
               </div>
 
@@ -717,13 +930,14 @@
               <span class="arrow-pulse">↓</span>
             </div>
 
-            <!-- STAGE 5: STORM TRACKING & MOVEMENT MODEL -->
+            <!-- STAGE 5: ACTIVE STORM (Radar + Lightning + Satellite) -->
             <div class="story-stage-card" id="card-tracking">
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 5</span>
                   <div>
-                    <h3>Storm Tracking &amp; Kinematic Movement</h3>
+                    <h3>5. Active Storm 🌩️</h3>
+                    <div class="stage-sensor-tag">RADAR + LIGHTNING + SATELLITE</div>
                     <div class="stage-status-sub">STATUS: <span id="status-mov-text" class="status-live-text">Standby (Awaiting Threat Confirmation)</span></div>
                   </div>
                 </div>
@@ -735,14 +949,14 @@
                     </div>
                     <span id="prog-pct-tracking" class="stage-progress-pct">0%</span>
                   </div>
-                  <span class="stage-status-pill status-standby" id="status-tracking">🧭 MOVEMENT STANDBY</span>
+                  <span class="stage-status-pill status-standby" id="status-tracking">🌩️ ACTIVE STORM STANDBY</span>
                   <span class="card-time-badge" id="time-tracking">15:00 IST</span>
                 </div>
               </div>
 
               <div class="story-question-row">
-                <span class="q-badge">QUESTION</span>
-                <span class="q-text">Where will the storm move next?</span>
+                <span class="q-badge">PHYSICAL MECHANISM</span>
+                <span class="q-text">Lightning + heavy rain + strong winds</span>
               </div>
 
               <!-- Kinematics & Projected Path Grid -->
@@ -819,9 +1033,16 @@
                   <p id="nar-tracking" class="nar-text">Trajectory tracking stands by awaiting convective storm lock.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-tracking">
-                  <span class="alert-chip hazard-chip" id="chip-tracking" style="display: none;">📍 LOCALIZED HAZARD ZONES GENERATED</span>
+                  <span class="alert-chip hazard-chip" id="chip-tracking" style="display: none;">🌩️ ACTIVE STORM ENGAGED: Multi-sensor threat verified.</span>
                   <span class="conditions-chip" id="cond-tracking" style="display: none;">✓ IMPACT ZONES GENERATED</span>
                 </div>
+              </div>
+
+              <!-- Task Completion & Trigger Arrow -->
+              <div class="story-card-footer" id="handoff-tracking">
+                <span class="handoff-complete" id="handoff-comp-tracking">STAGE 5 PENDING</span>
+                <span class="handoff-trigger" id="handoff-trig-tracking">STANDBY</span>
+                <span class="animated-down-arrow">↓</span>
               </div>
             </div>
 
@@ -830,39 +1051,94 @@
               <span class="arrow-pulse">↓</span>
             </div>
 
-            <!-- FINAL WARNING PANEL -->
-            <div class="final-warning-master-card" id="final-warning-panel" style="display: none;">
-              <div class="warning-master-header">
-                <div class="wm-siren-box">🚨</div>
-                <div class="wm-title-box">
-                  <h2>WARNING ISSUED</h2>
-                  <p>CIVIL DEFENSE LEVEL · BILINGUAL CITIZEN ALERT GENERATED</p>
+            <!-- STAGE 6: WEAKENING (Radar + Satellite + Lightning Trend) -->
+            <div class="story-stage-card" id="card-weakening">
+              <div class="story-card-header">
+                <div class="story-header-left">
+                  <span class="stage-number-tag">STAGE 6</span>
+                  <div>
+                    <h3>6. Weakening 💨</h3>
+                    <div class="stage-sensor-tag">RADAR + SATELLITE + LIGHTNING TREND</div>
+                    <div class="stage-status-sub">STATUS: <span id="status-weak-text" class="status-live-text">Standby (Awaiting Storm Peak)</span></div>
+                  </div>
                 </div>
-                <span class="wm-status-badge" id="final-status">SENT TO CITIZENS</span>
-              </div>
-
-              <div class="warning-metrics-grid">
-                <div class="wm-card">
-                  <span class="wm-lbl">LIGHTNING PROBABILITY</span>
-                  <strong class="wm-val text-crimson" id="final-prob">84%</strong>
-                  <span class="wm-sub">Dangerous Ground Strikes</span>
-                </div>
-                <div class="wm-card">
-                  <span class="wm-lbl">EXPECTED IMPACT</span>
-                  <strong class="wm-val text-amber" id="final-eta">Within 30 Minutes</strong>
-                  <span class="wm-sub">Rapid Convective Motion</span>
-                </div>
-                <div class="wm-card wm-wide">
-                  <span class="wm-lbl">AFFECTED AREAS</span>
-                  <strong class="wm-val text-primary" id="final-areas">Patancheru, Miyapur, Kukatpally, Secunderabad</strong>
-                  <span class="wm-sub">High-Density Urban Wards</span>
+                
+                <div class="stage-header-right">
+                  <div class="stage-progress-wrapper">
+                    <div class="stage-progress-bar">
+                      <div id="prog-bar-weakening" class="stage-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="prog-pct-weakening" class="stage-progress-pct">0%</span>
+                  </div>
+                  <span class="stage-status-pill status-standby" id="status-weakening">💨 WEAKENING STANDBY</span>
+                  <span class="card-time-badge" id="time-weakening">15:15 IST</span>
                 </div>
               </div>
 
-              <div class="warning-actions-row">
-                <button class="btn-jump-portal" id="btn-warning-portal-jump">
-                  📱 VIEW LIVE IN CITIZEN PORTAL →
-                </button>
+              <div class="story-question-row">
+                <span class="q-badge">PHYSICAL MECHANISM</span>
+                <span class="q-text">Updraft disappears, rain dominates</span>
+              </div>
+
+              <!-- Ticker for Weakening Stage -->
+              <div class="story-values-grid">
+                <div class="val-box">
+                  <span class="val-name">Downdraft Velocity</span>
+                  <span class="val-num text-amber" id="ticker-weak-downdraft">38 km/h</span>
+                  <span class="val-target">Outflow Microburst</span>
+                </div>
+                <div class="val-box">
+                  <span class="val-name">Rain Dominance</span>
+                  <span class="val-num text-cyan" id="ticker-weak-rain">Stratiform</span>
+                  <span class="val-target">Rain Cooled Core</span>
+                </div>
+                <div class="val-box">
+                  <span class="val-name">Lightning Trend</span>
+                  <span class="val-num text-emerald" id="ticker-weak-ltg">Decaying</span>
+                  <span class="val-target">Flash Rate Declining</span>
+                </div>
+                <div class="val-box">
+                  <span class="val-name">Evacuation Route</span>
+                  <span class="val-num text-primary" id="ticker-weak-clear">Corridor Open</span>
+                  <span class="val-target">Bedrock Safe Route</span>
+                </div>
+              </div>
+
+              <!-- 4-Facet Decision Matrix -->
+              <div class="cascade-decision-matrix">
+                <div class="cdm-item">
+                  <span class="cdm-lbl">CHECKING</span>
+                  <strong class="cdm-val text-primary" id="cdm-check-weak">Updraft Dissipation, Rain Downpour Rate, Flash Density Decoupling</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">RESULT</span>
+                  <strong class="cdm-val text-cyan" id="cdm-res-weak">Awaiting peak core collapse and cold pool spread</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">DECISION</span>
+                  <strong class="cdm-val text-amber" id="cdm-dec-weak">Standby</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">ACTION</span>
+                  <strong class="cdm-val text-emerald" id="cdm-act-weak">Broadcasting civil defense warnings &amp; safe routes</strong>
+                </div>
+              </div>
+
+              <div class="story-outcome-row">
+                <div class="narrative-box">
+                  <span class="nar-label">AI OBSERVATION:</span>
+                  <p id="nar-weakening" class="nar-text">Awaiting final cell dissipation and rain dominance confirmation.</p>
+                </div>
+                <div class="alert-generated-box" id="alert-box-weakening">
+                  <span class="alert-chip hazard-chip" id="chip-weakening" style="display: none;">💨 WEAKENING PHASE CONFIRMED: Updraft gone, warnings dispatched.</span>
+                  <span class="conditions-chip" id="cond-weakening" style="display: none;">✓ FULL NOWCASTING CYCLE COMPLETE</span>
+                </div>
+              </div>
+
+              <div class="story-card-footer" id="handoff-weakening">
+                <span class="handoff-complete" id="handoff-comp-weakening">STAGE 6 PENDING</span>
+                <span class="handoff-trigger" id="handoff-trig-weakening">FINAL WARNING DISPATCHED</span>
+                <span class="animated-down-arrow">✓</span>
               </div>
             </div>
 
@@ -1042,73 +1318,111 @@
                 </div>
               </div>
 
-              <!-- App Header -->
-              <div class="citizen-app-header">
-                <div class="app-brand">
-                  <span class="app-emblem">⚡</span>
-                  <div>
-                    <h3>NDMA Citizen Alert</h3>
-                    <span class="app-sub">Greater Hyderabad Municipal Corp</span>
-                  </div>
+              <!-- Citizen App Header (Image 3 Header) -->
+              <div class="c-portal-navbar">
+                <button class="c-portal-back-btn" id="btn-c-portal-back" title="Back to Command Center">&lt;</button>
+                <div class="c-portal-brand">
+                  <span class="c-shield-icon">🛡️</span>
+                  <strong>HYDERABAD CITIZEN PORTAL</strong>
                 </div>
-                <span class="live-pulse-badge" id="citizen-live-badge"><span class="blip"></span> LIVE</span>
+                <button class="c-portal-refresh-btn" id="btn-citizen-refresh" title="Refresh Live Citizen Feed">↺</button>
               </div>
 
-              <!-- RED ALERT CARD (Requirement 7: Display directly on Citizen Portal home screen) -->
-              <div id="citizen-red-alert-card" class="citizen-red-alert-card" style="display: none;">
-                <div class="cra-top-banner">
-                  <div class="cra-siren-flashing">🚨</div>
-                  <div class="cra-title-box">
-                    <h3>⚠ Severe Thunderstorm Warning</h3>
-                    <span class="cra-sub-dept">CIVIL DEFENSE &amp; DISASTER MANAGEMENT (IMD / NDMA)</span>
+              <!-- Top Status Card (Image 3 Exact Match) -->
+              <div class="c-status-top-card" id="c-status-top-card">
+                <div class="c-stc-header">
+                  <span>SYSTEM STATUS: <strong id="c-top-status-text">NORMAL</strong></span>
+                  <span class="c-stc-dot" id="c-top-status-dot"></span>
+                </div>
+                <div class="c-stc-body">
+                  <div class="c-stc-icon" id="c-top-status-icon">✓</div>
+                  <div class="c-stc-info">
+                    <h3 id="c-top-headline">HYDERABAD URBAN SECTOR SAFE</h3>
+                    <p id="c-top-desc">Zero active emergency warnings.</p>
                   </div>
-                  <button id="btn-citizen-mute" class="btn-cra-mute" title="Toggle Emergency Siren Sound">
-                    <span id="citizen-mute-icon">🔊</span>
-                    <span id="citizen-mute-text">Mute Sound</span>
+                </div>
+                <button class="btn-evacuate-action" id="btn-navigate-safe">
+                  🧭 NAVIGATE TO SAFE PLACE (<span id="c-nav-mode">PREPAREDNESS MODE</span>)
+                </button>
+              </div>
+
+              <!-- GIS Evacuation Map Card (Image 3 Exact Match) -->
+              <div class="c-map-evac-card" id="c-map-evac-card">
+                <div class="c-mec-head">
+                  <h4>📍 HYDERABAD URBAN CORRIDOR GIS EVACUATION MAP</h4>
+                  <span class="badge-safe-corridor" id="c-route-badge">BEDROCK SAFE ROUTE</span>
+                </div>
+
+                <div class="c-mec-actions">
+                  <button class="btn-gmaps-link" id="btn-c-open-gmaps">
+                    ✈ OPEN IN GOOGLE MAPS 🗺️
+                  </button>
+                  <button class="btn-gmaps-link" id="btn-c-expand-gis">
+                    Expand GIS Map
                   </button>
                 </div>
 
-                <div class="cra-metrics-grid">
-                  <div class="cra-metric-box">
-                    <span class="cra-m-lbl">AREA</span>
-                    <strong class="cra-m-val text-primary" id="c-red-area">Madhapur</strong>
-                  </div>
-                  <div class="cra-metric-box">
-                    <span class="cra-m-lbl">ETA</span>
-                    <strong class="cra-m-val text-amber" id="c-red-eta">22 Minutes</strong>
-                  </div>
-                  <div class="cra-metric-box">
-                    <span class="cra-m-lbl">LIGHTNING PROBABILITY</span>
-                    <strong class="cra-m-val text-crimson" id="c-red-prob">84%</strong>
-                  </div>
-                  <div class="cra-metric-box cra-status-box">
-                    <span class="cra-m-lbl">STATUS</span>
-                    <strong class="cra-m-val text-danger-pulse" id="c-red-status">Take Shelter Immediately</strong>
-                  </div>
-                </div>
+                <div class="c-map-route-visual">
+                  <svg class="c-map-svg-overlay" viewBox="0 0 320 160" preserveAspectRatio="none">
+                    <!-- Grid Lines -->
+                    <defs>
+                      <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                      </pattern>
+                      <linearGradient id="danger-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#ef4444" stop-opacity="0.8"/>
+                        <stop offset="100%" stop-color="#dc2626" stop-opacity="0.2"/>
+                      </linearGradient>
+                    </defs>
+                    <rect width="320" height="160" fill="url(#grid-pattern)" />
 
-                <div class="cra-shelter-instruction">
-                  <span class="cra-inst-icon">⚡</span>
-                  <p>Dangerous cloud-to-ground lightning and microburst winds tracking into this sector. Move into a permanent enclosed structure immediately.</p>
+                    <!-- Danger River / Flash Flood / Lightning Corridor (Red Zone) -->
+                    <path d="M 20 145 Q 160 140 310 120" fill="none" stroke="url(#danger-grad)" stroke-width="14" stroke-linecap="round"/>
+                    <text x="170" y="148" fill="#f87171" font-size="8" font-family="monospace">Urban Hazard Corridor (HAZ)</text>
+
+                    <!-- Active Debris Slip / Lightning Strike Zone (Red Circle) -->
+                    <circle cx="130" cy="90" r="18" fill="rgba(239,68,68,0.3)" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3 2"/>
+                    <text x="130" y="70" text-anchor="middle" fill="#fca5a5" font-size="7.5" font-family="monospace">Active Strike Zone</text>
+
+                    <!-- Safe Route Arc (Green Dashed) -->
+                    <path d="M 40 120 Q 140 40 230 65" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="5 3"/>
+                    
+                    <!-- User Position (Blue) -->
+                    <circle cx="40" cy="120" r="7" fill="#3b82f6" stroke="#ffffff" stroke-width="2"/>
+                    <text x="40" y="138" text-anchor="middle" fill="#93c5fd" font-size="8" font-family="monospace">Your Position</text>
+
+                    <!-- Safe Shelter Node (Cyan/Green) -->
+                    <circle cx="230" cy="65" r="9" fill="#10b981" stroke="#38bdf8" stroke-width="2.5"/>
+                    <circle cx="230" cy="65" r="4" fill="#ffffff"/>
+                    <text x="230" y="50" text-anchor="middle" fill="#6ee7b7" font-size="8" font-family="monospace" font-weight="bold">High Ground Shelter</text>
+                  </svg>
+
+                  <div class="c-map-legend">
+                    <span>Legend:</span>
+                    <span style="color: #60a5fa;">● You</span>
+                    <span style="color: #34d399;">--- Safe Route</span>
+                    <span style="color: #f87171;">■ Danger Corridor</span>
+                  </div>
                 </div>
               </div>
 
-              <!-- Primary Hazard Status Card (Normal: Green / Standby Monitoring) -->
-              <div id="citizen-threat-card" class="citizen-threat-card severity-normal">
-                <div class="c-threat-top">
-                  <span class="c-hazard-type">WEATHER THREAT LEVEL</span>
-                  <span class="c-severity-badge" id="citizen-severity-badge">NO ACTIVE WARNING</span>
+              <!-- Destination Card (Image 3 Exact Match) -->
+              <div class="c-destination-card" id="c-destination-card">
+                <div class="c-dest-lbl-row">
+                  <span>TARGET EVACUATION DESTINATION:</span>
+                  <span class="c-dest-dist" id="c-shelter-dist">1.8 km away (~14 min)</span>
                 </div>
-                <h2 id="citizen-headline" class="c-headline">Baseline Atmospheric Monitoring</h2>
-                <div class="c-countdown-box">
-                  <span class="countdown-lbl">ESTIMATED ARRIVAL COUNTDOWN</span>
-                  <span class="countdown-timer" id="citizen-countdown">-- MIN</span>
-                  <span class="countdown-target" id="citizen-target-ward">All Wards Normal</span>
-                </div>
+                <h4 id="c-shelter-title">Gachibowli High Ground Shelter</h4>
+                <p id="c-shelter-desc">Elevated bedrock ridge, zero debris accumulation vector</p>
               </div>
+
+              <!-- Full-Width Emergency Helpline (Image 3 Exact Match) -->
+              <a href="tel:112" class="btn-disaster-helpline-full" id="btn-c-helpline">
+                📞 DISASTER HELPLINE (1070 / 112 / GHMC 040-21111111)
+              </a>
 
               <!-- Language Switcher & Bilingual Advisory -->
-              <div class="citizen-advisory-block">
+              <div class="citizen-advisory-block" style="margin-top: 10px;">
                 <div class="lang-tabs">
                   <button class="btn-lang active" id="btn-lang-en">ENGLISH BULLETIN</button>
                   <button class="btn-lang" id="btn-lang-te">తెలుగు హెచ్చరిక</button>

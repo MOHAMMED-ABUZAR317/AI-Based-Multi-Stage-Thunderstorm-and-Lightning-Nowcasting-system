@@ -478,6 +478,76 @@
     valTracking: document.getElementById('val-tracking'),
     valWarning: document.getElementById('val-warning'),
 
+    // Image 1: Top Warning Issued Card (at very top)
+    topWarningIssuedCard: document.getElementById('top-warning-issued-card'),
+    topWarnProb: document.getElementById('top-warn-prob'),
+    topWarnImpact: document.getElementById('top-warn-impact'),
+    topWarnAreas: document.getElementById('top-warn-areas'),
+    btnTopWarnPortal: document.getElementById('btn-top-warn-portal'),
+    topWarnSentBadge: document.getElementById('top-warn-sent-badge'),
+
+    // Image 4/5: Top 4-KPI Row
+    kpiCardRisk: document.getElementById('kpi-card-risk'),
+    kpiRiskVal: document.getElementById('kpi-risk-val'),
+    kpiRiskDot: document.getElementById('kpi-risk-dot'),
+    kpiRiskSub: document.getElementById('kpi-risk-sub'),
+    kpiActiveAlerts: document.getElementById('kpi-active-alerts'),
+    kpiCitizensRisk: document.getElementById('kpi-citizens-risk'),
+    kpiSmsLogs: document.getElementById('kpi-sms-logs'),
+
+    // Image 2, 4, 5: Stream Engine Playback
+    streamEngineCard: document.getElementById('stream-engine-card'),
+    btnPlayStream: document.getElementById('btn-play-stream'),
+    btnStepStream: document.getElementById('btn-step-stream'),
+    streamSlider: document.getElementById('stream-slider'),
+    streamRowCurr: document.getElementById('stream-row-curr'),
+    streamTimestamp: document.getElementById('stream-timestamp'),
+    saRowNum: document.getElementById('sa-row-num'),
+    saTimestamp: document.getElementById('sa-timestamp'),
+    saRiskScore: document.getElementById('sa-risk-score'),
+    saPredBadge: document.getElementById('sa-pred-badge'),
+    saStatusBadge: document.getElementById('sa-status-badge'),
+    speedPillBtns: document.querySelectorAll('.speed-pill-btn'),
+    tabStreamCsv: document.getElementById('tab-stream-csv'),
+    tabStreamForm: document.getElementById('tab-stream-form'),
+    tabStreamRaw: document.getElementById('tab-stream-raw'),
+
+    // Stage 6: Weakening
+    cardWeakening: document.getElementById('card-weakening'),
+    progBarWeakening: document.getElementById('prog-bar-weakening'),
+    progPctWeakening: document.getElementById('prog-pct-weakening'),
+    statusWeakText: document.getElementById('status-weak-text'),
+    statusWeakening: document.getElementById('status-weakening'),
+    tickerWeakDowndraft: document.getElementById('ticker-weak-downdraft'),
+    tickerWeakRain: document.getElementById('ticker-weak-rain'),
+    tickerWeakLtg: document.getElementById('ticker-weak-ltg'),
+    tickerWeakClear: document.getElementById('ticker-weak-clear'),
+    cdmCheckWeak: document.getElementById('cdm-check-weak'),
+    cdmResWeak: document.getElementById('cdm-res-weak'),
+    cdmDecWeak: document.getElementById('cdm-dec-weak'),
+    cdmActWeak: document.getElementById('cdm-act-weak'),
+    narWeakening: document.getElementById('nar-weakening'),
+    chipWeakening: document.getElementById('chip-weakening'),
+    handoffWeakening: document.getElementById('handoff-weakening'),
+
+    // Image 3: Citizen Portal
+    cStatusTopCard: document.getElementById('c-status-top-card'),
+    cTopStatusText: document.getElementById('c-top-status-text'),
+    cTopStatusDot: document.getElementById('c-top-status-dot'),
+    cTopStatusIcon: document.getElementById('c-top-status-icon'),
+    cTopHeadline: document.getElementById('c-top-headline'),
+    cTopDesc: document.getElementById('c-top-desc'),
+    btnNavigateSafe: document.getElementById('btn-navigate-safe'),
+    cNavMode: document.getElementById('c-nav-mode'),
+    cShelterDist: document.getElementById('c-shelter-dist'),
+    cShelterTitle: document.getElementById('c-shelter-title'),
+    cShelterDesc: document.getElementById('c-shelter-desc'),
+    btnCPortalBack: document.getElementById('btn-c-portal-back'),
+    btnCitizenRefresh: document.getElementById('btn-citizen-refresh'),
+    btnCOpenGmaps: document.getElementById('btn-c-open-gmaps'),
+    btnCExpandGis: document.getElementById('btn-c-expand-gis'),
+    btnCHelpline: document.getElementById('btn-c-helpline'),
+
     // Timeline Steps
     timelineSteps: document.querySelectorAll('.t-step'),
 
@@ -1407,84 +1477,96 @@
   const DATASETS = Object.freeze({
     'dataset-1': {
       id: 'dataset-1',
-      name: 'Hyderabad Baseline Conditions',
+      name: 'Hyderabad Convective Outbreak Track',
       scenarioTime: '11:00 IST',
-      subtitle: 'Normal Monitoring',
-      category: 'NORMAL MONITORING / EQUILIBRIUM',
+      subtitle: 'Complete 6-Stage Atmospheric Evolution',
+      category: 'MULTI-STAGE CASCADING CONVECTION',
       isExtreme: false,
-      hasSevereLightning: false,
-      isHazard: false,
-      targetArea: 'Greater Hyderabad Area',
-      etaMinutes: 'N/A (Clear)',
-      probPercent: '6%',
+      hasSevereLightning: true,
+      isHazard: true,
+      targetArea: 'Patancheru, Miyapur, Kukatpally, Secunderabad',
+      etaMinutes: 'Within 30 Minutes',
+      probPercent: '84%',
       nwp: {
-        temp: ['28.5°C', '29.2°C', '29.8°C', '30.2°C', '30.5°C'],
-        hum: ['48%', '50%', '52%', '53%', '54%'],
-        cape: ['450 J/kg', '520 J/kg', '580 J/kg', '620 J/kg', '650 J/kg'],
-        li: ['+3.5', '+3.0', '+2.6', '+2.4', '+2.2'],
-        shear: ['6 m/s', '7 m/s', '8 m/s', '8 m/s', '9 m/s'],
-        check: 'Temperature, Humidity, Atmospheric CAPE & CIN',
-        result: 'Atmospheric stability strong. High CIN cap (-180 J/kg).',
-        decision: 'No Atmospheric Fuel Alert (Equilibrium Confirmed)',
-        action: 'Routine Meteorological Monitoring (Standby)',
-        badge: '✓ EQUILIBRIUM MAINTAINED',
-        trigger: 'ATMOSPHERE STABLE — NO CASCADE REQUIRED'
+        temp: ['29.0°C', '30.2°C', '31.4°C', '32.1°C', '32.8°C'],
+        hum: ['65%', '68%', '72%', '75%', '78%'],
+        cape: ['900 J/kg', '1,250 J/kg', '1,680 J/kg', '2,100 J/kg', '2,450 J/kg'],
+        li: ['-1.5', '-2.4', '-3.3', '-4.1', '-4.8'],
+        shear: ['10 m/s', '13 m/s', '16 m/s', '19 m/s', '21 m/s'],
+        check: 'Temperature, Humidity, Instability, CAPE, Wind Shear',
+        result: 'Thermodynamic destabilization detected. CAPE exceeds 2,450 J/kg threshold.',
+        decision: '1. Fuel Building Detected (Evolving Stage)',
+        action: 'Automatically Triggering Stage 2 (INSAT Satellite) →',
+        badge: '✓ 1. FUEL BUILDING DETECTED',
+        trigger: 'TRIGGERING SATELLITE ANALYSIS...'
       },
       sat: {
-        ctt: ['-4.2°C', '-5.0°C', '-5.8°C', '-6.1°C', '-6.4°C'],
-        cooling: ['+0.4°C/hr', '+0.3°C/hr', '+0.2°C/hr', '+0.1°C/hr', '+0.0°C/hr'],
-        growth: ['Fair Weather Cumulus', 'Scattered Shallow Clouds', 'Stable Layer', 'No Vertical Updraft', 'Normal Strata'],
-        expansion: ['0 km²/hr', '0 km²/hr', '0 km²/hr', '0 km²/hr', '0 km²/hr'],
-        check: 'INSAT-3DR Cloud Top Cooling & Vertical Expansion',
-        result: 'Cloud development normal. No vertical growth detected.',
-        decision: 'Clear / Scattered Stratocumulus Only',
-        action: 'Standby — Background Satellite Scanning',
-        badge: '✓ CLOUD NORMAL',
-        trigger: 'STANDBY'
+        ctt: ['-28.0°C', '-34.5°C', '-41.0°C', '-47.8°C', '-54.2°C'],
+        cooling: ['-2.0°C/hr', '-4.5°C/hr', '-7.2°C/hr', '-9.8°C/hr', '-11.5°C/hr'],
+        growth: ['Cumulus Congestus', 'Towering Cumulus', 'Rapid Glaciation', 'Active Anvil', 'Mature Convective Cloud'],
+        expansion: ['18 km²/hr', '26 km²/hr', '35 km²/hr', '44 km²/hr', '52 km²/hr'],
+        check: 'Cloud Top Cooling Rate & Vertical Development',
+        result: 'Cloud rising rapidly (-11.5°C/hr cooling rate). Deep glaciation confirmed.',
+        decision: '2. Cloud Growing Confirmed',
+        action: 'Automatically Triggering Stage 3 (Doppler Radar) →',
+        badge: '✓ 2. CLOUD GROWING DETECTED',
+        trigger: 'TRIGGERING DOPPLER RADAR...'
       },
       radar: {
-        refl: ['8 dBZ', '9 dBZ', '10 dBZ', '11 dBZ', '12 dBZ'],
-        echo: ['1.8 km', '2.0 km', '2.2 km', '2.4 km', '2.5 km'],
-        velocity: ['8 km/h', '9 km/h', '10 km/h', '10 km/h', '11 km/h'],
-        core: ['Boundary Layer', 'Ground Clutter', 'Ground Clutter', 'Clear Air Mode', 'Negligible Core'],
-        check: 'DWR-HYD Begumpet Reflectivity & Echo Tops',
-        result: 'Precipitation echoes low (12 dBZ). No cells detected.',
-        decision: 'Clear Air Reflectivity Only',
-        action: 'Standby — Awaiting Cell Formation',
-        badge: '✓ CLEAR RADAR',
-        trigger: 'STANDBY'
+        refl: ['20 dBZ', '28 dBZ', '36 dBZ', '45 dBZ', '54 dBZ'],
+        echo: ['5.0 km', '7.2 km', '9.8 km', '12.1 km', '14.2 km'],
+        velocity: ['18 km/h', '24 km/h', '30 km/h', '35 km/h', '38 km/h'],
+        core: ['Developing Cell', 'Moderate Core', 'Convective Core', 'Dense Ice Region', 'Mature Supercell Core'],
+        check: 'Core Reflectivity, Echo Top, Mixed-Phase Hydrometeors',
+        result: 'Cloud becomes tall (14.2 km echo top, 54 dBZ core). Strong updrafts & ice developed.',
+        decision: '3. Storm Growing Confirmed',
+        action: 'Automatically Triggering Stage 4 (Lightning Sensors) →',
+        badge: '✓ 3. STORM GROWING CONFIRMED',
+        trigger: 'TRIGGERING LIGHTNING SENSORS...'
       },
       lightning: {
-        field: ['1.2 kV/m', '1.5 kV/m', '1.8 kV/m', '2.0 kV/m', '2.1 kV/m'],
-        flash: ['Negligible', 'Zero Ground Strikes', 'Zero Strikes', 'No Activity', 'Zero Hazard'],
-        prob: ['2%', '3%', '4%', '5%', '6%'],
-        check: 'Electric Field Gradient & XGBoost Flash Model',
-        result: 'Lightning strike probability 6%. No electrical charge.',
-        decision: 'Zero Electrical Hazard Detected',
-        action: 'Standby — Monitoring Ground Sensors',
-        badge: '✓ ZERO LIGHTNING RISK',
-        trigger: 'STANDBY'
+        field: ['12 kV/m', '26 kV/m', '44 kV/m', '64 kV/m', '82 kV/m'],
+        flash: ['Low Dipole', 'Charge Separation', 'Mixed-Phase Collisions', 'Frequent Ground Strikes', 'Dangerous Strike Surge (46/min)'],
+        prob: ['12%', '32%', '54%', '72%', '84%'],
+        check: 'Electric Field Gradient & Mixed-Phase Hydrometeor Collisions',
+        result: 'Ice and hail collisions create intense electrical charge. 84% lightning probability.',
+        decision: '4. Electrifying Confirmed',
+        action: 'Automatically Triggering Stage 5 (Active Storm Model) →',
+        badge: '✓ 4. ELECTRIFYING DETECTED',
+        trigger: 'TRIGGERING ACTIVE STORM MODEL...'
       },
       movement: {
-        speed: ['0 km/h', '0 km/h', '0 km/h', '0 km/h', '0 km/h'],
-        dir: ['Stationary', 'Stationary', 'Stationary', 'Stationary', 'Stationary'],
-        eta: ['N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
-        target: 'Greater Hyderabad Area (Clear)',
-        check: 'Centroid Vector Extrapolation & Steering Winds',
-        result: 'Stationary background conditions. No storm track.',
-        decision: 'No Trajectory Projection Needed',
-        action: 'Routine Watch Active',
-        badge: '✓ STATIONARY / SAFE',
-        trigger: 'STANDBY'
+        speed: ['28 km/h', '32 km/h', '36 km/h', '39 km/h', '42 km/h'],
+        dir: ['NE (45°)', 'NE (45°)', 'NE (45°)', 'NE (45°)', 'NE (45°)'],
+        eta: ['45 Mins', '38 Mins', '32 Mins', '26 Mins', '22 Minutes'],
+        target: 'Patancheru, Miyapur, Kukatpally, Secunderabad',
+        check: 'Translation Velocity & High-Density Population Geofence',
+        result: 'Active storm confirmed: dangerous lightning + heavy rain + strong winds tracking into urban wards.',
+        decision: '5. Active Storm Confirmed',
+        action: 'Automatically Triggering Stage 6 (Weakening & Warning Dissemination) →',
+        badge: '✓ 5. ACTIVE STORM ENGAGED',
+        trigger: 'TRIGGERING WEAKENING ANALYSIS...'
+      },
+      weakening: {
+        downdraft: ['18 km/h', '24 km/h', '30 km/h', '36 km/h', '38 km/h'],
+        rain: ['Convective Core', 'Downdraft Outflow', 'Rain Dominance', 'Heavy Downpours', 'Rain Shield Dominates'],
+        ltg: ['Peak 46/min', 'Decaying 28/min', 'Decaying 14/min', 'Scattered Flashes', 'Decaying Trend'],
+        clear: ['Outflow Active', 'Precip Spreading', 'Corridor Safe Route', 'Shelter Safe Path', 'Evacuation Route Open'],
+        check: 'Updraft Dissipation, Rain Downpour Rate, Flash Density Decoupling',
+        result: 'Updraft disappears, rain dominates. Microburst outflow and civil defense warning dispatched.',
+        decision: '6. Weakening Phase Confirmed · Warning Issued',
+        action: 'Disseminated to Citizen Portal, Mobile App & Municipal Sirens',
+        badge: '✓ 6. WEAKENING CONFIRMED',
+        trigger: 'FINAL CIVIL DEFENSE WARNING DISPATCHED'
       },
       warning: {
-        time: '11:05 IST',
-        issued: false,
-        level: 'EQUILIBRIUM',
-        headline: 'Clear Skies & Normal Atmosphere Across Hyderabad',
-        summary: 'Thermodynamic equilibrium confirmed. No convective alert active.',
-        areas: 'Greater Hyderabad Metropolitan Region',
-        voice: 'Hyderabad baseline conditions evaluated. Atmosphere remains calm and stable. No warning required.'
+        time: '11:30 IST',
+        issued: true,
+        level: 'SEVERE',
+        headline: '🚨 WARNING ISSUED: Severe Thunderstorm & Lightning Imminent',
+        summary: 'Civil defense level alert: Dangerous ground strikes and downburst winds tracking into Patancheru, Miyapur, Kukatpally, and Secunderabad within 30 minutes.',
+        areas: 'Patancheru, Miyapur, Kukatpally, Secunderabad',
+        voice: 'Warning issued! Severe thunderstorm and dangerous lightning imminent for Patancheru, Miyapur, Kukatpally, and Secunderabad. Citizens must seek immediate indoor shelter.'
       }
     },
 
@@ -2016,28 +2098,26 @@
       DOM.innovationCards.forEach((c) => c.classList.remove('jury-highlight'));
     }
 
-    // Reset Legacy Cards
-    const cards = [DOM.cardNwp, DOM.cardSat, DOM.cardRadar, DOM.cardLightning, DOM.cardTracking, DOM.cardWarning];
-    cards.forEach((c) => {
-      if (c) c.classList.remove('card-active', 'card-complete', 'card-alert');
+    // Reset Legacy & Storytelling Cards
+    const allStageCards = [
+      DOM.cardNwp, DOM.cardSat, DOM.cardRadar, DOM.cardLightning, DOM.cardTracking, DOM.cardWeakening
+    ];
+    allStageCards.forEach((c) => {
+      if (c) c.className = 'story-stage-card stage-idle';
     });
+
     if (DOM.emergencyBypassNotice) DOM.emergencyBypassNotice.style.display = 'none';
     if (DOM.severeLightningModal) DOM.severeLightningModal.style.display = 'none';
 
-    // Reset Storytelling Cards
-    if (DOM.storyStages) {
-      DOM.storyStages.forEach((stageCard) => {
-        if (stageCard) stageCard.className = 'story-stage-card stage-idle';
-      });
-    }
-
+    // Reset Stage Status Badges
     if (DOM.badgeStatuses) {
       const defaultBadgeText = [
         '🟡 AWAITING TRIGGER',
         '🟠 AWAITING TRIGGER',
         '🔴 AWAITING TRIGGER',
         '⚡ AWAITING TRIGGER',
-        '📍 AWAITING TRIGGER'
+        '🌩️ AWAITING TRIGGER',
+        '💨 AWAITING TRIGGER'
       ];
       DOM.badgeStatuses.forEach((badge, idx) => {
         if (badge) {
@@ -2052,71 +2132,63 @@
         if (chip) chip.style.display = 'none';
       });
     }
+    if (DOM.chipWeakening) DOM.chipWeakening.style.display = 'none';
 
-    if (DOM.compBadges) {
-      DOM.compBadges.forEach((b) => {
-        if (b) {
-          b.className = 'step-completion-badge';
-          b.textContent = 'PENDING TRIGGER';
-        }
-      });
-    }
-
-    if (DOM.triggerBadges) {
-      DOM.triggerBadges.forEach((b) => {
-        if (b) {
-          b.className = 'step-trigger-badge';
-          b.textContent = 'STANDBY';
-        }
-      });
-    }
-
-    // Reset Stage Status Headers & Progress Bars
-    if (DOM.statusNwpText) DOM.statusNwpText.textContent = 'STATUS: STANDBY';
+    // Reset Progress Bars
+    if (DOM.statusNwpText) DOM.statusNwpText.textContent = 'STATUS: Awaiting Activation';
     if (DOM.progBarNwp) DOM.progBarNwp.style.width = '0%';
     if (DOM.progPctNwp) DOM.progPctNwp.textContent = '0%';
 
-    if (DOM.statusSatText) DOM.statusSatText.textContent = 'STATUS: STANDBY';
+    if (DOM.statusSatText) DOM.statusSatText.textContent = 'STATUS: Standby (Awaiting Fuel Alert)';
     if (DOM.progBarSat) DOM.progBarSat.style.width = '0%';
     if (DOM.progPctSat) DOM.progPctSat.textContent = '0%';
 
-    if (DOM.statusRadarText) DOM.statusRadarText.textContent = 'STATUS: STANDBY';
+    if (DOM.statusRadarText) DOM.statusRadarText.textContent = 'STATUS: Standby (Awaiting Satellite Trigger)';
     if (DOM.progBarRadar) DOM.progBarRadar.style.width = '0%';
     if (DOM.progPctRadar) DOM.progPctRadar.textContent = '0%';
 
-    if (DOM.statusLightningText) DOM.statusLightningText.textContent = 'STATUS: STANDBY';
+    if (DOM.statusLightningText) DOM.statusLightningText.textContent = 'STATUS: Standby (Awaiting Radar Confirmation)';
     if (DOM.progBarLightning) DOM.progBarLightning.style.width = '0%';
     if (DOM.progPctLightning) DOM.progPctLightning.textContent = '0%';
 
-    if (DOM.statusTrackingText) DOM.statusTrackingText.textContent = 'STATUS: STANDBY';
+    if (DOM.statusTrackingText) DOM.statusTrackingText.textContent = 'STATUS: Standby (Awaiting Threat Confirmation)';
     if (DOM.progBarTracking) DOM.progBarTracking.style.width = '0%';
     if (DOM.progPctTracking) DOM.progPctTracking.textContent = '0%';
 
+    if (DOM.statusWeakText) DOM.statusWeakText.textContent = 'STATUS: Standby (Awaiting Storm Peak)';
+    if (DOM.progBarWeakening) DOM.progBarWeakening.style.width = '0%';
+    if (DOM.progPctWeakening) DOM.progPctWeakening.textContent = '0%';
+
     // Reset Decision Matrix
-    if (DOM.cdmCheckNwp) DOM.cdmCheckNwp.textContent = 'Temperature, Humidity, Atmospheric CAPE & CIN';
-    if (DOM.cdmResNwp) DOM.cdmResNwp.textContent = 'Awaiting thermodynamic soundings.';
-    if (DOM.cdmDecNwp) DOM.cdmDecNwp.textContent = 'No Alert';
-    if (DOM.cdmActNwp) DOM.cdmActNwp.textContent = 'Standby';
+    if (DOM.cdmCheckNwp) DOM.cdmCheckNwp.textContent = 'Temperature, Humidity, Instability, CAPE, Wind Shear';
+    if (DOM.cdmResNwp) DOM.cdmResNwp.textContent = 'Reading atmospheric soundings... Awaiting threshold breach';
+    if (DOM.cdmDecNwp) DOM.cdmDecNwp.textContent = 'Standby Monitoring';
+    if (DOM.cdmActNwp) DOM.cdmActNwp.textContent = 'Awaiting thermodynamic destabilization';
 
-    if (DOM.cdmCheckSat) DOM.cdmCheckSat.textContent = 'Cloud Cooling Rate & Expansion Area';
-    if (DOM.cdmResSat) DOM.cdmResSat.textContent = 'Awaiting satellite infrared scan.';
-    if (DOM.cdmDecSat) DOM.cdmDecSat.textContent = 'No Alert';
-    if (DOM.cdmActSat) DOM.cdmActSat.textContent = 'Standby';
+    if (DOM.cdmCheckSat) DOM.cdmCheckSat.textContent = 'Cloud Cooling, Cloud Expansion, Tropopause Penetration';
+    if (DOM.cdmResSat) DOM.cdmResSat.textContent = 'Standby: Awaiting stage 1 Fuel Alert trigger';
+    if (DOM.cdmDecSat) DOM.cdmDecSat.textContent = 'Standby';
+    if (DOM.cdmActSat) DOM.cdmActSat.textContent = 'Heavy infrared radiometric models idle';
 
-    if (DOM.cdmCheckRadar) DOM.cdmCheckRadar.textContent = 'Reflectivity Core & Echo Top Velocity';
-    if (DOM.cdmResRadar) DOM.cdmResRadar.textContent = 'Awaiting radar reflectivity scan.';
-    if (DOM.cdmDecRadar) DOM.cdmDecRadar.textContent = 'No Alert';
-    if (DOM.cdmActRadar) DOM.cdmActRadar.textContent = 'Standby';
+    if (DOM.cdmCheckRadar) DOM.cdmCheckRadar.textContent = 'Core Reflectivity, Echo Top, Vertically Integrated Liquid (VIL)';
+    if (DOM.cdmResRadar) DOM.cdmResRadar.textContent = 'Doppler surveillance on standby awaiting satellite validation';
+    if (DOM.cdmDecRadar) DOM.cdmDecRadar.textContent = 'Standby';
+    if (DOM.cdmActRadar) DOM.cdmActRadar.textContent = 'Volume scan sweeps hold until convective core initiated';
 
-    if (DOM.cdmCheckLightning) DOM.cdmCheckLightning.textContent = 'Electric Field Gradient & Flash Potential';
-    if (DOM.cdmResLightning) DOM.cdmResLightning.textContent = 'Awaiting atmospheric charge data.';
-    if (DOM.cdmDecLightning) DOM.cdmDecLightning.textContent = 'No Alert';
-    if (DOM.cdmActLightning) DOM.cdmActLightning.textContent = 'Standby';
+    if (DOM.cdmCheckLightning) DOM.cdmCheckLightning.textContent = 'Electric Field Gradient, Mixed-Phase Hydrometeors, Ground Charge';
+    if (DOM.cdmResLightning) DOM.cdmResLightning.textContent = 'Awaiting mature convective cell confirmation';
+    if (DOM.cdmDecLightning) DOM.cdmDecLightning.textContent = 'Standby';
+    if (DOM.cdmActLightning) DOM.cdmActLightning.textContent = 'XGBoost electrification tensor models primed';
 
-    if (DOM.cdmCheckTracking) DOM.cdmCheckTracking.textContent = 'Centroid Extrapolation & Impact Zones';
-    if (DOM.cdmResTracking) DOM.cdmResTracking.textContent = 'Awaiting storm movement vector.';
-    if (DOM.cdmDecTracking) DOM.cdmDecTracking.textContent = 'No Alert';
-    if (DOM.cdmActTracking) DOM.cdmActTracking.textContent = 'Standby';
+    if (DOM.cdmCheckTracking) DOM.cdmCheckTracking.textContent = 'Cell Advection Velocity, Extrapolation Vectors, Street Geofences';
+    if (DOM.cdmResTracking) DOM.cdmResTracking.textContent = 'Awaiting kinematic trajectory calculation';
+    if (DOM.cdmDecTracking) DOM.cdmDecTracking.textContent = 'Standby';
+    if (DOM.cdmActTracking) DOM.cdmActTracking.textContent = 'Generating localized polygon hazard zones';
+
+    if (DOM.cdmCheckWeak) DOM.cdmCheckWeak.textContent = 'Updraft Dissipation, Rain Downpour Rate, Flash Density Decoupling';
+    if (DOM.cdmResWeak) DOM.cdmResWeak.textContent = 'Awaiting peak core collapse and cold pool spread';
+    if (DOM.cdmDecWeak) DOM.cdmDecWeak.textContent = 'Standby';
+    if (DOM.cdmActWeak) DOM.cdmActWeak.textContent = 'Broadcasting civil defense warnings & safe routes';
 
     // Baseline Ticker Values
     if (DOM.tickerTemp) DOM.tickerTemp.textContent = dataset.nwp.temp[0];
@@ -2143,12 +2215,33 @@
     if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[0];
     if (DOM.trackCurrLoc) DOM.trackCurrLoc.textContent = dataset.movement.target;
 
-    if (DOM.finalWarningPanel) DOM.finalWarningPanel.style.display = 'none';
+    // Reset Top Warning Issued Card (Image 1)
+    if (DOM.topWarningIssuedCard) DOM.topWarningIssuedCard.style.display = 'none';
 
-    // Citizen Portal state
+    // Reset Top 4-KPI Row (Image 4 & 5)
+    if (DOM.kpiRiskVal) {
+      DOM.kpiRiskVal.textContent = 'LOW 11%';
+      DOM.kpiRiskVal.className = 'kpi-value text-emerald';
+    }
+    if (DOM.kpiRiskDot) DOM.kpiRiskDot.classList.remove('danger');
+    if (DOM.kpiRiskSub) DOM.kpiRiskSub.textContent = 'Normal environmental baseline. No active flood or lightning threat detected.';
+    if (DOM.kpiActiveAlerts) DOM.kpiActiveAlerts.textContent = '0';
+    if (DOM.kpiCitizensRisk) DOM.kpiCitizensRisk.textContent = '0';
+    if (DOM.kpiSmsLogs) DOM.kpiSmsLogs.textContent = '0';
+
+    // Reset Citizen Portal (Image 3)
+    if (DOM.cStatusTopCard) DOM.cStatusTopCard.classList.remove('danger');
+    if (DOM.cTopStatusText) DOM.cTopStatusText.textContent = 'NORMAL';
+    if (DOM.cTopStatusDot) DOM.cTopStatusDot.classList.remove('danger');
+    if (DOM.cTopStatusIcon) DOM.cTopStatusIcon.textContent = '✓';
+    if (DOM.cTopHeadline) DOM.cTopHeadline.textContent = 'HYDERABAD URBAN SECTOR SAFE';
+    if (DOM.cTopDesc) DOM.cTopDesc.textContent = 'Zero active emergency warnings.';
+    if (DOM.cNavMode) DOM.cNavMode.textContent = 'PREPAREDNESS MODE';
+    if (DOM.cShelterDist) DOM.cShelterDist.textContent = '1.8 km away (~14 min)';
+    if (DOM.cShelterTitle) DOM.cShelterTitle.textContent = 'Gachibowli High Ground Shelter';
+    if (DOM.cShelterDesc) DOM.cShelterDesc.textContent = 'Elevated bedrock ridge, zero debris accumulation vector';
+
     if (DOM.citizenRedAlertCard) DOM.citizenRedAlertCard.style.display = 'none';
-    if (DOM.citizenNormalState) DOM.citizenNormalState.style.display = 'block';
-    if (DOM.citizenWarningActiveState) DOM.citizenWarningActiveState.style.display = 'none';
     if (DOM.citizenWarningPopup) DOM.citizenWarningPopup.style.display = 'none';
 
     // Hero banner status
@@ -2174,12 +2267,8 @@
     resetCascadeCards(activeDatasetKey);
 
     // Base Stage Duration calculated from Speed Multiplier
-    // At 1x: stageDuration = 12000ms (~72s total)
-    // At 2x (default): stageDuration = 6000ms (~36s total)
-    // At 5x: stageDuration = 2400ms (~14s total)
-    // At 10x: stageDuration = 1200ms (~7s total)
-    const stageDuration = Math.round(12000 / simSpeedMultiplier);
-    const transGap = Math.round(750 / simSpeedMultiplier);
+    const stageDuration = Math.round(7500 / simSpeedMultiplier);
+    const transGap = Math.round(500 / simSpeedMultiplier);
 
     if (DOM.btnStartSimulationHero) {
       DOM.btnStartSimulationHero.classList.add('running');
@@ -2194,34 +2283,21 @@
     if (DOM.heroStatusText) DOM.heroStatusText.textContent = 'CASCADING WORKFLOW RUNNING (' + simSpeedMultiplier + 'x SPEED)';
 
     // =========================================================================
-    // STAGE 1: NUMERICAL WEATHER PREDICTION (NWP)
+    // 1. FUEL BUILDING 🔥 (NWP / Weather Models)
+    // Physical Mechanism: Air becomes hot + moist and unstable
     // =========================================================================
-    if (DOM.storyStages && DOM.storyStages[0]) DOM.storyStages[0].className = 'story-stage-card stage-running';
-    if (DOM.badgeStatuses && DOM.badgeStatuses[0]) {
-      DOM.badgeStatuses[0].textContent = '🟡 NWP ANALYSIS RUNNING';
-      DOM.badgeStatuses[0].className = 'stage-status-badge status-running';
-    }
-    if (DOM.statusNwpText) DOM.statusNwpText.textContent = 'STATUS: Reading Data...';
+    if (DOM.cardNwp) DOM.cardNwp.className = 'story-stage-card stage-running';
+    if (DOM.statusNwpText) DOM.statusNwpText.textContent = 'Reading Soundings... Destabilizing';
     if (DOM.progBarNwp) DOM.progBarNwp.style.width = '0%';
     if (DOM.progPctNwp) DOM.progPctNwp.textContent = '0%';
 
-    updateWholeDayTimeline('09:00 IST', 'Atmospheric Moisture & Solar Insolation Increasing', 11, 1, false);
+    updateWholeDayTimeline('09:00 IST', 'Stage 1: Fuel Building — Air Becoming Hot & Moist', 11, 1, false);
     highlightInnovationCard('prior');
-    speakAnnouncement('NWP analysis running. Reading atmospheric soundings for ' + dataset.name);
+    speakAnnouncement('Stage 1: Numerical Weather Prediction evaluating fuel building. Air is heating and destabilizing.');
     setStep(0);
     syncMapStage(0);
 
     // NWP Ticker Sub-Steps
-    queueTimeout(() => {
-      if (DOM.progBarNwp) DOM.progBarNwp.style.width = '12%';
-      if (DOM.progPctNwp) DOM.progPctNwp.textContent = '12%';
-      if (DOM.tickerTemp) DOM.tickerTemp.textContent = dataset.nwp.temp[0];
-      if (DOM.tickerHumidity) DOM.tickerHumidity.textContent = dataset.nwp.hum[0];
-      if (DOM.tickerCape) DOM.tickerCape.textContent = dataset.nwp.cape[0];
-      if (DOM.tickerLifted) DOM.tickerLifted.textContent = dataset.nwp.li[0];
-      if (DOM.tickerShear) DOM.tickerShear.textContent = dataset.nwp.shear[0];
-    }, Math.round(stageDuration * 0.15));
-
     queueTimeout(() => {
       if (DOM.progBarNwp) DOM.progBarNwp.style.width = '25%';
       if (DOM.progPctNwp) DOM.progPctNwp.textContent = '25%';
@@ -2230,22 +2306,21 @@
       if (DOM.tickerCape) DOM.tickerCape.textContent = dataset.nwp.cape[1];
       if (DOM.tickerLifted) DOM.tickerLifted.textContent = dataset.nwp.li[1];
       if (DOM.tickerShear) DOM.tickerShear.textContent = dataset.nwp.shear[1];
-      updateWholeDayTimeline('10:00 IST', 'Atmospheric Instability Building Over Telangana Plateau', 22, 2, false);
-    }, Math.round(stageDuration * 0.35));
+    }, Math.round(stageDuration * 0.25));
 
     queueTimeout(() => {
-      if (DOM.progBarNwp) DOM.progBarNwp.style.width = '48%';
-      if (DOM.progPctNwp) DOM.progPctNwp.textContent = '48%';
+      if (DOM.progBarNwp) DOM.progBarNwp.style.width = '55%';
+      if (DOM.progPctNwp) DOM.progPctNwp.textContent = '55%';
       if (DOM.tickerTemp) DOM.tickerTemp.textContent = dataset.nwp.temp[2];
       if (DOM.tickerHumidity) DOM.tickerHumidity.textContent = dataset.nwp.hum[2];
       if (DOM.tickerCape) DOM.tickerCape.textContent = dataset.nwp.cape[2];
       if (DOM.tickerLifted) DOM.tickerLifted.textContent = dataset.nwp.li[2];
       if (DOM.tickerShear) DOM.tickerShear.textContent = dataset.nwp.shear[2];
-    }, Math.round(stageDuration * 0.6));
+    }, Math.round(stageDuration * 0.55));
 
     queueTimeout(() => {
-      if (DOM.progBarNwp) DOM.progBarNwp.style.width = '71%';
-      if (DOM.progPctNwp) DOM.progPctNwp.textContent = '71%';
+      if (DOM.progBarNwp) DOM.progBarNwp.style.width = '80%';
+      if (DOM.progPctNwp) DOM.progPctNwp.textContent = '80%';
       if (DOM.tickerTemp) DOM.tickerTemp.textContent = dataset.nwp.temp[3];
       if (DOM.tickerHumidity) DOM.tickerHumidity.textContent = dataset.nwp.hum[3];
       if (DOM.tickerCape) DOM.tickerCape.textContent = dataset.nwp.cape[3];
@@ -2253,6 +2328,7 @@
       if (DOM.tickerShear) DOM.tickerShear.textContent = dataset.nwp.shear[3];
     }, Math.round(stageDuration * 0.8));
 
+    // STAGE 1 COMPLETION: Detects Fuel Building (Evolving stage) -> Triggers Stage 2
     queueTimeout(() => {
       if (DOM.progBarNwp) DOM.progBarNwp.style.width = '100%';
       if (DOM.progPctNwp) DOM.progPctNwp.textContent = '100%';
@@ -2262,439 +2338,447 @@
       if (DOM.tickerLifted) DOM.tickerLifted.textContent = dataset.nwp.li[4];
       if (DOM.tickerShear) DOM.tickerShear.textContent = dataset.nwp.shear[4];
 
-      if (DOM.statusNwpText) DOM.statusNwpText.textContent = dataset.isHazard ? 'STATUS: ' + dataset.nwp.badge : 'STATUS: EQUILIBRIUM';
-      if (DOM.badgeStatuses && DOM.badgeStatuses[0]) {
-        DOM.badgeStatuses[0].textContent = dataset.nwp.badge;
-        DOM.badgeStatuses[0].className = 'stage-status-badge status-complete';
-      }
-      if (DOM.alertChips && DOM.alertChips[0]) DOM.alertChips[0].style.display = 'inline-flex';
-      if (DOM.compBadges && DOM.compBadges[0]) {
-        DOM.compBadges[0].textContent = 'TASK COMPLETED';
-        DOM.compBadges[0].className = 'step-completion-badge complete';
-      }
-      if (DOM.triggerBadges && DOM.triggerBadges[0]) DOM.triggerBadges[0].textContent = dataset.nwp.trigger;
+      if (DOM.statusNwpText) DOM.statusNwpText.textContent = 'STATUS: ✓ 1. FUEL BUILDING DETECTED';
+      if (DOM.cardNwp) DOM.cardNwp.className = 'story-stage-card stage-complete';
 
-      // 4-Facet Transparent Decision Matrix
+      const alertChipNwp = document.getElementById('chip-nwp');
+      const condNwp = document.getElementById('cond-nwp');
+      if (alertChipNwp) alertChipNwp.style.display = 'inline-flex';
+      if (condNwp) condNwp.style.display = 'inline-flex';
+
+      const handoffCompNwp = document.getElementById('handoff-comp-nwp');
+      const handoffTrigNwp = document.getElementById('handoff-trig-nwp');
+      if (handoffCompNwp) handoffCompNwp.textContent = 'STAGE 1 COMPLETED';
+      if (handoffTrigNwp) handoffTrigNwp.textContent = 'TRIGGERING INSAT SATELLITE...';
+
       if (DOM.cdmCheckNwp) DOM.cdmCheckNwp.textContent = dataset.nwp.check;
       if (DOM.cdmResNwp) DOM.cdmResNwp.textContent = dataset.nwp.result;
       if (DOM.cdmDecNwp) DOM.cdmDecNwp.textContent = dataset.nwp.decision;
       if (DOM.cdmActNwp) DOM.cdmActNwp.textContent = dataset.nwp.action;
 
-      updateWholeDayTimeline('11:00 IST', dataset.isHazard ? 'Fuel Alert Triggered (CAPE Exceeded Threshold)' : 'Thermodynamic Equilibrium Confirmed', 33, 3, false);
+      updateWholeDayTimeline('11:00 IST', 'Fuel Building Confirmed (Evolving Stage Detected)', 33, 3, false);
       syncMapStage(1);
+      speakAnnouncement('Fuel Building detected. Air is hot, moist, and unstable. Evolving stage confirmed. Triggering INSAT Satellite automatically.');
+
+      // AUTOMATICALLY TRIGGER STAGE 2
+      runStage2();
     }, stageDuration);
 
-    // If scenario is safe baseline, stop cascade here
-    if (!dataset.isHazard) {
+    // =========================================================================
+    // 2. CLOUD GROWING ☁️ (INSAT Satellite)
+    // Physical Mechanism: Cloud starts rising rapidly
+    // =========================================================================
+    function runStage2() {
       queueTimeout(() => {
-        if (DOM.btnStartSimulationHero) {
-          DOM.btnStartSimulationHero.classList.remove('running');
-          DOM.btnStartSimulationHero.innerHTML = '<span class="btn-hero-icon">↺</span> REPLAY AUTO SIMULATION';
-          DOM.btnStartSimulationHero.disabled = false;
-        }
-        if (DOM.btnStartCascade) {
-          DOM.btnStartCascade.innerHTML = '<span class="btn-icon">↺</span> REPLAY SIMULATION';
-          DOM.btnStartCascade.disabled = false;
-        }
-        if (DOM.heroStatusText) DOM.heroStatusText.textContent = 'MONITORING COMPLETE — CLEAR CONDITIONS';
-        isCascading = false;
-      }, stageDuration + transGap);
-      return;
+        if (DOM.cardNwp) DOM.cardNwp.className = 'story-stage-card stage-complete';
+        if (DOM.cardSat) DOM.cardSat.className = 'story-stage-card stage-running';
+        if (DOM.statusSatText) DOM.statusSatText.textContent = 'Scanning Cloud Tops... Vertical Ascent';
+        if (DOM.progBarSat) DOM.progBarSat.style.width = '0%';
+        if (DOM.progPctSat) DOM.progPctSat.textContent = '0%';
+
+        updateWholeDayTimeline('12:00 IST', 'Stage 2: Cloud Growing — Cloud Rising Rapidly', 44, 4, false);
+        highlightInnovationCard('relay');
+        setStep(1);
+
+        queueTimeout(() => {
+          if (DOM.progBarSat) DOM.progBarSat.style.width = '25%';
+          if (DOM.progPctSat) DOM.progPctSat.textContent = '25%';
+          if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[1];
+          if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[1];
+          if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[1];
+          if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[1];
+        }, Math.round(stageDuration * 0.25));
+
+        queueTimeout(() => {
+          if (DOM.progBarSat) DOM.progBarSat.style.width = '55%';
+          if (DOM.progPctSat) DOM.progPctSat.textContent = '55%';
+          if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[2];
+          if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[2];
+          if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[2];
+          if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[2];
+        }, Math.round(stageDuration * 0.55));
+
+        queueTimeout(() => {
+          if (DOM.progBarSat) DOM.progBarSat.style.width = '80%';
+          if (DOM.progPctSat) DOM.progPctSat.textContent = '80%';
+          if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[3];
+          if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[3];
+          if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[3];
+          if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[3];
+        }, Math.round(stageDuration * 0.8));
+
+        // STAGE 2 COMPLETION: Detects Cloud Growing -> Triggers Stage 3
+        queueTimeout(() => {
+          if (DOM.progBarSat) DOM.progBarSat.style.width = '100%';
+          if (DOM.progPctSat) DOM.progPctSat.textContent = '100%';
+          if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[4];
+          if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[4];
+          if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[4];
+          if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[4];
+
+          if (DOM.statusSatText) DOM.statusSatText.textContent = 'STATUS: ✓ 2. CLOUD GROWING DETECTED';
+          if (DOM.cardSat) DOM.cardSat.className = 'story-stage-card stage-complete';
+
+          const chipSat = document.getElementById('chip-sat');
+          const condSat = document.getElementById('cond-sat');
+          if (chipSat) chipSat.style.display = 'inline-flex';
+          if (condSat) condSat.style.display = 'inline-flex';
+
+          const handoffCompSat = document.getElementById('handoff-comp-sat');
+          const handoffTrigSat = document.getElementById('handoff-trig-sat');
+          if (handoffCompSat) handoffCompSat.textContent = 'STAGE 2 COMPLETED';
+          if (handoffTrigSat) handoffTrigSat.textContent = 'TRIGGERING DOPPLER RADAR...';
+
+          if (DOM.cdmCheckSat) DOM.cdmCheckSat.textContent = dataset.sat.check;
+          if (DOM.cdmResSat) DOM.cdmResSat.textContent = dataset.sat.result;
+          if (DOM.cdmDecSat) DOM.cdmDecSat.textContent = dataset.sat.decision;
+          if (DOM.cdmActSat) DOM.cdmActSat.textContent = dataset.sat.action;
+
+          syncMapStage(2);
+          speakAnnouncement('Cloud Growing detected. Cloud rising rapidly. Triggering Doppler Radar automatically.');
+
+          // AUTOMATICALLY TRIGGER STAGE 3
+          runStage3();
+        }, stageDuration);
+      }, transGap);
     }
 
     // =========================================================================
-    // STAGE 2: INSAT-3DR SATELLITE ANALYSIS
+    // 3. STORM GROWING ⬆️ (Satellite + Radar)
+    // Physical Mechanism: Cloud becomes tall, strong updrafts/ice develop
     // =========================================================================
-    queueTimeout(() => {
-      if (DOM.storyStages && DOM.storyStages[0]) DOM.storyStages[0].className = 'story-stage-card stage-complete';
-      if (DOM.storyStages && DOM.storyStages[1]) DOM.storyStages[1].className = 'story-stage-card stage-running';
-      if (DOM.badgeStatuses && DOM.badgeStatuses[1]) {
-        DOM.badgeStatuses[1].textContent = '🟠 SATELLITE ANALYSIS RUNNING';
-        DOM.badgeStatuses[1].className = 'stage-status-badge status-running';
-      }
-      if (DOM.statusSatText) DOM.statusSatText.textContent = 'STATUS: Reading Data...';
-      if (DOM.progBarSat) DOM.progBarSat.style.width = '0%';
-      if (DOM.progPctSat) DOM.progPctSat.textContent = '0%';
-
-      updateWholeDayTimeline('12:00 IST', 'Satellite Detects Rapid Cloud Growth & Glaciation', 44, 4, false);
-      highlightInnovationCard('relay');
-      speakAnnouncement('Satellite analysis activated. Scanning cloud top temperature and rapid cooling rates.');
-      setStep(1);
-
-      // Satellite Ticker Sub-Steps
+    function runStage3() {
       queueTimeout(() => {
-        if (DOM.progBarSat) DOM.progBarSat.style.width = '12%';
-        if (DOM.progPctSat) DOM.progPctSat.textContent = '12%';
-        if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[0];
-        if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[0];
-        if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[0];
-        if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[0];
-      }, Math.round(stageDuration * 0.15));
+        if (DOM.cardSat) DOM.cardSat.className = 'story-stage-card stage-complete';
+        if (DOM.cardRadar) DOM.cardRadar.className = 'story-stage-card stage-running';
+        if (DOM.statusRadarText) DOM.statusRadarText.textContent = 'Radar Volume Scan... Detecting Core';
+        if (DOM.progBarRadar) DOM.progBarRadar.style.width = '0%';
+        if (DOM.progPctRadar) DOM.progPctRadar.textContent = '0%';
 
-      queueTimeout(() => {
-        if (DOM.progBarSat) DOM.progBarSat.style.width = '25%';
-        if (DOM.progPctSat) DOM.progPctSat.textContent = '25%';
-        if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[1];
-        if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[1];
-        if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[1];
-        if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[1];
-      }, Math.round(stageDuration * 0.35));
+        updateWholeDayTimeline('13:00 IST', 'Stage 3: Storm Growing — Tall Cloud & Updrafts Developed', 55, 5, false);
+        highlightInnovationCard('relay');
+        setStep(2);
 
-      queueTimeout(() => {
-        if (DOM.progBarSat) DOM.progBarSat.style.width = '48%';
-        if (DOM.progPctSat) DOM.progPctSat.textContent = '48%';
-        if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[2];
-        if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[2];
-        if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[2];
-        if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[2];
-      }, Math.round(stageDuration * 0.6));
+        queueTimeout(() => {
+          if (DOM.progBarRadar) DOM.progBarRadar.style.width = '25%';
+          if (DOM.progPctRadar) DOM.progPctRadar.textContent = '25%';
+          if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[1];
+          if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[1];
+          if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[1];
+          if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[1];
+        }, Math.round(stageDuration * 0.25));
 
-      queueTimeout(() => {
-        if (DOM.progBarSat) DOM.progBarSat.style.width = '71%';
-        if (DOM.progPctSat) DOM.progPctSat.textContent = '71%';
-        if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[3];
-        if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[3];
-        if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[3];
-        if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[3];
-      }, Math.round(stageDuration * 0.8));
+        queueTimeout(() => {
+          if (DOM.progBarRadar) DOM.progBarRadar.style.width = '55%';
+          if (DOM.progPctRadar) DOM.progPctRadar.textContent = '55%';
+          if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[2];
+          if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[2];
+          if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[2];
+          if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[2];
+        }, Math.round(stageDuration * 0.55));
 
-      queueTimeout(() => {
-        if (DOM.progBarSat) DOM.progBarSat.style.width = '100%';
-        if (DOM.progPctSat) DOM.progPctSat.textContent = '100%';
-        if (DOM.tickerCtt) DOM.tickerCtt.textContent = dataset.sat.ctt[4];
-        if (DOM.tickerCooling) DOM.tickerCooling.textContent = dataset.sat.cooling[4];
-        if (DOM.tickerConvective) DOM.tickerConvective.textContent = dataset.sat.growth[4];
-        if (DOM.tickerExpansion) DOM.tickerExpansion.textContent = dataset.sat.expansion[4];
+        queueTimeout(() => {
+          if (DOM.progBarRadar) DOM.progBarRadar.style.width = '80%';
+          if (DOM.progPctRadar) DOM.progPctRadar.textContent = '80%';
+          if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[3];
+          if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[3];
+          if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[3];
+          if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[3];
+        }, Math.round(stageDuration * 0.8));
 
-        if (DOM.statusSatText) DOM.statusSatText.textContent = 'STATUS: ' + dataset.sat.badge;
-        if (DOM.badgeStatuses && DOM.badgeStatuses[1]) {
-          DOM.badgeStatuses[1].textContent = dataset.sat.badge;
-          DOM.badgeStatuses[1].className = 'stage-status-badge status-complete';
-        }
-        if (DOM.alertChips && DOM.alertChips[1]) DOM.alertChips[1].style.display = 'inline-flex';
-        if (DOM.compBadges && DOM.compBadges[1]) {
-          DOM.compBadges[1].textContent = 'TASK COMPLETED';
-          DOM.compBadges[1].className = 'step-completion-badge complete';
-        }
-        if (DOM.triggerBadges && DOM.triggerBadges[1]) DOM.triggerBadges[1].textContent = dataset.sat.trigger;
+        // STAGE 3 COMPLETION: Detects Storm Growing -> Triggers Stage 4
+        queueTimeout(() => {
+          if (DOM.progBarRadar) DOM.progBarRadar.style.width = '100%';
+          if (DOM.progPctRadar) DOM.progPctRadar.textContent = '100%';
+          if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[4];
+          if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[4];
+          if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[4];
+          if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[4];
 
-        // 4-Facet Decision Matrix
-        if (DOM.cdmCheckSat) DOM.cdmCheckSat.textContent = dataset.sat.check;
-        if (DOM.cdmResSat) DOM.cdmResSat.textContent = dataset.sat.result;
-        if (DOM.cdmDecSat) DOM.cdmDecSat.textContent = dataset.sat.decision;
-        if (DOM.cdmActSat) DOM.cdmActSat.textContent = dataset.sat.action;
+          if (DOM.statusRadarText) DOM.statusRadarText.textContent = 'STATUS: ✓ 3. STORM GROWING CONFIRMED';
+          if (DOM.cardRadar) DOM.cardRadar.className = 'story-stage-card stage-complete';
 
-        syncMapStage(2);
-      }, stageDuration);
-    }, stageDuration + transGap);
+          const chipRadar = document.getElementById('chip-radar');
+          const condRadar = document.getElementById('cond-radar');
+          if (chipRadar) chipRadar.style.display = 'inline-flex';
+          if (condRadar) condRadar.style.display = 'inline-flex';
+
+          const handoffCompRadar = document.getElementById('handoff-comp-radar');
+          const handoffTrigRadar = document.getElementById('handoff-trig-radar');
+          if (handoffCompRadar) handoffCompRadar.textContent = 'STAGE 3 COMPLETED';
+          if (handoffTrigRadar) handoffTrigRadar.textContent = 'TRIGGERING LIGHTNING SENSORS...';
+
+          if (DOM.cdmCheckRadar) DOM.cdmCheckRadar.textContent = dataset.radar.check;
+          if (DOM.cdmResRadar) DOM.cdmResRadar.textContent = dataset.radar.result;
+          if (DOM.cdmDecRadar) DOM.cdmDecRadar.textContent = dataset.radar.decision;
+          if (DOM.cdmActRadar) DOM.cdmActRadar.textContent = dataset.radar.action;
+
+          syncMapStage(3);
+          speakAnnouncement('Storm Growing detected. Tall cloud with strong updrafts and ice developed. Triggering Lightning Sensors automatically.');
+
+          // AUTOMATICALLY TRIGGER STAGE 4
+          runStage4();
+        }, stageDuration);
+      }, transGap);
+    }
 
     // =========================================================================
-    // STAGE 3: DWR-HYD DOPPLER RADAR ANALYSIS
+    // 4. ELECTRIFYING ⚡ (Lightning Sensors + Radar)
+    // Physical Mechanism: Ice/hail collisions create electrical charge
     // =========================================================================
-    queueTimeout(() => {
-      if (DOM.storyStages && DOM.storyStages[1]) DOM.storyStages[1].className = 'story-stage-card stage-complete';
-      if (DOM.storyStages && DOM.storyStages[2]) DOM.storyStages[2].className = 'story-stage-card stage-running';
-      if (DOM.badgeStatuses && DOM.badgeStatuses[2]) {
-        DOM.badgeStatuses[2].textContent = '🔴 RADAR ANALYSIS RUNNING';
-        DOM.badgeStatuses[2].className = 'stage-status-badge status-running';
-      }
-      if (DOM.statusRadarText) DOM.statusRadarText.textContent = 'STATUS: Reading Data...';
-      if (DOM.progBarRadar) DOM.progBarRadar.style.width = '0%';
-      if (DOM.progPctRadar) DOM.progPctRadar.textContent = '0%';
-
-      updateWholeDayTimeline('13:00 IST', 'Radar Detects Severe Convective Core & Updraft', 55, 5, false);
-      highlightInnovationCard('relay');
-      speakAnnouncement('Doppler radar tracking running. Measuring reflectivity core and echo tops.');
-      setStep(2);
-
-      // Radar Ticker Sub-Steps
+    function runStage4() {
       queueTimeout(() => {
-        if (DOM.progBarRadar) DOM.progBarRadar.style.width = '12%';
-        if (DOM.progPctRadar) DOM.progPctRadar.textContent = '12%';
-        if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[0];
-        if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[0];
-        if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[0];
-        if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[0];
-      }, Math.round(stageDuration * 0.15));
+        if (DOM.cardRadar) DOM.cardRadar.className = 'story-stage-card stage-complete';
+        if (DOM.cardLightning) DOM.cardLightning.className = 'story-stage-card stage-running';
+        if (DOM.statusLightningText) DOM.statusLightningText.textContent = 'Calculating Dipole Charge & Graupel Rate...';
+        if (DOM.progBarLightning) DOM.progBarLightning.style.width = '0%';
+        if (DOM.progPctLightning) DOM.progPctLightning.textContent = '0%';
 
-      queueTimeout(() => {
-        if (DOM.progBarRadar) DOM.progBarRadar.style.width = '25%';
-        if (DOM.progPctRadar) DOM.progPctRadar.textContent = '25%';
-        if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[1];
-        if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[1];
-        if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[1];
-        if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[1];
-      }, Math.round(stageDuration * 0.35));
+        updateWholeDayTimeline('14:00 IST', 'Stage 4: Electrifying — Ice/Hail Collisions Separating Charge', 66, 6, false);
+        highlightInnovationCard('sensor');
+        setStep(3);
 
-      queueTimeout(() => {
-        if (DOM.progBarRadar) DOM.progBarRadar.style.width = '48%';
-        if (DOM.progPctRadar) DOM.progPctRadar.textContent = '48%';
-        if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[2];
-        if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[2];
-        if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[2];
-        if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[2];
-      }, Math.round(stageDuration * 0.6));
+        queueTimeout(() => {
+          if (DOM.progBarLightning) DOM.progBarLightning.style.width = '25%';
+          if (DOM.progPctLightning) DOM.progPctLightning.textContent = '25%';
+          if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[1];
+          if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[1];
+          if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[1];
+        }, Math.round(stageDuration * 0.25));
 
-      queueTimeout(() => {
-        if (DOM.progBarRadar) DOM.progBarRadar.style.width = '71%';
-        if (DOM.progPctRadar) DOM.progPctRadar.textContent = '71%';
-        if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[3];
-        if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[3];
-        if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[3];
-        if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[3];
-      }, Math.round(stageDuration * 0.8));
+        queueTimeout(() => {
+          if (DOM.progBarLightning) DOM.progBarLightning.style.width = '55%';
+          if (DOM.progPctLightning) DOM.progPctLightning.textContent = '55%';
+          if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[2];
+          if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[2];
+          if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[2];
+        }, Math.round(stageDuration * 0.55));
 
-      queueTimeout(() => {
-        if (DOM.progBarRadar) DOM.progBarRadar.style.width = '100%';
-        if (DOM.progPctRadar) DOM.progPctRadar.textContent = '100%';
-        if (DOM.tickerRefl) DOM.tickerRefl.textContent = dataset.radar.refl[4];
-        if (DOM.tickerEcho) DOM.tickerEcho.textContent = dataset.radar.echo[4];
-        if (DOM.tickerCell) DOM.tickerCell.textContent = dataset.radar.velocity[4];
-        if (DOM.tickerIntensity) DOM.tickerIntensity.textContent = dataset.radar.core[4];
+        queueTimeout(() => {
+          if (DOM.progBarLightning) DOM.progBarLightning.style.width = '80%';
+          if (DOM.progPctLightning) DOM.progPctLightning.textContent = '80%';
+          if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[3];
+          if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[3];
+          if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[3];
+        }, Math.round(stageDuration * 0.8));
 
-        if (DOM.statusRadarText) DOM.statusRadarText.textContent = 'STATUS: ' + dataset.radar.badge;
-        if (DOM.badgeStatuses && DOM.badgeStatuses[2]) {
-          DOM.badgeStatuses[2].textContent = dataset.radar.badge;
-          DOM.badgeStatuses[2].className = 'stage-status-badge status-complete';
-        }
-        if (DOM.alertChips && DOM.alertChips[2]) DOM.alertChips[2].style.display = 'inline-flex';
-        if (DOM.compBadges && DOM.compBadges[2]) {
-          DOM.compBadges[2].textContent = 'TASK COMPLETED';
-          DOM.compBadges[2].className = 'step-completion-badge complete';
-        }
-        if (DOM.triggerBadges && DOM.triggerBadges[2]) DOM.triggerBadges[2].textContent = dataset.radar.trigger;
+        // STAGE 4 COMPLETION: Detects Electrifying -> Triggers Stage 5
+        queueTimeout(() => {
+          if (DOM.progBarLightning) DOM.progBarLightning.style.width = '100%';
+          if (DOM.progPctLightning) DOM.progPctLightning.textContent = '100%';
+          if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[4];
+          if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[4];
+          if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[4];
 
-        // 4-Facet Decision Matrix
-        if (DOM.cdmCheckRadar) DOM.cdmCheckRadar.textContent = dataset.radar.check;
-        if (DOM.cdmResRadar) DOM.cdmResRadar.textContent = dataset.radar.result;
-        if (DOM.cdmDecRadar) DOM.cdmDecRadar.textContent = dataset.radar.decision;
-        if (DOM.cdmActRadar) DOM.cdmActRadar.textContent = dataset.radar.action;
+          if (DOM.statusLightningText) DOM.statusLightningText.textContent = 'STATUS: ✓ 4. ELECTRIFYING DETECTED';
+          if (DOM.cardLightning) DOM.cardLightning.className = 'story-stage-card stage-complete';
 
-        syncMapStage(3);
-      }, stageDuration);
-    }, (stageDuration + transGap) * 2);
+          const chipLightning = document.getElementById('chip-lightning');
+          const condLightning = document.getElementById('cond-lightning');
+          if (chipLightning) chipLightning.style.display = 'inline-flex';
+          if (condLightning) condLightning.style.display = 'inline-flex';
+
+          const handoffCompLtg = document.getElementById('handoff-comp-lightning');
+          const handoffTrigLtg = document.getElementById('handoff-trig-lightning');
+          if (handoffCompLtg) handoffCompLtg.textContent = 'STAGE 4 COMPLETED';
+          if (handoffTrigLtg) handoffTrigLtg.textContent = 'TRIGGERING ACTIVE STORM MODEL...';
+
+          if (DOM.cdmCheckLightning) DOM.cdmCheckLightning.textContent = dataset.lightning.check;
+          if (DOM.cdmResLightning) DOM.cdmResLightning.textContent = dataset.lightning.result;
+          if (DOM.cdmDecLightning) DOM.cdmDecLightning.textContent = dataset.lightning.decision;
+          if (DOM.cdmActLightning) DOM.cdmActLightning.textContent = dataset.lightning.action;
+
+          syncMapStage(4);
+          speakAnnouncement('Electrifying detected. Ice and hail collisions create electrical charge. Triggering Active Storm Model automatically.');
+
+          // AUTOMATICALLY TRIGGER STAGE 5
+          runStage5();
+        }, stageDuration);
+      }, transGap);
+    }
 
     // =========================================================================
-    // STAGE 4: LIGHTNING AI ANALYSIS
+    // 5. ACTIVE STORM 🌩️ (Radar + Lightning + Satellite)
+    // Physical Mechanism: Lightning + heavy rain + strong winds
     // =========================================================================
-    queueTimeout(() => {
-      if (DOM.storyStages && DOM.storyStages[2]) DOM.storyStages[2].className = 'story-stage-card stage-complete';
-      if (DOM.storyStages && DOM.storyStages[3]) DOM.storyStages[3].className = 'story-stage-card stage-running';
-      if (DOM.badgeStatuses && DOM.badgeStatuses[3]) {
-        DOM.badgeStatuses[3].textContent = '⚡ LIGHTNING MODEL RUNNING';
-        DOM.badgeStatuses[3].className = 'stage-status-badge status-running';
-      }
-      if (DOM.statusLightningText) DOM.statusLightningText.textContent = 'STATUS: Reading Data...';
-      if (DOM.progBarLightning) DOM.progBarLightning.style.width = '0%';
-      if (DOM.progPctLightning) DOM.progPctLightning.textContent = '0%';
-
-      updateWholeDayTimeline('14:00 IST', 'Lightning Risk Emerging Across Critical Infrastructure', 66, 6, false);
-      highlightInnovationCard('sensor');
-      speakAnnouncement('Lightning AI prediction running. Evaluating electric field gradients and strike surge.');
-      setStep(3);
-
-      // Lightning Ticker Sub-Steps
+    function runStage5() {
       queueTimeout(() => {
-        if (DOM.progBarLightning) DOM.progBarLightning.style.width = '12%';
-        if (DOM.progPctLightning) DOM.progPctLightning.textContent = '12%';
-        if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[0];
-        if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[0];
-        if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[0];
-      }, Math.round(stageDuration * 0.15));
+        if (DOM.cardLightning) DOM.cardLightning.className = 'story-stage-card stage-complete';
+        if (DOM.cardTracking) DOM.cardTracking.className = 'story-stage-card stage-running';
+        if (DOM.statusTrackingText) DOM.statusTrackingText.textContent = 'Tracking Advection & High Hazard Winds...';
+        if (DOM.progBarTracking) DOM.progBarTracking.style.width = '0%';
+        if (DOM.progPctTracking) DOM.progPctTracking.textContent = '0%';
 
-      queueTimeout(() => {
-        if (DOM.progBarLightning) DOM.progBarLightning.style.width = '25%';
-        if (DOM.progPctLightning) DOM.progPctLightning.textContent = '25%';
-        if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[1];
-        if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[1];
-        if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[1];
-      }, Math.round(stageDuration * 0.35));
+        updateWholeDayTimeline('15:00 IST', 'Stage 5: Active Storm — Lightning, Heavy Rain & Strong Winds', 80, 7, false);
+        highlightInnovationCard('pocket');
+        setStep(4);
 
-      queueTimeout(() => {
-        if (DOM.progBarLightning) DOM.progBarLightning.style.width = '48%';
-        if (DOM.progPctLightning) DOM.progPctLightning.textContent = '48%';
-        if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[2];
-        if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[2];
-        if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[2];
-      }, Math.round(stageDuration * 0.6));
+        queueTimeout(() => {
+          if (DOM.progBarTracking) DOM.progBarTracking.style.width = '25%';
+          if (DOM.progPctTracking) DOM.progPctTracking.textContent = '25%';
+          if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[1];
+          if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[1];
+        }, Math.round(stageDuration * 0.25));
 
-      queueTimeout(() => {
-        if (DOM.progBarLightning) DOM.progBarLightning.style.width = '71%';
-        if (DOM.progPctLightning) DOM.progPctLightning.textContent = '71%';
-        if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[3];
-        if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[3];
-        if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[3];
-        updateWholeDayTimeline('14:30 IST', 'Lightning Probability Spikes to ' + dataset.probPercent, 77, 7, false);
-      }, Math.round(stageDuration * 0.8));
+        queueTimeout(() => {
+          if (DOM.progBarTracking) DOM.progBarTracking.style.width = '55%';
+          if (DOM.progPctTracking) DOM.progPctTracking.textContent = '55%';
+          if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[2];
+          if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[2];
+          if (DOM.trackCurrLoc) DOM.trackCurrLoc.textContent = dataset.movement.target;
+        }, Math.round(stageDuration * 0.55));
 
-      queueTimeout(() => {
-        if (DOM.progBarLightning) DOM.progBarLightning.style.width = '100%';
-        if (DOM.progPctLightning) DOM.progPctLightning.textContent = '100%';
-        if (DOM.tickerCharge) DOM.tickerCharge.textContent = dataset.lightning.field[4];
-        if (DOM.tickerGraupel) DOM.tickerGraupel.textContent = dataset.lightning.flash[4];
-        if (DOM.tickerProb) DOM.tickerProb.textContent = dataset.lightning.prob[4];
+        queueTimeout(() => {
+          if (DOM.progBarTracking) DOM.progBarTracking.style.width = '80%';
+          if (DOM.progPctTracking) DOM.progPctTracking.textContent = '80%';
+          if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[3];
+          if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[3];
+        }, Math.round(stageDuration * 0.8));
 
-        if (DOM.statusLightningText) DOM.statusLightningText.textContent = 'STATUS: ' + dataset.lightning.badge;
-        if (DOM.badgeStatuses && DOM.badgeStatuses[3]) {
-          DOM.badgeStatuses[3].textContent = dataset.lightning.badge;
-          DOM.badgeStatuses[3].className = 'stage-status-badge status-complete';
-        }
-        if (DOM.alertChips && DOM.alertChips[3]) DOM.alertChips[3].style.display = 'inline-flex';
-        if (DOM.compBadges && DOM.compBadges[3]) {
-          DOM.compBadges[3].textContent = 'TASK COMPLETED';
-          DOM.compBadges[3].className = 'step-completion-badge complete';
-        }
-        if (DOM.triggerBadges && DOM.triggerBadges[3]) DOM.triggerBadges[3].textContent = dataset.lightning.trigger;
+        // STAGE 5 COMPLETION: Detects Active Storm -> Triggers Stage 6
+        queueTimeout(() => {
+          if (DOM.progBarTracking) DOM.progBarTracking.style.width = '100%';
+          if (DOM.progPctTracking) DOM.progPctTracking.textContent = '100%';
+          if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[4];
+          if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[4];
+          if (DOM.trackCurrLoc) DOM.trackCurrLoc.textContent = dataset.movement.target;
 
-        // 4-Facet Decision Matrix
-        if (DOM.cdmCheckLightning) DOM.cdmCheckLightning.textContent = dataset.lightning.check;
-        if (DOM.cdmResLightning) DOM.cdmResLightning.textContent = dataset.lightning.result;
-        if (DOM.cdmDecLightning) DOM.cdmDecLightning.textContent = dataset.lightning.decision;
-        if (DOM.cdmActLightning) DOM.cdmActLightning.textContent = dataset.lightning.action;
+          if (DOM.statusTrackingText) DOM.statusTrackingText.textContent = 'STATUS: ✓ 5. ACTIVE STORM ENGAGED';
+          if (DOM.cardTracking) DOM.cardTracking.className = 'story-stage-card stage-complete';
 
-        syncMapStage(4);
-      }, stageDuration);
-    }, (stageDuration + transGap) * 3);
+          const chipTracking = document.getElementById('chip-tracking');
+          const condTracking = document.getElementById('cond-tracking');
+          if (chipTracking) chipTracking.style.display = 'inline-flex';
+          if (condTracking) condTracking.style.display = 'inline-flex';
+
+          const handoffCompTrk = document.getElementById('handoff-comp-tracking');
+          const handoffTrigTrk = document.getElementById('handoff-trig-tracking');
+          if (handoffCompTrk) handoffCompTrk.textContent = 'STAGE 5 COMPLETED';
+          if (handoffTrigTrk) handoffTrigTrk.textContent = 'TRIGGERING WEAKENING ANALYSIS...';
+
+          if (DOM.cdmCheckTracking) DOM.cdmCheckTracking.textContent = dataset.movement.check;
+          if (DOM.cdmResTracking) DOM.cdmResTracking.textContent = dataset.movement.result;
+          if (DOM.cdmDecTracking) DOM.cdmDecTracking.textContent = dataset.movement.decision;
+          if (DOM.cdmActTracking) DOM.cdmActTracking.textContent = dataset.movement.action;
+
+          syncMapStage(5);
+          speakAnnouncement('Active Storm confirmed with lightning, heavy rain, and microburst winds. Triggering Weakening Analysis automatically.');
+
+          // AUTOMATICALLY TRIGGER STAGE 6
+          runStage6();
+        }, stageDuration);
+      }, transGap);
+    }
 
     // =========================================================================
-    // STAGE 5: STORM TRACKING & MOVEMENT PREDICTION
+    // 6. WEAKENING 💨 (Radar + Satellite + Lightning Trend)
+    // Physical Mechanism: Updraft disappears, rain dominates
+    // Warning Generation: Top warning card illuminated, citizen portal active
     // =========================================================================
-    queueTimeout(() => {
-      if (DOM.storyStages && DOM.storyStages[3]) DOM.storyStages[3].className = 'story-stage-card stage-complete';
-      if (DOM.storyStages && DOM.storyStages[4]) DOM.storyStages[4].className = 'story-stage-card stage-running';
-      if (DOM.badgeStatuses && DOM.badgeStatuses[4]) {
-        DOM.badgeStatuses[4].textContent = '📍 TRACKING ACTIVE';
-        DOM.badgeStatuses[4].className = 'stage-status-badge status-running';
-      }
-      if (DOM.statusTrackingText) DOM.statusTrackingText.textContent = 'STATUS: Reading Data...';
-      if (DOM.progBarTracking) DOM.progBarTracking.style.width = '0%';
-      if (DOM.progPctTracking) DOM.progPctTracking.textContent = '0%';
-
-      updateWholeDayTimeline('15:00 IST', 'Movement Forecast & Hyperlocal ETA Generated', 88, 8, false);
-      highlightInnovationCard('pocket');
-      speakAnnouncement('Storm vector model extrapolating impact corridor and arrival time for ' + dataset.targetArea);
-      setStep(4);
-
-      // Tracking Ticker Sub-Steps
+    function runStage6() {
       queueTimeout(() => {
-        if (DOM.progBarTracking) DOM.progBarTracking.style.width = '12%';
-        if (DOM.progPctTracking) DOM.progPctTracking.textContent = '12%';
-        if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[0];
-        if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[0];
-        if (DOM.trackCurrLoc) DOM.trackCurrLoc.textContent = 'Tracking Cell Centroid';
-      }, Math.round(stageDuration * 0.15));
+        if (DOM.cardTracking) DOM.cardTracking.className = 'story-stage-card stage-complete';
+        if (DOM.cardWeakening) DOM.cardWeakening.className = 'story-stage-card stage-running';
+        if (DOM.statusWeakText) DOM.statusWeakText.textContent = 'Updraft Disappearing... Rain Dominates';
+        if (DOM.progBarWeakening) DOM.progBarWeakening.style.width = '0%';
+        if (DOM.progPctWeakening) DOM.progPctWeakening.textContent = '0%';
 
-      queueTimeout(() => {
-        if (DOM.progBarTracking) DOM.progBarTracking.style.width = '25%';
-        if (DOM.progPctTracking) DOM.progPctTracking.textContent = '25%';
-        if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[1];
-        if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[1];
-        if (DOM.trackCurrLoc) DOM.trackCurrLoc.textContent = 'Calculating Population Buffers';
-      }, Math.round(stageDuration * 0.35));
+        updateWholeDayTimeline('15:15 IST', 'Stage 6: Weakening Phase & Civil Defense Warning Dissemination', 100, 9, true);
+        highlightInnovationCard('pocket');
 
-      queueTimeout(() => {
-        if (DOM.progBarTracking) DOM.progBarTracking.style.width = '48%';
-        if (DOM.progPctTracking) DOM.progPctTracking.textContent = '48%';
-        if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[2];
-        if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[2];
-        if (DOM.trackCurrLoc) DOM.trackCurrLoc.textContent = dataset.movement.target;
-      }, Math.round(stageDuration * 0.6));
+        queueTimeout(() => {
+          if (DOM.progBarWeakening) DOM.progBarWeakening.style.width = '35%';
+          if (DOM.progPctWeakening) DOM.progPctWeakening.textContent = '35%';
+          if (DOM.tickerWeakDowndraft) DOM.tickerWeakDowndraft.textContent = dataset.weakening?.downdraft[1] || '24 km/h';
+          if (DOM.tickerWeakRain) DOM.tickerWeakRain.textContent = dataset.weakening?.rain[1] || 'Moderate Downpour';
+        }, Math.round(stageDuration * 0.35));
 
-      queueTimeout(() => {
-        if (DOM.progBarTracking) DOM.progBarTracking.style.width = '71%';
-        if (DOM.progPctTracking) DOM.progPctTracking.textContent = '71%';
-        if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[3];
-        if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[3];
-      }, Math.round(stageDuration * 0.8));
+        queueTimeout(() => {
+          if (DOM.progBarWeakening) DOM.progBarWeakening.style.width = '70%';
+          if (DOM.progPctWeakening) DOM.progPctWeakening.textContent = '70%';
+          if (DOM.tickerWeakDowndraft) DOM.tickerWeakDowndraft.textContent = dataset.weakening?.downdraft[3] || '36 km/h';
+          if (DOM.tickerWeakRain) DOM.tickerWeakRain.textContent = dataset.weakening?.rain[3] || 'Heavy Downpours';
+          if (DOM.tickerWeakLtg) DOM.tickerWeakLtg.textContent = dataset.weakening?.ltg[3] || 'Scattered Flashes';
+        }, Math.round(stageDuration * 0.7));
 
-      queueTimeout(() => {
-        if (DOM.progBarTracking) DOM.progBarTracking.style.width = '100%';
-        if (DOM.progPctTracking) DOM.progPctTracking.textContent = '100%';
-        if (DOM.trackSpeed) DOM.trackSpeed.textContent = dataset.movement.speed[4];
-        if (DOM.trackDirection) DOM.trackDirection.textContent = dataset.movement.dir[4];
-        if (DOM.trackCurrLoc) DOM.trackCurrLoc.textContent = dataset.movement.target;
+        // STAGE 6 COMPLETION: Full Cycle Completed -> Warning Issued at Top
+        queueTimeout(() => {
+          if (DOM.progBarWeakening) DOM.progBarWeakening.style.width = '100%';
+          if (DOM.progPctWeakening) DOM.progPctWeakening.textContent = '100%';
+          if (DOM.tickerWeakDowndraft) DOM.tickerWeakDowndraft.textContent = dataset.weakening?.downdraft[4] || '38 km/h';
+          if (DOM.tickerWeakRain) DOM.tickerWeakRain.textContent = dataset.weakening?.rain[4] || 'Rain Shield Dominates';
+          if (DOM.tickerWeakLtg) DOM.tickerWeakLtg.textContent = dataset.weakening?.ltg[4] || 'Decaying Trend';
+          if (DOM.tickerWeakClear) DOM.tickerWeakClear.textContent = dataset.weakening?.clear[4] || 'Evacuation Route Open';
 
-        if (DOM.statusTrackingText) DOM.statusTrackingText.textContent = 'STATUS: ' + dataset.movement.badge;
-        if (DOM.badgeStatuses && DOM.badgeStatuses[4]) {
-          DOM.badgeStatuses[4].textContent = dataset.movement.badge;
-          DOM.badgeStatuses[4].className = 'stage-status-badge status-complete';
-        }
-        if (DOM.alertChips && DOM.alertChips[4]) DOM.alertChips[4].style.display = 'inline-flex';
-        if (DOM.compBadges && DOM.compBadges[4]) {
-          DOM.compBadges[4].textContent = 'TASK COMPLETED';
-          DOM.compBadges[4].className = 'step-completion-badge complete';
-        }
-        if (DOM.storyStages && DOM.storyStages[4]) DOM.storyStages[4].className = 'story-stage-card stage-complete';
+          if (DOM.statusWeakText) DOM.statusWeakText.textContent = 'STATUS: ✓ 6. WEAKENING CONFIRMED';
+          if (DOM.cardWeakening) DOM.cardWeakening.className = 'story-stage-card stage-complete';
 
-        // 4-Facet Decision Matrix
-        if (DOM.cdmCheckTracking) DOM.cdmCheckTracking.textContent = dataset.movement.check;
-        if (DOM.cdmResTracking) DOM.cdmResTracking.textContent = dataset.movement.result;
-        if (DOM.cdmDecTracking) DOM.cdmDecTracking.textContent = dataset.movement.decision;
-        if (DOM.cdmActTracking) DOM.cdmActTracking.textContent = dataset.movement.action;
+          if (DOM.chipWeakening) DOM.chipWeakening.style.display = 'inline-flex';
+          const handoffCompWeak = document.getElementById('handoff-comp-weakening');
+          const handoffTrigWeak = document.getElementById('handoff-trig-weakening');
+          if (handoffCompWeak) handoffCompWeak.textContent = 'STAGE 6 COMPLETED';
+          if (handoffTrigWeak) handoffTrigWeak.textContent = 'ALL 6 STAGES FINISHED';
 
-        syncMapStage(5);
-      }, stageDuration);
-    }, (stageDuration + transGap) * 4);
+          if (DOM.cdmCheckWeak) DOM.cdmCheckWeak.textContent = dataset.weakening?.check || 'Updraft Dissipation, Rain Downpour Rate, Flash Density Decoupling';
+          if (DOM.cdmResWeak) DOM.cdmResWeak.textContent = dataset.weakening?.result || 'Updraft collapsed into rain-cooled downdraft. Heavy rain dominates.';
+          if (DOM.cdmDecWeak) DOM.cdmDecWeak.textContent = dataset.weakening?.decision || 'Civil Defense Warning Dispatched & Safe Evacuation Active';
+          if (DOM.cdmActWeak) DOM.cdmActWeak.textContent = dataset.weakening?.action || 'Dispatched to Citizen Portal & Municipal Sirens';
 
-    // =========================================================================
-    // FINAL WARNING DISSEMINATION & CITIZEN PORTAL RED ALERT CARD
-    // =========================================================================
-    queueTimeout(() => {
-      updateWholeDayTimeline('15:05 IST', 'Warning Issued Directly to Citizen Portal & Sirens', 100, 9, true);
-      highlightInnovationCard('pocket');
+          // ===================================================================
+          // ILLUMINATE TOP WARNING ISSUED CARD (AT VERY TOP - IMAGE 1 MATCH)
+          // ===================================================================
+          if (DOM.topWarningIssuedCard) {
+            DOM.topWarningIssuedCard.style.display = 'flex';
+            DOM.topWarningIssuedCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          if (DOM.topWarnProb) DOM.topWarnProb.textContent = dataset.probPercent || '84%';
+          if (DOM.topWarnImpact) DOM.topWarnImpact.textContent = dataset.etaMinutes || 'Within 30 Minutes';
+          if (DOM.topWarnAreas) DOM.topWarnAreas.textContent = dataset.targetArea || 'Patancheru, Miyapur, Kukatpally, Secunderabad';
 
-      // Command Center Final Warning Card
-      if (DOM.finalWarningPanel) {
-        DOM.finalWarningPanel.style.display = 'block';
-        DOM.finalWarningPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-      if (DOM.fwProb) DOM.fwProb.textContent = dataset.probPercent;
-      if (DOM.fwImpact) DOM.fwImpact.textContent = dataset.etaMinutes;
-      if (DOM.fwAreas) DOM.fwAreas.textContent = dataset.targetArea;
-      if (DOM.fwStatus) DOM.fwStatus.textContent = 'DISPATCHED TO CITIZEN PORTAL';
+          // UPDATE TOP 4-KPI ROW (IMAGE 4 & 5 MATCH)
+          if (DOM.kpiRiskVal) {
+            DOM.kpiRiskVal.textContent = 'HIGH ' + (dataset.probPercent || '84%');
+            DOM.kpiRiskVal.className = 'kpi-value text-crimson';
+          }
+          if (DOM.kpiRiskDot) DOM.kpiRiskDot.classList.add('danger');
+          if (DOM.kpiRiskSub) DOM.kpiRiskSub.textContent = 'Severe convective cell active. High strike surge imminent.';
+          if (DOM.kpiActiveAlerts) DOM.kpiActiveAlerts.textContent = '1';
+          if (DOM.kpiCitizensRisk) DOM.kpiCitizensRisk.textContent = '240,000+';
+          if (DOM.kpiSmsLogs) DOM.kpiSmsLogs.textContent = '1,280';
 
-      // CITIZEN PORTAL ALERT INTEGRATION: Directly on Home Screen
-      if (DOM.citizenRedAlertCard) {
-        DOM.citizenRedAlertCard.style.display = 'flex';
-      }
-      if (DOM.cRedArea) DOM.cRedArea.textContent = dataset.targetArea;
-      if (DOM.cRedEta) DOM.cRedEta.textContent = dataset.etaMinutes;
-      if (DOM.cRedProb) DOM.cRedProb.textContent = dataset.probPercent;
-      if (DOM.cRedStatus) {
-        DOM.cRedStatus.textContent = dataset.isExtreme ? 'TAKE IMMEDIATE SHELTER' : 'TAKE SHELTER IMMEDIATELY';
-      }
+          // UPDATE CITIZEN PORTAL (IMAGE 3 MATCH)
+          if (DOM.cStatusTopCard) DOM.cStatusTopCard.classList.add('danger');
+          if (DOM.cTopStatusText) DOM.cTopStatusText.textContent = 'ACTIVE EMERGENCY WARNING';
+          if (DOM.cTopStatusDot) DOM.cTopStatusDot.classList.add('danger');
+          if (DOM.cTopStatusIcon) DOM.cTopStatusIcon.textContent = '🚨';
+          if (DOM.cTopHeadline) DOM.cTopHeadline.textContent = 'WARNING: SEVERE LIGHTNING IMMINENT';
+          if (DOM.cTopDesc) DOM.cTopDesc.textContent = 'Dangerous ground strikes & squall winds approaching ' + (dataset.targetArea || 'Patancheru, Miyapur, Kukatpally') + '.';
+          if (DOM.cNavMode) DOM.cNavMode.textContent = 'EVACUATION MODE';
+          if (DOM.cShelterTitle) DOM.cShelterTitle.textContent = 'Gachibowli High Ground Shelter';
+          if (DOM.cShelterDesc) DOM.cShelterDesc.textContent = 'Elevated bedrock ridge, zero debris accumulation vector';
 
-      // Legacy Citizen Card Updates
-      if (DOM.citizenNormalState) DOM.citizenNormalState.style.display = 'none';
-      if (DOM.citizenWarningActiveState) DOM.citizenWarningActiveState.style.display = 'block';
-      if (DOM.cWarnProb) DOM.cWarnProb.textContent = dataset.probPercent;
-      if (DOM.cWarnEta) DOM.cWarnEta.textContent = dataset.etaMinutes;
-      if (DOM.cWarnAreas) DOM.cWarnAreas.textContent = dataset.targetArea;
+          // Play 5 Times Alert Pop Sound
+          playFivePopSound();
 
-      // Auto-Open Citizen Warning Popup Modal
-      if (DOM.citizenWarningPopup) DOM.citizenWarningPopup.style.display = 'flex';
+          // Voice Broadcast Announcement
+          speakAnnouncement(dataset.warning.voice || 'Civil defense warning dispatched! Citizens must seek immediate indoor shelter.');
 
-      // Play 5 Times Alert Pop Sound
-      playFivePopSound();
+          // Re-enable Simulation Buttons
+          if (DOM.btnStartSimulationHero) {
+            DOM.btnStartSimulationHero.classList.remove('running');
+            DOM.btnStartSimulationHero.innerHTML = '<span class="btn-hero-icon">↺</span> REPLAY AUTO SIMULATION';
+            DOM.btnStartSimulationHero.disabled = false;
+          }
+          if (DOM.btnStartCascade) {
+            DOM.btnStartCascade.innerHTML = '<span class="btn-icon">↺</span> REPLAY SIMULATION';
+            DOM.btnStartCascade.disabled = false;
+          }
+          if (DOM.heroStatusText) DOM.heroStatusText.textContent = 'WARNING DISPATCHED TO CITIZENS';
 
-      // Voice Broadcast Announcement
-      speakAnnouncement(dataset.warning.voice);
-      setStep(5);
-
-      // Re-enable Simulation Buttons
-      if (DOM.btnStartSimulationHero) {
-        DOM.btnStartSimulationHero.classList.remove('running');
-        DOM.btnStartSimulationHero.innerHTML = '<span class="btn-hero-icon">↺</span> REPLAY AUTO SIMULATION';
-        DOM.btnStartSimulationHero.disabled = false;
-      }
-      if (DOM.btnStartCascade) {
-        DOM.btnStartCascade.innerHTML = '<span class="btn-icon">↺</span> REPLAY SIMULATION';
-        DOM.btnStartCascade.disabled = false;
-      }
-      if (DOM.heroStatusText) DOM.heroStatusText.textContent = 'WARNING DISPATCHED TO CITIZENS';
-
-      isCascading = false;
-    }, (stageDuration + transGap) * 5);
+          isCascading = false;
+        }, stageDuration);
+      }, transGap);
+    }
   }
 
   function loadDatasetAndSimulate(datasetId) {
@@ -2912,6 +2996,50 @@
       });
     }
 
+    // Image 1: Jump from Top Warning card to Citizen Portal
+    if (DOM.btnTopWarnPortal) {
+      DOM.btnTopWarnPortal.addEventListener('click', () => {
+        switchView('view-alerts');
+      });
+    }
+
+    // Image 3: Citizen Portal Navigation
+    if (DOM.btnCPortalBack) {
+      DOM.btnCPortalBack.addEventListener('click', () => {
+        switchView('view-command');
+      });
+    }
+
+    if (DOM.btnCitizenRefresh) {
+      DOM.btnCitizenRefresh.addEventListener('click', () => {
+        DOM.btnCitizenRefresh.style.transition = 'transform 0.5s ease';
+        DOM.btnCitizenRefresh.style.transform = 'rotate(360deg)';
+        setTimeout(() => {
+          if (DOM.btnCitizenRefresh) DOM.btnCitizenRefresh.style.transform = 'rotate(0deg)';
+        }, 500);
+      });
+    }
+
+    if (DOM.btnNavigateSafe) {
+      DOM.btnNavigateSafe.addEventListener('click', () => {
+        const evacMap = document.getElementById('c-map-evac-card');
+        if (evacMap) evacMap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+
+    if (DOM.btnCOpenGmaps) {
+      DOM.btnCOpenGmaps.addEventListener('click', () => {
+        window.open('https://maps.google.com/?q=17.440081,78.348915', '_blank');
+      });
+    }
+
+    if (DOM.btnCExpandGis) {
+      DOM.btnCExpandGis.addEventListener('click', () => {
+        const svg = document.querySelector('.c-map-route-visual');
+        if (svg) svg.classList.toggle('expanded');
+      });
+    }
+
     // Timeline Step Node Clicks
     DOM.timelineSteps.forEach((stepNode) => {
       stepNode.addEventListener('click', () => {
@@ -2970,6 +3098,251 @@
   }
 
   // =========================================================================
+  // 14B. TIME-SERIES STREAM ENGINE CONTROLLER (Half-Hourly CSV Playback)
+  // =========================================================================
+
+  const STREAM_DATA = [];
+  const TOTAL_STREAM_ROWS = 192;
+  const BASE_DATE = new Date(2026, 8, 3, 0, 0, 0); // 2026-09-03 00:00:00
+
+  for (let i = 1; i <= TOTAL_STREAM_ROWS; i++) {
+    const d = new Date(BASE_DATE.getTime() + (i - 1) * 30 * 60 * 1000);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    const ss = '00';
+    const ts = `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+
+    let rainHr, accum24, accum3d, accum7d, soilMoist, riskPct, predText, isThreat;
+
+    if (i <= 6) {
+      rainHr = (1.2 + i * 0.3).toFixed(1);
+      accum24 = (2.0 + i * 0.7).toFixed(1);
+      accum3d = (3.5 + i * 0.4).toFixed(1);
+      accum7d = (5.0 + i * 0.2).toFixed(1);
+      soilMoist = (2.1 + i * 0.1).toFixed(1);
+      riskPct = Math.min(25, 8 + i * 3);
+      predText = 'NO PREDICTION YET';
+      isThreat = false;
+    } else if (i <= 14) {
+      const prog = (i - 6);
+      rainHr = (3.0 + prog * 4.2).toFixed(1);
+      accum24 = (6.2 + prog * 5.5).toFixed(1);
+      accum3d = (6.5 + prog * 6.0).toFixed(1);
+      accum7d = (8.0 + prog * 6.0).toFixed(1);
+      soilMoist = (2.7 + prog * 0.45).toFixed(1);
+      riskPct = Math.min(88, 30 + prog * 8);
+      predText = riskPct >= 70 ? 'SEVERE THUNDERSTORM IMMINENT' : 'CONVECTIVE SURGE DETECTED';
+      isThreat = riskPct >= 70;
+    } else {
+      const decay = (i - 14);
+      rainHr = Math.max(2.0, (36.0 - decay * 1.8)).toFixed(1);
+      accum24 = (50.2 + decay * 0.6).toFixed(1);
+      accum3d = (54.5 + decay * 0.6).toFixed(1);
+      accum7d = (56.0 + decay * 0.6).toFixed(1);
+      soilMoist = Math.min(5.8, (6.3 - decay * 0.05)).toFixed(1);
+      riskPct = Math.max(15, (84 - decay * 5));
+      predText = riskPct > 50 ? 'POST-CONVECTIVE DOWNPOUR' : 'SYSTEM WEAKENING';
+      isThreat = false;
+    }
+
+    STREAM_DATA.push({
+      row: i,
+      timestamp: ts,
+      rain_mm_per_hr: rainHr,
+      rain_current_hr: rainHr,
+      rain_accum_24h: accum24 + ' mm',
+      rain_accum_3d: accum3d + ' mm',
+      rain_accum_7d: accum7d + ' mm',
+      soil_moisture: soilMoist,
+      riskPct: riskPct,
+      predText: predText,
+      isThreat: isThreat
+    });
+  }
+
+  let streamCurrentIndex = 3; // Row 4 (0-indexed: 3)
+  let streamPlaybackTimer = null;
+  let streamPlaybackSpeed = 1;
+
+  function renderStreamRow(idx) {
+    if (idx < 0) idx = 0;
+    if (idx >= STREAM_DATA.length) idx = STREAM_DATA.length - 1;
+    streamCurrentIndex = idx;
+    const row = STREAM_DATA[idx];
+
+    // Update Slider & Row Counters
+    if (DOM.streamSlider) DOM.streamSlider.value = row.row;
+    if (DOM.streamRowCurr) DOM.streamRowCurr.textContent = `${row.row} / ${TOTAL_STREAM_ROWS}`;
+    if (DOM.streamTimestamp) DOM.streamTimestamp.textContent = row.timestamp;
+    if (DOM.saRowNum) DOM.saRowNum.textContent = `Row [ ${row.row} / ${TOTAL_STREAM_ROWS} ]`;
+    if (DOM.saTimestamp) DOM.saTimestamp.textContent = row.timestamp;
+
+    // Update Live Telemetry in Left Box
+    const stRainHr = document.getElementById('st-rain-hr');
+    const stAccum24 = document.getElementById('st-accum-24');
+    const stAccum7d = document.getElementById('st-accum-7d');
+    const stCurrentHr = document.getElementById('st-current-hr');
+    const stAccum3d = document.getElementById('st-accum-3d');
+    const stSoilMoist = document.getElementById('st-soil-moist');
+
+    if (stRainHr) stRainHr.textContent = row.rain_mm_per_hr;
+    if (stAccum24) stAccum24.textContent = row.rain_accum_24h;
+    if (stAccum7d) stAccum7d.textContent = row.rain_accum_7d;
+    if (stCurrentHr) stCurrentHr.textContent = row.rain_current_hr;
+    if (stAccum3d) stAccum3d.textContent = row.rain_accum_3d;
+    if (stSoilMoist) stSoilMoist.textContent = row.soil_moisture;
+
+    // Update Telemetry Breakdown in Right Box
+    const sbRainHr = document.getElementById('sb-rain-hr');
+    const sbCurrentHr = document.getElementById('sb-current-hr');
+    const sbAccum24 = document.getElementById('sb-accum-24');
+    const sbAccum3d = document.getElementById('sb-accum-3d');
+    const sbAccum7d = document.getElementById('sb-accum-7d');
+    const sbSoilMoist = document.getElementById('sb-soil-moist');
+
+    if (sbRainHr) sbRainHr.textContent = row.rain_mm_per_hr;
+    if (sbCurrentHr) sbCurrentHr.textContent = row.rain_current_hr;
+    if (sbAccum24) sbAccum24.textContent = row.rain_accum_24h;
+    if (sbAccum3d) sbAccum3d.textContent = row.rain_accum_3d;
+    if (sbAccum7d) sbAccum7d.textContent = row.rain_accum_7d;
+    if (sbSoilMoist) sbSoilMoist.textContent = row.soil_moisture;
+
+    // Update Live Risk Score & Prediction Badge
+    if (DOM.saRiskScore) {
+      DOM.saRiskScore.textContent = `${row.riskPct}%`;
+      DOM.saRiskScore.className = row.riskPct >= 70 ? 'text-crimson' : (row.riskPct >= 40 ? 'text-amber' : 'text-emerald');
+    }
+    if (DOM.saPredBadge) {
+      DOM.saPredBadge.textContent = row.predText;
+      DOM.saPredBadge.className = row.isThreat ? 'sa-pred-badge danger' : 'sa-pred-badge';
+    }
+
+    // Trigger Warning when threat threshold is crossed
+    if (row.isThreat) {
+      if (DOM.topWarningIssuedCard) {
+        DOM.topWarningIssuedCard.style.display = 'flex';
+      }
+      if (DOM.topWarnProb) DOM.topWarnProb.textContent = `${row.riskPct}%`;
+      if (DOM.kpiRiskVal) {
+        DOM.kpiRiskVal.textContent = `HIGH ${row.riskPct}%`;
+        DOM.kpiRiskVal.className = 'kpi-value text-crimson';
+      }
+      if (DOM.kpiRiskDot) DOM.kpiRiskDot.classList.add('danger');
+      if (DOM.kpiActiveAlerts) DOM.kpiActiveAlerts.textContent = '1';
+      if (DOM.kpiCitizensRisk) DOM.kpiCitizensRisk.textContent = '240,000+';
+      if (DOM.kpiSmsLogs) DOM.kpiSmsLogs.textContent = '1,280';
+
+      // Citizen portal update
+      if (DOM.cStatusTopCard) DOM.cStatusTopCard.classList.add('danger');
+      if (DOM.cTopStatusText) DOM.cTopStatusText.textContent = 'ACTIVE EMERGENCY WARNING';
+      if (DOM.cTopStatusDot) DOM.cTopStatusDot.classList.add('danger');
+      if (DOM.cTopStatusIcon) DOM.cTopStatusIcon.textContent = '🚨';
+      if (DOM.cTopHeadline) DOM.cTopHeadline.textContent = 'WARNING: SEVERE LIGHTNING IMMINENT';
+      if (DOM.cNavMode) DOM.cNavMode.textContent = 'EVACUATION MODE';
+    }
+  }
+
+  function stepStreamRow(delta) {
+    let next = streamCurrentIndex + delta;
+    if (next >= STREAM_DATA.length) next = 0;
+    if (next < 0) next = STREAM_DATA.length - 1;
+    renderStreamRow(next);
+  }
+
+  function toggleStreamPlayback() {
+    if (streamPlaybackTimer) {
+      // Pause
+      clearInterval(streamPlaybackTimer);
+      streamPlaybackTimer = null;
+      if (DOM.btnPlayStream) DOM.btnPlayStream.innerHTML = '▶ PLAY TIME-SERIES STREAM';
+      if (DOM.saStatusBadge) {
+        DOM.saStatusBadge.textContent = 'PLAYBACK PAUSED';
+        DOM.saStatusBadge.className = 'sa-status-badge';
+      }
+    } else {
+      // Play
+      if (DOM.btnPlayStream) DOM.btnPlayStream.innerHTML = '⏸ PAUSE STREAM';
+      if (DOM.saStatusBadge) {
+        DOM.saStatusBadge.textContent = 'STREAMING LIVE';
+        DOM.saStatusBadge.className = 'sa-status-badge active';
+      }
+      const interval = Math.max(100, Math.round(1000 / streamPlaybackSpeed));
+      streamPlaybackTimer = setInterval(() => {
+        if (streamCurrentIndex >= STREAM_DATA.length - 1) {
+          toggleStreamPlayback(); // Stop at end
+          return;
+        }
+        stepStreamRow(1);
+      }, interval);
+    }
+  }
+
+  function initStreamEngine() {
+    renderStreamRow(3); // Initial row 4
+
+    if (DOM.btnPlayStream) {
+      DOM.btnPlayStream.addEventListener('click', toggleStreamPlayback);
+    }
+    if (DOM.btnStepStream) {
+      DOM.btnStepStream.addEventListener('click', () => stepStreamRow(1));
+    }
+    if (DOM.streamSlider) {
+      DOM.streamSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10) - 1;
+        renderStreamRow(val);
+      });
+    }
+
+    if (DOM.speedPillBtns) {
+      DOM.speedPillBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          DOM.speedPillBtns.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          streamPlaybackSpeed = parseFloat(btn.getAttribute('data-speed') || '1');
+          if (streamPlaybackTimer) {
+            // Restart with new speed
+            clearInterval(streamPlaybackTimer);
+            const interval = Math.max(100, Math.round(1000 / streamPlaybackSpeed));
+            streamPlaybackTimer = setInterval(() => {
+              if (streamCurrentIndex >= STREAM_DATA.length - 1) {
+                toggleStreamPlayback();
+                return;
+              }
+              stepStreamRow(1);
+            }, interval);
+          }
+        });
+      });
+    }
+
+    // Image 2 Tabs: CSV / Feature Form / Raw
+    if (DOM.tabStreamCsv) {
+      DOM.tabStreamCsv.addEventListener('click', () => {
+        DOM.tabStreamCsv.classList.add('active');
+        if (DOM.tabStreamForm) DOM.tabStreamForm.classList.remove('active');
+        if (DOM.tabStreamRaw) DOM.tabStreamRaw.classList.remove('active');
+      });
+    }
+    if (DOM.tabStreamForm) {
+      DOM.tabStreamForm.addEventListener('click', () => {
+        DOM.tabStreamForm.classList.add('active');
+        if (DOM.tabStreamCsv) DOM.tabStreamCsv.classList.remove('active');
+        if (DOM.tabStreamRaw) DOM.tabStreamRaw.classList.remove('active');
+      });
+    }
+    if (DOM.tabStreamRaw) {
+      DOM.tabStreamRaw.addEventListener('click', () => {
+        DOM.tabStreamRaw.classList.add('active');
+        if (DOM.tabStreamCsv) DOM.tabStreamCsv.classList.remove('active');
+        if (DOM.tabStreamForm) DOM.tabStreamForm.classList.remove('active');
+      });
+    }
+  }
+
+  // =========================================================================
   // 15. INITIALIZATION
   // =========================================================================
 
@@ -2977,6 +3350,7 @@
     initNavigation();
     bindEventListeners();
     initCitizenPortal();
+    initStreamEngine();
     resetCascadeCards('dataset-1');
 
     // Start Operations Clocks
