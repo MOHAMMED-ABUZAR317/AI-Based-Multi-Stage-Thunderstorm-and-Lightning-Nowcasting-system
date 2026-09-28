@@ -23,6 +23,13 @@ from pydantic import BaseModel, Field
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 FRONTEND_DIR = BACKEND_DIR.parent / "frontend"
+ROOT_DIR = BACKEND_DIR.parent
+
+import sys
+for _p in [str(ROOT_DIR), str(BACKEND_DIR / "src")]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
 
 from backend.app.demo_scenario import (
     GHMC_ZONES,
@@ -493,6 +500,12 @@ def root_app_js() -> FileResponse:
 @app.get("/favicon.svg", include_in_schema=False)
 def root_favicon() -> FileResponse:
     return FileResponse(FRONTEND_DIR / "favicon.svg")
+
+
+@app.get("/map.html", include_in_schema=False)
+def root_map_html() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "map.html")
+
 
 
 if (FRONTEND_DIR / "js").is_dir():
