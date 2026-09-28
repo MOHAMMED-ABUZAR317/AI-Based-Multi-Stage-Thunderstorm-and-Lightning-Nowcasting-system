@@ -1,1350 +1,881 @@
-```html
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Hyderabad Metro Thunderstorm Safety Hub</title>
-
+    <title>Hyderabad Region — 3D Thunderstorm & Lightning Safety Map</title>
     <link
+      href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css"
       rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
-
     <style>
       * {
         box-sizing: border-box;
       }
-
       html,
       body {
         margin: 0;
-        padding: 0;
         width: 100%;
         height: 100%;
-        font-family: Arial, sans-serif;
-      }
-
-      #map {
-        width: 100%;
-        height: 100vh;
-      }
-
-      .panel {
-        position: absolute;
-        z-index: 1000;
-        top: 15px;
-        left: 15px;
-
-        width: 360px;
-        max-width: calc(100% - 30px);
-
-        background: rgba(255, 255, 255, 0.97);
-
-        padding: 16px;
-
-        border-radius: 15px;
-
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
-      }
-
-      .panel h2 {
-        margin: 0 0 5px;
-        font-size: 21px;
-      }
-
-      .subtitle {
-        color: #555;
-        font-size: 13px;
-        margin-bottom: 12px;
-      }
-
-      .region {
-        background: #e3f2fd;
-        color: #0d47a1;
-        padding: 9px;
-        border-radius: 8px;
-        font-size: 12px;
-        margin-bottom: 10px;
-        line-height: 1.5;
-      }
-
-      button {
-        width: 100%;
-        border: none;
-        padding: 11px;
-        margin: 4px 0;
-        border-radius: 8px;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #090a12;
         color: white;
-        font-weight: bold;
+      }
+      #map {
+        position: absolute;
+        inset: 0;
+      }
+      .sidebar {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        width: 370px;
+        max-height: calc(100vh - 36px);
+        overflow-y: auto;
+        padding: 22px;
+        background: rgba(11, 13, 26, 0.96);
+        backdrop-filter: blur(18px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        z-index: 20;
+        box-shadow: 0 12px 50px rgba(0, 0, 0, 0.7);
+      }
+      h1 {
+        margin: 0;
+        color: #ffcc00;
+        font-size: 20px;
+        letter-spacing: 0.5px;
+      }
+      .subtitle {
+        margin-top: 8px;
+        margin-bottom: 22px;
+        color: #aaa;
+        font-size: 12.5px;
+        line-height: 1.45;
+      }
+      .section {
+        margin-bottom: 20px;
+      }
+      .section-title {
+        margin-bottom: 8px;
+        color: #aaa;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1.1px;
+        font-weight: 600;
+      }
+      button,
+      select {
+        width: 100%;
+        padding: 11px;
+        margin-top: 7px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 9px;
+        background: #171826;
+        color: #fff;
+        font-size: 13.5px;
         cursor: pointer;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
       }
-
       button:hover {
-        opacity: 0.9;
+        background: #24263a;
+        border-color: rgba(255, 255, 255, 0.35);
       }
-
-      .blue {
-        background: #1976d2;
+      .btn3d {
+        background: linear-gradient(135deg, #3d2b69, #5b3e9b);
+        border-color: #9d7fe3;
+        color: #fff;
+        font-weight: 600;
       }
-
-      .green {
-        background: #2e7d32;
+      .btn3d.active {
+        border: 2px solid #b598ff;
+        box-shadow: 0 0 10px rgba(181, 152, 255, 0.4);
       }
-
-      .orange {
-        background: #ef6c00;
+      .btn2d {
+        background: #222;
+        border-color: #888;
       }
-
-      .red {
-        background: #c62828;
+      .btn2d.active {
+        border: 2px solid #aaa;
       }
-
-      .dark {
-        background: #263238;
+      .active {
+        border: 2px solid #ffcc00;
       }
-
-      .purple {
-        background: #6a1b9a;
+      .satellite {
+        background: #1b4b3b;
       }
-
+      .gps {
+        background: #2b4c7e;
+      }
+      .safe-button {
+        background: #1e7040;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        padding: 9px;
+        margin-bottom: 5px;
+        border-radius: 7px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.04);
+        transition: background 0.15s;
+      }
+      .legend-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .color-box {
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(255, 255, 255, 0.7);
+        flex-shrink: 0;
+      }
+      .safe {
+        background: #2ecc71;
+      }
+      .moderate {
+        background: #f1c40f;
+      }
+      .severe {
+        background: #e67e22;
+      }
+      .extreme {
+        background: #e74c3c;
+      }
+      .hazard {
+        background: #8e0000;
+      }
       .status {
         margin-top: 10px;
-        padding: 10px;
-
-        border-radius: 8px;
-
-        background: #f1f5f9;
-
+        padding: 12px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #ccc;
         font-size: 13px;
-
-        line-height: 1.5;
+        line-height: 1.55;
+        border-left: 3px solid #f39c12;
       }
-
-      .routeInfo {
-        display: none;
-
-        margin-top: 10px;
-        padding: 10px;
-
-        border-radius: 8px;
-
-        background: #e8f5e9;
-
-        font-size: 13px;
-
-        line-height: 1.6;
+      .state-label {
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        text-shadow:
+          0 1px 4px #000,
+          0 0 6px #000;
+        white-space: nowrap;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 3px 7px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
-
-      .legend {
-        margin-top: 10px;
-        font-size: 12px;
+      .popup-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #f1c40f;
       }
-
-      .dot {
-        display: inline-block;
-
-        width: 11px;
-        height: 11px;
-
-        border-radius: 50%;
-
-        margin-right: 4px;
+      .popup-line {
+        font-size: 12.5px;
+        margin-bottom: 4px;
+        color: #ddd;
       }
-
-      .redDot {
-        background: #f44336;
+      .maplibregl-popup-content {
+        background: #181926;
+        color: white;
+        border-radius: 12px;
+        min-width: 240px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
-
-      .greenDot {
-        background: #2e7d32;
+      .maplibregl-popup-close-button {
+        color: white;
       }
-
-      .blueDot {
-        background: #1976d2;
+      @media (max-width: 700px) {
+        .sidebar {
+          width: calc(100% - 30px);
+          left: 15px;
+          top: 15px;
+          max-height: 60vh;
+        }
       }
     </style>
   </head>
-
   <body>
     <div id="map"></div>
 
-    <div class="panel">
-      <h2>⛈️ Hyderabad Metro Safety Hub</h2>
-
-      <div class="subtitle">Thunderstorm & Lightning Safety Navigation</div>
-
-      <div class="region">
-        <b>MAP REGION</b><br />
-        Hyderabad + Rangareddy + Medchal–Malkajgiri
-        <br />
-        Other districts are excluded.
+    <div class="sidebar">
+      <h1>⚡ Hyderabad Thunderstorm & Lightning</h1>
+      <div class="subtitle">
+        <strong>Convective Storm & Lightning Risk Corridor</strong><br />
+        Hyderabad → Sangareddy → Rangareddy → Medchal-Malkajgiri. High-risk open
+        ridges + squall corridors + lightning-grounded safe shelters + OSRM
+        routes.
       </div>
 
-      <button class="blue" onclick="getMyLocation()">📍 My Location</button>
+      <div class="section">
+        <div class="section-title">
+          Map View
+          <span style="font-weight: 400; color: #777">— Click to switch</span>
+        </div>
+        <button id="streetButton" onclick="setStreet()">🗺️ Street Map</button>
+        <button
+          id="satelliteButton"
+          class="active satellite"
+          onclick="setSatellite()"
+        >
+          🛰️ Satellite View
+        </button>
+      </div>
 
-      <button class="orange" onclick="testThunderstorm()">
-        ⚡ Test Thunderstorm
-      </button>
+      <div class="section">
+        <div class="section-title">3D Ridge & Cloud Elevation</div>
+        <button id="btn3d" class="btn3d" onclick="set3D()">
+          🧊 3D Topo Ridge View (Pitch 60°)
+        </button>
+        <button id="btn2d" class="btn2d active" onclick="set2D()">
+          📐 Flat 2D View
+        </button>
+      </div>
 
-      <button class="green" onclick="findSafeRegion()">
-        🛡️ Find Nearest Safe Region
-      </button>
+      <div class="section">
+        <div class="section-title">Thunderstorm Hazard Filter</div>
+        <div class="legend-item" onclick="filterRisk('Safe')">
+          <div class="color-box safe"></div>
+          Lightning-Safe Pucca Shelter / Depot
+        </div>
+        <div class="legend-item" onclick="filterRisk('Moderate Risk')">
+          <div class="color-box moderate"></div>
+          Moderate — Heavy Rain / Micro-Waterlogging
+        </div>
+        <div class="legend-item" onclick="filterRisk('Severe Risk')">
+          <div class="color-box severe"></div>
+          Severe — Tree Falls & Downburst Squall
+        </div>
+        <div class="legend-item" onclick="filterRisk('Critical Risk')">
+          <div class="color-box critical"></div>
+          Critical — High-Voltage Pole / Substation Hazard
+        </div>
+        <div class="legend-item" onclick="filterRisk('Hazard')">
+          <div class="color-box hazard"></div>
+          Hazard — Exposed High-Elevation Lightning Ground
+        </div>
+        <button onclick="showAll()">Show All Storm Points</button>
+      </div>
 
-      <button class="purple" onclick="routeRiskToSafe()">
-        🚨 Risk → Safe Route
-      </button>
+      <div class="section">
+        <div class="section-title">District / Sector</div>
+        <select id="sectorSelect" onchange="selectSector()">
+          <option value="">All Districts — Full Storm Watch Region</option>
+          <option value="Hyderabad Central">
+            Hyderabad Central — Urban Core & Squalls
+          </option>
+          <option value="Medchal-Malkajgiri">
+            Medchal-Malkajgiri — Northern Gust Corridor
+          </option>
+          <option value="Rangareddy">
+            Rangareddy — Ridge Front & Open Fields
+          </option>
+          <option value="Sangareddy">
+            Sangareddy — Western High Lightning Plateau
+          </option>
+        </select>
+      </div>
 
-      <button class="dark" onclick="startVoiceNavigation()">
-        🔊 Start Voice Navigation
-      </button>
-
-      <button class="red" onclick="stopVoiceNavigation()">
-        🔇 Stop Voice Navigation
-      </button>
-
-      <button class="blue" onclick="openGoogleMaps()">
-        🗺️ Open Google Maps
-      </button>
-
-      <div id="status" class="status">Loading Hyderabad Metro Region...</div>
-
-      <div id="routeInfo" class="routeInfo"></div>
-
-      <div class="legend">
-        <span class="dot redDot"></span>
-        Thunderstorm Risk
-
-        <br />
-
-        <span class="dot greenDot"></span>
-        Safe Region
-
-        <br />
-
-        <span class="dot blueDot"></span>
-        Your Location
+      <div class="section">
+        <div class="section-title">GPS Emergency Navigation</div>
+        <button class="gps" onclick="locateUser()">
+          📍 Find My Location in Storm Zone
+        </button>
+        <button class="safe-button" onclick="findNearestSafe()">
+          🛡️ Find Nearest Lightning Shelter + Route
+        </button>
+        <div id="status" class="status">
+          GPS not detected. Map is centered on Hyderabad convective zone.
+          Primary squall trajectory shown in purple; 4-district boundary in
+          yellow dashed line.
+        </div>
       </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
     <script>
-      /* =========================================================
-   CONFIGURATION
-========================================================= */
-
-      /*
-   Telangana Government GIS district layer.
-
-   We request ONLY:
-
-   Hyderabad
-   Rangareddy
-   Medchal Malkajgiri
-*/
-
-      const DISTRICT_API =
-        "https://tgrac.telangana.gov.in/arcgis/rest/services/" +
-        "RRR_Folder/RRR/MapServer/83/query";
-
-      const DISTRICT_NAMES = ["Hyderabad", "Rangareddy", "Medchal Malkajgiri"];
-
-      /* =========================================================
-   MAP
-========================================================= */
-
-      const map = L.map("map", {
-        zoomControl: true,
-        minZoom: 10,
-        maxZoom: 18,
-      }).setView([17.385, 78.4867], 11);
-
-      /* =========================================================
-   STREET MAP
-========================================================= */
-
-      const street = L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          attribution: "&copy; OpenStreetMap contributors",
-
-          maxZoom: 19,
-        },
-      );
-
-      /* =========================================================
-   SATELLITE MAP
-========================================================= */
-
-      const satellite = L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/" +
-          "World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        {
-          attribution: "Tiles &copy; Esri",
-
-          maxZoom: 19,
-        },
-      );
-
-      /*
-   Satellite default.
-*/
-
-      satellite.addTo(map);
-
-      /* =========================================================
-   LAYER CONTROL
-========================================================= */
-
-      L.control
-        .layers(
+      // 4-District Boundary
+      const corridorGeoJSON = {
+        type: "FeatureCollection",
+        features: [
           {
-            "🛰️ Satellite": satellite,
-            "🗺️ Street Map": street,
+            type: "Feature",
+            properties: {
+              name: "Hyderabad-Rangareddy-Medchal-Sangareddy Storm Belt",
+            },
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                [
+                  [77.85, 17.15],
+                  [77.95, 17.85],
+                  [78.45, 17.95],
+                  [78.85, 17.8],
+                  [78.95, 17.25],
+                  [78.6, 16.95],
+                  [78.1, 17.0],
+                  [77.85, 17.15],
+                ],
+              ],
+            },
           },
-          {},
+        ],
+      };
+
+      // Prevailing convective squall / gust front track (West-Northwest to East-Southeast)
+      const stormSquallLineGeoJSON = {
+        type: "FeatureCollection",
+        features: [
           {
-            position: "topright",
+            type: "Feature",
+            properties: { name: "Primary Convective Gust Front Corridor" },
+            geometry: {
+              type: "LineString",
+              coordinates: [
+                [77.95, 17.65],
+                [78.15, 17.58],
+                [78.32, 17.5],
+                [78.48, 17.43],
+                [78.65, 17.38],
+                [78.88, 17.32],
+              ],
+            },
           },
-        )
-        .addTo(map);
+        ],
+      };
 
-      /* =========================================================
-   GLOBAL VARIABLES
-========================================================= */
+      const locations = [
+        {
+          name: "Golconda Fort Outer Ridge & Bada Pahad",
+          sector: "Hyderabad Central",
+          coordinates: [78.4011, 17.3833],
+          risk: "Hazard",
+          type: "Exposed rocky elevated outcrop; severe lightning strike risk",
+        },
+        {
+          name: "Ananthagiri - Vikarabad Ridge Edge",
+          sector: "Sangareddy",
+          coordinates: [77.9856, 17.3114],
+          risk: "Hazard",
+          type: "High-elevation plateau boundary; cloud-to-ground lightning origin",
+        },
+        {
+          name: "Kondapur - Hitec City Open High Ridge",
+          sector: "Rangareddy",
+          coordinates: [78.3582, 17.4625],
+          risk: "Hazard",
+          type: "Exposed construction zone, crane hazards, lightning strike hotbed",
+        },
+        {
+          name: "Maula Ali Hilltop Rock",
+          sector: "Medchal-Malkajgiri",
+          coordinates: [78.5632, 17.4651],
+          risk: "Hazard",
+          type: "Isolated granite dome; extreme ground current hazard in squalls",
+        },
+        {
+          name: "Jubilee Hills Checkpost / Road No 36",
+          sector: "Hyderabad Central",
+          coordinates: [78.4112, 17.4328],
+          risk: "Severe Risk",
+          type: "Severe gale downburst / ancient roadside tree falls",
+        },
+        {
+          name: "Dundigal Open Airfield Corridor",
+          sector: "Medchal-Malkajgiri",
+          coordinates: [78.4021, 17.6254],
+          risk: "Critical Risk",
+          type: "Severe straight-line convective winds & open ground lightning",
+        },
+        {
+          name: "Patancheru Industrial High-Tension Corridor",
+          sector: "Sangareddy",
+          coordinates: [78.2541, 17.5312],
+          risk: "Critical Risk",
+          type: "400kV power line arc hazard & high-voltage tower damage during squalls",
+        },
+        {
+          name: "Shamshabad Outer Open Plains",
+          sector: "Rangareddy",
+          coordinates: [78.4298, 17.2403],
+          risk: "Severe Risk",
+          type: "Sudden microburst wind shear & agricultural field lightning strikes",
+        },
+        {
+          name: "Secunderabad Station Canopy Zone",
+          sector: "Hyderabad Central",
+          coordinates: [78.5034, 17.4344],
+          risk: "Moderate Risk",
+          type: "Urban squall wind tunnel & localized intense thunderstorm downpour",
+        },
+        {
+          name: "GHMC Command & Disaster Management Centre",
+          sector: "Hyderabad Central",
+          coordinates: [78.4385, 17.4172],
+          risk: "Safe",
+          type: "Fully surge-protected, lightning-arrested Emergency Ops HQ",
+        },
+        {
+          name: "Gachibowli Indoor Stadium",
+          sector: "Rangareddy",
+          coordinates: [78.3445, 17.4435],
+          risk: "Safe",
+          type: "Faraday-grounded massive indoor pucca sports complex shelter",
+        },
+        {
+          name: "Kalyan Jewellers / Metro Concourse Miyapur",
+          sector: "Medchal-Malkajgiri",
+          coordinates: [78.3585, 17.4965],
+          risk: "Safe",
+          type: "Elevated covered concrete metro concourse with lightning protection",
+        },
+        {
+          name: "Sangareddy Government Medical College & Hospital",
+          sector: "Sangareddy",
+          coordinates: [78.0721, 17.6258],
+          risk: "Safe",
+          type: "Equipotential bonded medical shelter with backup generator grid",
+        },
+        {
+          name: "ECIL Indoor Community Hall",
+          sector: "Medchal-Malkajgiri",
+          coordinates: [78.5714, 17.4721],
+          risk: "Safe",
+          type: "Reinforced concrete indoor community shelter with lightning rods",
+        },
+      ];
 
-      let regionGeoJSON = null;
+      const colors = {
+        Safe: "#2ecc71",
+        "Moderate Risk": "#f1c40f",
+        "Severe Risk": "#e67e22",
+        "Critical Risk": "#e74c3c",
+        Hazard: "#8e0000",
+      };
 
-      let regionLayer = null;
+      const terrainSource = {
+        type: "raster-dem",
+        tiles: ["https://demotiles.maplibre.org/terrain-tiles/{z}/{x}/{y}.png"],
+        tileSize: 256,
+        attribution: "© MapLibre Terrain Demo",
+      };
 
-      let regionBounds = null;
-
-      let userMarker = null;
-
-      let routeLayer = null;
-
-      let currentLocation = null;
-
-      let currentDestination = null;
-
-      let selectedRiskLocation = null;
-
-      let stormMarkers = [];
-
-      let routeSteps = [];
-
-      let currentStep = 0;
-
-      let voiceEnabled = false;
-
-      let watchId = null;
-
-      /* =========================================================
-   LOAD THREE DISTRICTS
-========================================================= */
-
-      async function loadRegion() {
-        try {
-          const where = DISTRICT_NAMES.map(
-            (name) => "DISTRICT_N='" + name.replace(/'/g, "''") + "'",
-          ).join(" OR ");
-
-          const params = new URLSearchParams({
-            where: where,
-
-            outFields: "*",
-
-            returnGeometry: "true",
-
-            outSR: "4326",
-
-            f: "geojson",
-          });
-
-          const response = await fetch(DISTRICT_API + "?" + params.toString());
-
-          if (!response.ok) {
-            throw new Error("District API failed");
-          }
-
-          const data = await response.json();
-
-          if (!data.features || data.features.length === 0) {
-            throw new Error("No district polygons found");
-          }
-
-          regionGeoJSON = data;
-
-          drawRegion();
-        } catch (error) {
-          console.error(error);
-
-          document.getElementById("status").innerHTML =
-            "❌ Unable to load Hyderabad Metro Region.<br>" +
-            "Check your internet connection.";
-        }
-      }
-
-      /* =========================================================
-   DRAW THREE DISTRICTS
-========================================================= */
-
-      function drawRegion() {
-        /*
-       Draw selected districts.
-    */
-
-        regionLayer = L.geoJSON(regionGeoJSON, {
-          style: function (feature) {
-            const district = feature.properties?.DISTRICT_N || "";
-
-            let fill = "#1976d2";
-
-            if (district === "Hyderabad") {
-              fill = "#2196f3";
-            } else if (district === "Rangareddy") {
-              fill = "#43a047";
-            } else if (district === "Medchal Malkajgiri") {
-              fill = "#fb8c00";
-            }
-
-            return {
-              color: "#123",
-
-              weight: 3,
-
-              fillColor: fill,
-
-              fillOpacity: 0.12,
-            };
+      const streetStyle = {
+        version: 8,
+        sources: {
+          osm: {
+            type: "raster",
+            tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+            tileSize: 256,
+            attribution: "© OpenStreetMap",
           },
+          terrain: terrainSource,
+        },
+        terrain: { source: "terrain", exaggeration: 1.5 },
+        layers: [{ id: "osm", type: "raster", source: "osm" }],
+      };
 
-          onEachFeature: function (feature, layer) {
-            const district = feature.properties?.DISTRICT_N || "District";
-
-            layer.bindPopup("<b>" + district + "</b>");
+      const satelliteStyle = {
+        version: 8,
+        sources: {
+          satellite: {
+            type: "raster",
+            tiles: [
+              "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            ],
+            tileSize: 256,
+            attribution: "© Esri",
           },
-        }).addTo(map);
+          terrain: terrainSource,
+        },
+        terrain: { source: "terrain", exaggeration: 1.5 },
+        layers: [{ id: "satellite", type: "raster", source: "satellite" }],
+      };
 
-        regionBounds = regionLayer.getBounds();
+      let userLocation = null,
+        userMarker = null;
 
-        /*
-       Fit complete three-district region.
-    */
+      const corridorCenters = {
+        "Hyderabad Central": [78.47, 17.39],
+        "Medchal-Malkajgiri": [78.5, 17.52],
+        Rangareddy: [78.4, 17.25],
+        Sangareddy: [78.08, 17.62],
+      };
 
-        map.fitBounds(regionBounds, {
-          padding: [30, 30],
+      const map = new maplibregl.Map({
+        container: "map",
+        style: satelliteStyle,
+        center: [78.46, 17.42],
+        zoom: 10.2,
+        pitch: 0,
+        bearing: 0,
+        maxBounds: [
+          [77.5, 16.7],
+          [79.2, 18.2],
+        ],
+      });
+      map.addControl(new maplibregl.NavigationControl(), "top-right");
+
+      map.on("load", () => {
+        loadCorridorLayers();
+        addSectorLabels();
+        addRiskMarkers();
+      });
+
+      function loadCorridorLayers() {
+        if (map.getSource("corridor")) return;
+        map.addSource("corridor", { type: "geojson", data: corridorGeoJSON });
+        map.addLayer({
+          id: "corridor-fill",
+          type: "fill",
+          source: "corridor",
+          paint: { "fill-color": "#f1c40f", "fill-opacity": 0.04 },
+        });
+        map.addLayer({
+          id: "corridor-border",
+          type: "line",
+          source: "corridor",
+          paint: {
+            "line-color": "#f1c40f",
+            "line-width": 2,
+            "line-dasharray": [3, 3],
+          },
         });
 
-        /*
-       Prevent normal map movement
-       far outside the selected region.
-    */
-
-        map.setMaxBounds(regionBounds.pad(0.02));
-
-        map.options.maxBoundsViscosity = 1.0;
-
-        /*
-       Mask outside the three districts.
-    */
-
-        createOutsideMask();
-
-        document.getElementById("status").innerHTML =
-          "✅ Hyderabad Metro Region loaded.<br>" +
-          "Hyderabad + Rangareddy + Medchal–Malkajgiri.";
+        // Convective Gust Line
+        map.addSource("squall-line", {
+          type: "geojson",
+          data: stormSquallLineGeoJSON,
+        });
+        map.addLayer({
+          id: "squall-glow",
+          type: "line",
+          source: "squall-line",
+          paint: {
+            "line-color": "#9b59b6",
+            "line-width": 12,
+            "line-opacity": 0.4,
+          },
+        });
+        map.addLayer({
+          id: "squall-line-main",
+          type: "line",
+          source: "squall-line",
+          paint: {
+            "line-color": "#e056fd",
+            "line-width": 3.5,
+            "line-opacity": 0.95,
+            "line-dasharray": [2, 1],
+          },
+        });
       }
 
-      /* =========================================================
-   OUTSIDE MASK
-========================================================= */
+      function addSectorLabels() {
+        Object.entries(corridorCenters).forEach(([name, center]) => {
+          const el = document.createElement("div");
+          el.className = "state-label";
+          el.innerText = name;
+          new maplibregl.Marker({ element: el, anchor: "center" })
+            .setLngLat(center)
+            .addTo(map);
+        });
+      }
 
-      function createOutsideMask() {
-        if (!regionGeoJSON) {
+      function addRiskMarkers() {
+        locations.forEach((loc, idx) => {
+          const el = document.createElement("div");
+          el.style.width = "22px";
+          el.style.height = "22px";
+          el.style.borderRadius = "50%";
+          el.style.background = colors[loc.risk];
+          el.style.border = "3px solid rgba(255,255,255,0.9)";
+          el.style.boxShadow = "0 0 10px rgba(0,0,0,0.7)";
+          el.style.cursor = "pointer";
+          el.dataset.index = idx;
+          new maplibregl.Marker({ element: el })
+            .setLngLat(loc.coordinates)
+            .setPopup(
+              new maplibregl.Popup({ offset: 20 }).setHTML(`
+            <div class="popup-title">${loc.risk === "Safe" ? "🛡️ " : "⚡ "}${loc.name}</div>
+            <div class="popup-line"><strong>District / Sector:</strong> ${loc.sector}</div>
+            <div class="popup-line"><strong>Risk:</strong> ${loc.risk}</div>
+            <div class="popup-line"><strong>Hazard / Shelter Type:</strong> ${loc.type}</div>
+            <div class="popup-line"><strong>Lat / Lon:</strong> ${loc.coordinates[1].toFixed(4)} / ${loc.coordinates[0].toFixed(4)}</div>
+          `),
+            )
+            .addTo(map);
+        });
+      }
+
+      function setStreet() {
+        map.setStyle(streetStyle);
+        map.once("styledata", () => {
+          loadCorridorLayers();
+          addSectorLabels();
+          addRiskMarkers();
+          if (userMarker) userMarker.addTo(map);
+        });
+        document.getElementById("streetButton").classList.add("active");
+        document.getElementById("satelliteButton").classList.remove("active");
+      }
+
+      function setSatellite() {
+        map.setStyle(satelliteStyle);
+        map.once("styledata", () => {
+          loadCorridorLayers();
+          addSectorLabels();
+          addRiskMarkers();
+          if (userMarker) userMarker.addTo(map);
+        });
+        document.getElementById("satelliteButton").classList.add("active");
+        document.getElementById("streetButton").classList.remove("active");
+      }
+
+      function set3D() {
+        map.setPitch(60);
+        map.setBearing(-20);
+        map.setZoom(10.5);
+        if (map.getSource && map.getSource("terrain")) {
+          try {
+            map.setTerrain({ source: "terrain", exaggeration: 2.2 });
+          } catch (e) {}
+        }
+        document.getElementById("btn3d").classList.add("active");
+        document.getElementById("btn2d").classList.remove("active");
+        document.getElementById("status").innerHTML =
+          "🧊 3D Topo View Active — Pitch 60° • High ridges and lightning exposure elevation visible.";
+      }
+
+      function set2D() {
+        try {
+          map.setTerrain(null);
+        } catch (e) {}
+        map.setPitch(0);
+        map.setBearing(0);
+        map.setZoom(10.2);
+        document.getElementById("btn2d").classList.add("active");
+        document.getElementById("btn3d").classList.remove("active");
+        document.getElementById("status").innerHTML =
+          "📐 Flat 2D view restored. GPS / storm filters / routes still active.";
+      }
+
+      function filterRisk(risk) {
+        document.querySelectorAll(".maplibregl-marker").forEach((m) => {
+          const i = Number(m.dataset.index);
+          if (locations[i])
+            m.style.display = locations[i].risk === risk ? "block" : "none";
+        });
+      }
+
+      function showAll() {
+        document.querySelectorAll(".maplibregl-marker").forEach((m) => {
+          if (m.dataset.index !== undefined) m.style.display = "block";
+        });
+      }
+
+      function selectSector() {
+        const sec = document.getElementById("sectorSelect").value;
+        if (!sec) {
+          showAll();
+          map.flyTo({
+            center: [78.46, 17.42],
+            zoom: 10.2,
+            pitch: map.getPitch(),
+            bearing: map.getBearing(),
+          });
           return;
         }
-
-        /*
-       Large rectangle around Telangana.
-    */
-
-        const outer = [
-          [12, 72],
-
-          [12, 84],
-
-          [23, 84],
-
-          [23, 72],
-        ];
-
-        const holes = [];
-
-        regionGeoJSON.features.forEach((feature) => {
-          const geometry = feature.geometry;
-
-          if (!geometry) {
-            return;
-          }
-
-          /*
-               Polygon
-            */
-
-          if (geometry.type === "Polygon") {
-            const outerRing = geometry.coordinates[0];
-
-            holes.push(outerRing.map((p) => [p[1], p[0]]));
-          }
-
-          /*
-               MultiPolygon
-            */
-
-          if (geometry.type === "MultiPolygon") {
-            geometry.coordinates.forEach((polygon) => {
-              const outerRing = polygon[0];
-
-              holes.push(outerRing.map((p) => [p[1], p[0]]));
-            });
-          }
+        document.querySelectorAll(".maplibregl-marker").forEach((m) => {
+          if (m.dataset.index === undefined) return;
+          const i = Number(m.dataset.index);
+          m.style.display = locations[i].sector === sec ? "block" : "none";
         });
-
-        /*
-       White mask with the three
-       districts cut out.
-    */
-
-        L.polygon([outer, ...holes], {
-          stroke: false,
-
-          fillColor: "#ffffff",
-
-          fillOpacity: 0.88,
-
-          interactive: false,
-        }).addTo(map);
+        if (corridorCenters[sec]) {
+          map.flyTo({
+            center: corridorCenters[sec],
+            zoom: 11.5,
+            pitch: map.getPitch(),
+            bearing: map.getBearing(),
+          });
+        }
       }
 
-      /* =========================================================
-   POINT IN POLYGON
-========================================================= */
+      function locateUser() {
+        const status = document.getElementById("status");
+        if (!navigator.geolocation) {
+          status.innerHTML = "GPS not supported.";
+          return;
+        }
+        status.innerHTML = "📡 Detecting GPS inside storm zone...";
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const lat = pos.coords.latitude,
+              lng = pos.coords.longitude;
+            userLocation = [lng, lat];
+            const inside = pointInGeoJSON([lng, lat], corridorGeoJSON);
+            if (userMarker) userMarker.remove();
+            const el = document.createElement("div");
+            el.style.width = "28px";
+            el.style.height = "28px";
+            el.style.borderRadius = "50%";
+            el.style.background = "#f39c12";
+            el.style.border = "4px solid white";
+            el.style.boxShadow = "0 0 20px #f39c12";
+            userMarker = new maplibregl.Marker({ element: el })
+              .setLngLat(userLocation)
+              .setPopup(
+                new maplibregl.Popup({ offset: 20 }).setHTML(`
+            <div class="popup-title">📍 Your GPS Location</div>
+            <div class="popup-line"><strong>Inside Storm Zone:</strong> ${inside ? "⚠️ Yes — Exercise lightning caution" : "Outside mapped storm zone"}</div>
+            <div class="popup-line"><strong>Coords:</strong> ${lat.toFixed(5)}, ${lng.toFixed(5)}</div>
+          `),
+              )
+              .addTo(map);
+
+            map.flyTo({
+              center: userLocation,
+              zoom: 12,
+              pitch: map.getPitch(),
+              bearing: map.getBearing(),
+            });
+            status.innerHTML = `📍 GPS locked. <br><strong>${inside ? "Inside Storm Corridor" : "Outside corridor"}</strong><br>Lat: ${lat.toFixed(4)}  Lon: ${lng.toFixed(4)}`;
+          },
+          () => {
+            status.innerHTML = "❌ GPS permission denied or timeout.";
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+        );
+      }
+
+      function pointInGeoJSON(point, geojson) {
+        if (!geojson || !geojson.features) return false;
+        for (const f of geojson.features) {
+          const g = f.geometry;
+          if (g.type === "Polygon" && pointInPolygon(point, g.coordinates))
+            return true;
+          if (g.type === "MultiPolygon") {
+            for (const p of g.coordinates) {
+              if (pointInPolygon(point, p)) return true;
+            }
+          }
+        }
+        return false;
+      }
 
       function pointInPolygon(point, polygon) {
+        const outer = polygon[0];
         let inside = false;
-
-        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-          const xi = polygon[i][0];
-
-          const yi = polygon[i][1];
-
-          const xj = polygon[j][0];
-
-          const yj = polygon[j][1];
-
+        for (let i = 0, j = outer.length - 1; i < outer.length; j = i++) {
+          const xi = outer[i][0],
+            yi = outer[i][1],
+            xj = outer[j][0],
+            yj = outer[j][1];
           const intersect =
             yi > point[1] !== yj > point[1] &&
             point[0] < ((xj - xi) * (point[1] - yi)) / (yj - yi) + xi;
-
-          if (intersect) {
-            inside = !inside;
-          }
+          if (intersect) inside = !inside;
         }
-
         return inside;
       }
 
-      /* =========================================================
-   CHECK WHETHER GPS IS INSIDE
-   THE THREE-DISTRICT REGION
-========================================================= */
-
-      function isInsideRegion(lat, lon) {
-        if (!regionGeoJSON) {
-          return false;
-        }
-
-        let inside = false;
-
-        regionGeoJSON.features.forEach((feature) => {
-          const geometry = feature.geometry;
-
-          if (!geometry) {
-            return;
-          }
-
-          /*
-               Polygon
-            */
-
-          if (geometry.type === "Polygon") {
-            const ring = geometry.coordinates[0];
-
-            const polygon = ring.map((p) => [p[0], p[1]]);
-
-            if (pointInPolygon([lon, lat], polygon)) {
-              inside = true;
-            }
-          }
-
-          /*
-               MultiPolygon
-            */
-
-          if (geometry.type === "MultiPolygon") {
-            geometry.coordinates.forEach((polygonData) => {
-              const ring = polygonData[0];
-
-              const polygon = ring.map((p) => [p[0], p[1]]);
-
-              if (pointInPolygon([lon, lat], polygon)) {
-                inside = true;
-              }
-            });
-          }
-        });
-
-        return inside;
-      }
-
-      /* =========================================================
-   SAFE REGIONS
-========================================================= */
-
-      const safeRegions = [
-        {
-          name: "Gachibowli Safe Region",
-
-          lat: 17.4401,
-
-          lon: 78.3489,
-        },
-
-        {
-          name: "Madhapur Safe Region",
-
-          lat: 17.4483,
-
-          lon: 78.3915,
-        },
-
-        {
-          name: "Secunderabad Safe Region",
-
-          lat: 17.4399,
-
-          lon: 78.4983,
-        },
-
-        {
-          name: "LB Nagar Safe Region",
-
-          lat: 17.3457,
-
-          lon: 78.5522,
-        },
-
-        {
-          name: "Shamshabad Safe Region",
-
-          lat: 17.2403,
-
-          lon: 78.4294,
-        },
-
-        {
-          name: "Kompally Safe Region",
-
-          lat: 17.54,
-
-          lon: 78.487,
-        },
-      ];
-
-      /* =========================================================
-   SAFE MARKERS
-========================================================= */
-
-      safeRegions.forEach((place) => {
-        L.circleMarker([place.lat, place.lon], {
-          radius: 9,
-
-          color: "#1b5e20",
-
-          fillColor: "#2e7d32",
-
-          fillOpacity: 0.9,
-        })
-          .addTo(map)
-          .bindPopup("<b>🛡️ Safe Region</b><br>" + place.name);
-      });
-
-      /* =========================================================
-   DEMO STORM LOCATIONS
-========================================================= */
-
-      const stormZones = [
-        {
-          name: "Kukatpally",
-
-          lat: 17.4849,
-
-          lon: 78.4138,
-        },
-
-        {
-          name: "Miyapur",
-
-          lat: 17.4969,
-
-          lon: 78.3573,
-        },
-
-        {
-          name: "Hyderabad Central",
-
-          lat: 17.385,
-
-          lon: 78.4867,
-        },
-
-        {
-          name: "Uppal",
-
-          lat: 17.405,
-
-          lon: 78.5591,
-        },
-
-        {
-          name: "Shamshabad",
-
-          lat: 17.2403,
-
-          lon: 78.4294,
-        },
-
-        {
-          name: "Kompally",
-
-          lat: 17.54,
-
-          lon: 78.487,
-        },
-      ];
-
-      /* =========================================================
-   HAVERSINE
-========================================================= */
-
-      function distanceKm(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-
-        const dLat = ((lat2 - lat1) * Math.PI) / 180;
-
-        const dLon = ((lon2 - lon1) * Math.PI) / 180;
-
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371,
+          dLat = ((lat2 - lat1) * Math.PI) / 180,
+          dLon = ((lon2 - lon1) * Math.PI) / 180;
         const a =
           Math.sin(dLat / 2) ** 2 +
           Math.cos((lat1 * Math.PI) / 180) *
             Math.cos((lat2 * Math.PI) / 180) *
             Math.sin(dLon / 2) ** 2;
-
-        return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       }
 
-      /* =========================================================
-   GPS
-========================================================= */
-
-      function getMyLocation() {
-        if (!navigator.geolocation) {
-          alert("GPS is not supported.");
-
+      function findNearestSafe() {
+        const status = document.getElementById("status");
+        if (!userLocation) {
+          status.innerHTML = "📍 First detect your GPS location.";
           return;
         }
-
-        document.getElementById("status").innerHTML =
-          "📍 Getting your location...";
-
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const lat = position.coords.latitude;
-
-            const lon = position.coords.longitude;
-
-            /*
-               IMPORTANT:
-               Only the three selected
-               districts are accepted.
-            */
-
-            if (!isInsideRegion(lat, lon)) {
-              document.getElementById("status").innerHTML =
-                "❌ Your location is outside the selected Hyderabad Metro Region.";
-
-              alert(
-                "This application covers only Hyderabad, Rangareddy and Medchal–Malkajgiri.",
-              );
-
-              return;
-            }
-
-            currentLocation = [lat, lon];
-
-            if (userMarker) {
-              map.removeLayer(userMarker);
-            }
-
-            userMarker = L.circleMarker([lat, lon], {
-              radius: 10,
-
-              color: "#0d47a1",
-
-              fillColor: "#1976d2",
-
-              fillOpacity: 1,
-
-              weight: 3,
-            })
-              .addTo(map)
-              .bindPopup("<b>📍 You are here</b>")
-              .openPopup();
-
-            map.setView([lat, lon], 15);
-
-            document.getElementById("status").innerHTML =
-              "📍 Your location is inside the selected region.";
-          },
-
-          (error) => {
-            document.getElementById("status").innerHTML =
-              "❌ Could not obtain GPS location.";
-          },
-
-          {
-            enableHighAccuracy: true,
-
-            timeout: 10000,
-
-            maximumAge: 3000,
-          },
-        );
-      }
-
-      /* =========================================================
-   FIND NEAREST SAFE REGION
-========================================================= */
-
-      function findSafeRegion() {
-        if (!currentLocation) {
-          alert("Click My Location first.");
-
+        const safe = locations.filter((l) => l.risk === "Safe");
+        if (!safe.length) {
+          status.innerHTML = "No pucca safe shelters listed.";
           return;
         }
-
-        let nearest = null;
-
-        let shortest = Infinity;
-
-        safeRegions.forEach((place) => {
-          const distance = distanceKm(
-            currentLocation[0],
-            currentLocation[1],
-
-            place.lat,
-            place.lon,
+        let nearest = null,
+          shortest = Infinity;
+        safe.forEach((l) => {
+          const d = calculateDistance(
+            userLocation[1],
+            userLocation[0],
+            l.coordinates[1],
+            l.coordinates[0],
           );
-
-          if (distance < shortest) {
-            shortest = distance;
-
-            nearest = place;
+          if (d < shortest) {
+            shortest = d;
+            nearest = l;
           }
         });
-
-        currentDestination = [nearest.lat, nearest.lon];
-
-        routeRoad(
-          currentLocation,
-
-          currentDestination,
-
-          nearest.name,
-        );
-      }
-
-      /* =========================================================
-   RISK → SAFE
-========================================================= */
-
-      function routeRiskToSafe() {
-        if (!selectedRiskLocation) {
-          alert("Run Test Thunderstorm and click a red storm zone first.");
-
-          return;
-        }
-
-        let nearest = null;
-
-        let shortest = Infinity;
-
-        safeRegions.forEach((place) => {
-          const distance = distanceKm(
-            selectedRiskLocation.lat,
-
-            selectedRiskLocation.lon,
-
-            place.lat,
-
-            place.lon,
-          );
-
-          if (distance < shortest) {
-            shortest = distance;
-
-            nearest = place;
-          }
+        status.innerHTML = `🛡️ Nearest Lightning Shelter:<br><strong>${nearest.name}</strong><br>District: ${nearest.sector}<br>Dist: <strong>${shortest.toFixed(1)} km</strong><br><em>${nearest.type}</em>`;
+        map.flyTo({
+          center: nearest.coordinates,
+          zoom: 12.5,
+          pitch: map.getPitch(),
+          bearing: map.getBearing(),
         });
-
-        currentDestination = [nearest.lat, nearest.lon];
-
-        routeRoad(
-          [selectedRiskLocation.lat, selectedRiskLocation.lon],
-
-          currentDestination,
-
-          nearest.name,
-        );
+        new maplibregl.Popup()
+          .setLngLat(nearest.coordinates)
+          .setHTML(
+            `
+        <div class="popup-title">🛡️ ${nearest.name}</div>
+        <div class="popup-line"><strong>District:</strong> ${nearest.sector}</div>
+        <div class="popup-line"><strong>Type:</strong> ${nearest.type}</div>
+        <div class="popup-line"><strong>Status:</strong> Lightning Safe (Faraday / Pucca)</div>
+      `,
+          )
+          .addTo(map);
+        drawRoute(userLocation, nearest.coordinates);
       }
 
-      /* =========================================================
-   ROAD ROUTING USING OSRM
-========================================================= */
-
-      async function routeRoad(start, destination, destinationName) {
-        /*
-       Verify start.
-    */
-
-        if (!isInsideRegion(start[0], start[1])) {
-          alert("Route start is outside the selected region.");
-
-          return;
-        }
-
-        /*
-       Verify destination.
-    */
-
-        if (!isInsideRegion(destination[0], destination[1])) {
-          alert("Destination is outside the selected region.");
-
-          return;
-        }
-
-        /*
-       Remove previous route.
-    */
-
-        if (routeLayer) {
-          map.removeLayer(routeLayer);
-
-          routeLayer = null;
-        }
-
-        document.getElementById("status").innerHTML =
-          "🚗 Calculating road route...";
-
-        const url =
-          "https://router.project-osrm.org/route/v1/driving/" +
-          start[1] +
-          "," +
-          start[0] +
-          ";" +
-          destination[1] +
-          "," +
-          destination[0] +
-          "?overview=full" +
-          "&geometries=geojson" +
-          "&steps=true";
-
+      async function drawRoute(start, end) {
         try {
-          const response = await fetch(url);
-
-          const data = await response.json();
-
-          if (!data.routes || data.routes.length === 0) {
-            throw new Error("No route found");
-          }
-
-          const route = data.routes[0];
-
-          /*
-           Verify every route geometry
-           point remains inside the
-           selected three-district region.
-        */
-
-          let outside = false;
-
-          route.geometry.coordinates.forEach((coordinate) => {
-            const lon = coordinate[0];
-
-            const lat = coordinate[1];
-
-            if (!isInsideRegion(lat, lon)) {
-              outside = true;
-            }
-          });
-
-          if (outside) {
-            document.getElementById("status").innerHTML =
-              "⚠️ Route rejected because it leaves the selected region.";
-
-            return;
-          }
-
-          /*
-           Draw route.
-        */
-
-          routeLayer = L.geoJSON(route.geometry, {
-            style: {
-              color: "#00c853",
-
-              weight: 7,
-
-              opacity: 0.95,
-            },
-          }).addTo(map);
-
-          map.fitBounds(routeLayer.getBounds(), {
-            padding: [70, 70],
-          });
-
-          /*
-           Save voice navigation steps.
-        */
-
-          routeSteps = route.legs[0].steps;
-
-          currentStep = 0;
-
-          const distance = (route.distance / 1000).toFixed(2);
-
-          const minutes = Math.round(route.duration / 60);
-
-          const routeInfo = document.getElementById("routeInfo");
-
-          routeInfo.style.display = "block";
-
-          routeInfo.innerHTML =
-            "<b>🛡️ Destination:</b> " +
-            destinationName +
-            "<br>" +
-            "<b>📏 Distance:</b> " +
-            distance +
-            " km" +
-            "<br>" +
-            "<b>⏱️ Estimated time:</b> " +
-            minutes +
-            " minutes";
-
-          document.getElementById("status").innerHTML =
-            "✅ Road route calculated inside the selected region.";
-
-          if (voiceEnabled) {
-            speak("Route calculated. " + "Destination is " + destinationName);
-          }
-        } catch (error) {
-          console.error(error);
-
-          document.getElementById("status").innerHTML =
-            "❌ Road routing failed.";
-        }
-      }
-
-      /* =========================================================
-   THUNDERSTORM DEMO
-========================================================= */
-
-      function testThunderstorm() {
-        /*
-       Remove previous storm zones.
-    */
-
-        stormMarkers.forEach((marker) => {
-          map.removeLayer(marker);
-        });
-
-        stormMarkers = [];
-
-        /*
-       Add storm zones.
-    */
-
-        stormZones.forEach((zone) => {
-          const circle = L.circle([zone.lat, zone.lon], {
-            radius: 1800,
-
-            color: "#d50000",
-
-            fillColor: "#ff1744",
-
-            fillOpacity: 0.3,
-
-            weight: 3,
-          }).addTo(map);
-
-          circle.bindPopup(
-            "<b>⚡ THUNDERSTORM RISK</b>" +
-              "<br>" +
-              zone.name +
-              "<br><br>" +
-              "Click this zone to select it.",
-          );
-
-          circle.on("click", function () {
-            selectedRiskLocation = zone;
-
-            document.getElementById("status").innerHTML =
-              "⚠️ Selected risk area: " + zone.name;
-          });
-
-          stormMarkers.push(circle);
-        });
-
-        document.getElementById("status").innerHTML =
-          "⚠️ Thunderstorm demo zones displayed. Click a red zone, then Risk → Safe Route.";
-
-        speak("Thunderstorm warning. Please move toward a safe region.");
-      }
-
-      /* =========================================================
-   VOICE
-========================================================= */
-
-      function speak(text) {
-        if (!("speechSynthesis" in window)) {
-          return;
-        }
-
-        speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(text);
-
-        utterance.lang = "en-IN";
-
-        utterance.rate = 0.95;
-
-        utterance.pitch = 1;
-
-        speechSynthesis.speak(utterance);
-      }
-
-      /* =========================================================
-   START VOICE NAVIGATION
-========================================================= */
-
-      function startVoiceNavigation() {
-        if (!routeSteps.length) {
-          alert("Calculate a route first.");
-
-          return;
-        }
-
-        voiceEnabled = true;
-
-        currentStep = 0;
-
-        speak("Voice navigation started.");
-
-        speakCurrentStep();
-
-        /*
-       Continuous GPS.
-    */
-
-        if (navigator.geolocation) {
-          if (watchId !== null) {
-            navigator.geolocation.clearWatch(watchId);
-          }
-
-          watchId = navigator.geolocation.watchPosition(
-            navigationGPS,
-
-            (error) => {
-              console.log("GPS error", error);
-            },
-
-            {
-              enableHighAccuracy: true,
-
-              maximumAge: 2000,
-
-              timeout: 10000,
-            },
-          );
-        }
-      }
-
-      /* =========================================================
-   STOP VOICE
-========================================================= */
-
-      function stopVoiceNavigation() {
-        voiceEnabled = false;
-
-        speechSynthesis.cancel();
-
-        if (watchId !== null) {
-          navigator.geolocation.clearWatch(watchId);
-
-          watchId = null;
-        }
-
-        document.getElementById("status").innerHTML =
-          "🔇 Voice navigation stopped.";
-      }
-
-      /* =========================================================
-   CURRENT VOICE STEP
-========================================================= */
-
-      function speakCurrentStep() {
-        if (!voiceEnabled) {
-          return;
-        }
-
-        if (currentStep >= routeSteps.length) {
-          speak("You have reached the safe region.");
-
-          voiceEnabled = false;
-
-          return;
-        }
-
-        const step = routeSteps[currentStep];
-
-        let text = "Continue";
-
-        if (step.maneuver) {
-          const type = step.maneuver.type;
-
-          const modifier = step.maneuver.modifier;
-
-          if (type === "turn") {
-            text = "Turn " + (modifier || "ahead");
-          } else if (type === "depart") {
-            text = "Start navigation";
-          } else if (type === "arrive") {
-            text = "You are arriving at your destination";
+          const url = `https://router.project-osrm.org/route/v1/driving/${start[0]},${start[1]};${end[0]},${end[1]}?overview=full&geometries=geojson`;
+          const res = await fetch(url);
+          const data = await res.json();
+          if (!data.routes || !data.routes.length) return;
+          const geom = data.routes[0].geometry;
+          if (map.getSource("safe-route")) {
+            map
+              .getSource("safe-route")
+              .setData({ type: "Feature", geometry: geom });
           } else {
-            text = "Continue";
+            map.addSource("safe-route", {
+              type: "geojson",
+              data: { type: "Feature", geometry: geom },
+            });
+            map.addLayer({
+              id: "safe-route-line",
+              type: "line",
+              source: "safe-route",
+              paint: {
+                "line-color": "#ffea00",
+                "line-width": 5,
+                "line-opacity": 0.95,
+                "line-dasharray": [2, 2],
+              },
+            });
           }
-        }
-
-        if (step.name && step.name.trim() !== "") {
-          text += " on " + step.name;
-        }
-
-        speak(text);
-      }
-
-      /* =========================================================
-   LIVE GPS VOICE NAVIGATION
-========================================================= */
-
-      function navigationGPS(position) {
-        if (!voiceEnabled) {
-          return;
-        }
-
-        const lat = position.coords.latitude;
-
-        const lon = position.coords.longitude;
-
-        /*
-       Region protection.
-    */
-
-        if (!isInsideRegion(lat, lon)) {
-          speak("Warning. You have left the selected Hyderabad Metro Region.");
-
-          return;
-        }
-
-        if (currentStep >= routeSteps.length) {
-          return;
-        }
-
-        const step = routeSteps[currentStep];
-
-        if (!step.maneuver || !step.maneuver.location) {
-          return;
-        }
-
-        const targetLon = step.maneuver.location[0];
-
-        const targetLat = step.maneuver.location[1];
-
-        const distance =
-          distanceKm(
-            lat,
-            lon,
-
-            targetLat,
-            targetLon,
-          ) * 1000;
-
-        /*
-       Speak next instruction
-       near the maneuver.
-    */
-
-        if (distance < 80) {
-          currentStep++;
-
-          speakCurrentStep();
+        } catch (e) {
+          console.log("Route error:", e);
         }
       }
-
-      /* =========================================================
-   GOOGLE MAPS
-========================================================= */
-
-      function openGoogleMaps() {
-        if (!currentLocation || !currentDestination) {
-          alert("Calculate a route first.");
-
-          return;
-        }
-
-        const origin = currentLocation[0] + "," + currentLocation[1];
-
-        const destination = currentDestination[0] + "," + currentDestination[1];
-
-        const url =
-          "https://www.google.com/maps/dir/?api=1" +
-          "&origin=" +
-          encodeURIComponent(origin) +
-          "&destination=" +
-          encodeURIComponent(destination) +
-          "&travelmode=driving";
-
-        window.open(url, "_blank");
-      }
-
-      /* =========================================================
-   LOAD REGION
-========================================================= */
-
-      loadRegion();
     </script>
   </body>
 </html>
-```
