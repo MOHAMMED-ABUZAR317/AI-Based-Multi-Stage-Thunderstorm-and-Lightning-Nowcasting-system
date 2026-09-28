@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#030712">
   <link rel="icon" href="favicon.svg">
-  <title>AI Thunderstorm &amp; Lightning Nowcasting Command Center — Hyderabad</title>
+  <title>AI Thunderstorm &amp; Lightning Decision Command Center — Hyderabad</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Gautami&family=Suranna&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
   <div class="app-layout">
     
     <!-- =====================================================================
-         PERMANENT LEFT SIDEBAR NAVIGATION
+         PERMANENT LEFT SIDEBAR NAVIGATION (5 FOCUSED MISSION VIEWS)
          ===================================================================== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -28,19 +28,15 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
+      <!-- Navigation Tabs: Focused 5-Tab Command Layout -->
       <nav class="sidebar-nav" role="tablist" aria-label="Operations Navigation">
         <button class="nav-item active" data-view="view-command" role="tab" aria-selected="true">
           <span class="nav-icon">⚡</span>
           <span class="nav-label">Command Center</span>
         </button>
-        <button class="nav-item" data-view="view-executive" role="tab" aria-selected="false">
-          <span class="nav-icon">📊</span>
-          <span class="nav-label">Executive Dashboard</span>
-        </button>
         <button class="nav-item" data-view="view-prediction" role="tab" aria-selected="false">
           <span class="nav-icon">🧠</span>
-          <span class="nav-label">Prediction Engine</span>
+          <span class="nav-label">AI Decision Pipeline</span>
         </button>
         <button class="nav-item" data-view="view-monitoring" role="tab" aria-selected="false">
           <span class="nav-icon">🛰️</span>
@@ -54,21 +50,13 @@
           <span class="nav-icon">🗺️</span>
           <span class="nav-label">Impact &amp; Arrival</span>
         </button>
-        <button class="nav-item" data-view="view-history" role="tab" aria-selected="false">
-          <span class="nav-icon">📁</span>
-          <span class="nav-label">Historical Events</span>
-        </button>
-        <button class="nav-item" data-view="view-status" role="tab" aria-selected="false">
-          <span class="nav-icon">⚙️</span>
-          <span class="nav-label">System Status</span>
-        </button>
       </nav>
 
-      <!-- Dataset Library / Event Scenario Explorer -->
+      <!-- Simulation Scenarios Explorer -->
       <div class="dataset-library">
         <div class="dataset-header">
-          <span class="dataset-title">DATASET LIBRARY</span>
-          <span class="dataset-sub">Event Scenarios</span>
+          <span class="dataset-title">SIMULATION SCENARIOS</span>
+          <span class="dataset-sub">Preset Events</span>
         </div>
         <div class="dataset-list">
           <button class="dataset-btn active" data-event="0">
@@ -116,6 +104,16 @@
         </div>
       </div>
 
+      <!-- Emergency Bypass Shortcut in Sidebar -->
+      <div class="sidebar-emergency-card">
+        <div class="emergency-header">
+          <span class="em-dot"></span>
+          <span>EMERGENCY BYPASS</span>
+        </div>
+        <p class="em-desc">If sudden dangerous lightning is detected, immediately skip cascade and trigger all sirens.</p>
+        <button id="btn-sidebar-emergency" class="btn-sidebar-em">⚡ TRIGGER BYPASS</button>
+      </div>
+
       <!-- Sidebar Footer Telemetry -->
       <div class="sidebar-footer">
         <div class="conn-badge">
@@ -135,9 +133,9 @@
       <header class="topbar">
         <div class="topbar-left">
           <div class="platform-meta">
-            <h1>AI-Powered Thunderstorm Monitoring Platform</h1>
+            <h1>AI Decision-Making Command Center</h1>
             <p class="platform-subtitle">
-              Real-time weather intelligence using Atmospheric Conditions · Satellite Observations · Lightning Forecasting · Radar Tracking · Risk Assessment
+              Cascading Multi-Stage Nowcasting: NWP Analysis → INSAT-3DR Satellite → Doppler Radar → XGBoost Lightning AI → Kinematic Tracking → Warning Generation
             </p>
           </div>
         </div>
@@ -166,7 +164,7 @@
       <main class="content-body">
         
         <!-- =================================================================
-             1. COMMAND CENTER VIEW (Tactical Map Centerpiece & Live Telemetry)
+             1. COMMAND CENTER VIEW (Cascading Engine, Simulation & Live GIS)
              ================================================================= -->
         <section id="view-command" class="view-pane active">
           
@@ -177,9 +175,9 @@
                 <span id="threat-level-badge" class="level-badge">NORMAL</span>
                 <span id="banner-timestamp" class="time-tag">CURRENT EVENT TIME: 08:00 AM</span>
               </div>
-              <h2 id="threat-headline" class="banner-headline">Atmospheric Equilibrium — No Threat Active</h2>
+              <h2 id="threat-headline" class="banner-headline">Atmosphere Suitable For Storm Formation — Baseline Monitoring</h2>
               <p id="threat-advisory" class="banner-advisory">
-                Thermodynamic parameters remain below initiation thresholds. Background monitoring active across the Greater Hyderabad Metropolitan Region.
+                Atmospheric conditions remain below initiation thresholds. Multi-stage cascading sensors continuously evaluating Greater Hyderabad.
               </p>
             </div>
             <div class="banner-right">
@@ -191,36 +189,295 @@
             </div>
           </div>
 
-          <!-- Quick Metrics Bar -->
-          <div class="quick-kpi-row">
-            <div class="q-kpi-card">
-              <span class="q-lbl">NEAREST IMPACT ETA</span>
-              <span id="kpi-eta" class="q-val text-cyan">-- MIN</span>
-              <span id="kpi-eta-sub" class="q-sub">Cell tracking outside urban bounds</span>
+          <!-- =============================================================
+               CASCADING EARLY WARNING ENGINE (PRIMARY STORYTELLING SECTION)
+               ============================================================= -->
+          <div class="cascade-engine-panel">
+            <div class="cascade-header">
+              <div class="cascade-title-group">
+                <span class="cascade-badge">HOW THE SYSTEM THINKS · CASCADING ARCHITECTURE</span>
+                <h2>Cascading Early Warning Engine</h2>
+                <p>Autonomous decision chain: each sensor validates physical criteria before activating the next computational module.</p>
+              </div>
+              <div class="cascade-controls">
+                <button id="btn-start-cascade" class="btn-start-cascade">
+                  <span class="btn-icon">▶</span> START CASCADING SIMULATION
+                </button>
+                <button id="btn-emergency-bypass" class="btn-emergency-bypass" title="Demonstrate system resilience by bypassing sequential cascade upon sudden lightning">
+                  ⚡ EMERGENCY LIGHTNING BYPASS
+                </button>
+              </div>
             </div>
-            <div class="q-kpi-card">
-              <span class="q-lbl">LIGHTNING PROBABILITY</span>
-              <span id="kpi-lightning" class="q-val text-amber">0%</span>
-              <span id="kpi-lightning-sub" class="q-sub">Electrical charge separation</span>
+
+            <!-- Emergency Bypass Alert Notice (Hidden by default, shown on bypass) -->
+            <div id="emergency-bypass-notice" class="emergency-bypass-banner" style="display: none;">
+              <span class="em-banner-icon">⚡</span>
+              <div class="em-banner-content">
+                <strong>EMERGENCY LIGHTNING BYPASS ACTIVATED</strong>
+                <p>Sudden electrical discharge detected over urban perimeter! Sequential cascade bypassed — Immediate civilian emergency sirens and cell push dispatched.</p>
+              </div>
+              <span class="em-banner-tag">PRIORITY OVERRIDE</span>
             </div>
-            <div class="q-kpi-card">
-              <span class="q-lbl">POPULATION EXPOSED</span>
-              <span id="kpi-population" class="q-val text-primary">0</span>
-              <span id="kpi-population-sub" class="q-sub">Citizens in active impact sectors</span>
+
+            <!-- The 6 Connected Cascading Cards Chain -->
+            <div class="cascade-chain" id="cascade-chain">
+              
+              <!-- 1. NWP Card -->
+              <div class="cascade-card" id="card-nwp">
+                <div class="card-head">
+                  <span class="card-icon">🌧️</span>
+                  <div class="card-meta">
+                    <span class="card-stage-tag">STAGE 1 · DATA SOURCE</span>
+                    <h4>NWP Analysis</h4>
+                  </div>
+                  <span id="status-nwp" class="card-status status-monitoring">MONITORING</span>
+                </div>
+                <div class="card-body">
+                  <div class="q-block">
+                    <span class="q-label">QUESTION:</span>
+                    <p class="q-text">Can a thunderstorm form?</p>
+                  </div>
+                  <div class="d-block">
+                    <span class="d-label">DECISION:</span>
+                    <p id="decision-nwp" class="d-text text-primary">Atmosphere suitable for storm formation.</p>
+                  </div>
+                  <div class="a-block">
+                    <span class="a-label">ACTION:</span>
+                    <p id="action-nwp" class="a-text text-cyan">Triggering Satellite Analysis →</p>
+                  </div>
+                </div>
+                <div class="card-telemetry" id="telem-nwp">
+                  Reading atmospheric soundings... CAPE: 450 J/kg · RH: 82%
+                </div>
+              </div>
+
+              <div class="cascade-arrow">➔</div>
+
+              <!-- 2. Satellite Card -->
+              <div class="cascade-card" id="card-sat">
+                <div class="card-head">
+                  <span class="card-icon">🛰️</span>
+                  <div class="card-meta">
+                    <span class="card-stage-tag">STAGE 2 · SPACE SENSOR</span>
+                    <h4>Satellite Analysis</h4>
+                  </div>
+                  <span id="status-sat" class="card-status status-standby">STANDBY</span>
+                </div>
+                <div class="card-body">
+                  <div class="q-block">
+                    <span class="q-label">QUESTION:</span>
+                    <p class="q-text">Is cloud growth occurring?</p>
+                  </div>
+                  <div class="d-block">
+                    <span class="d-label">DECISION:</span>
+                    <p id="decision-sat" class="d-text">Cloud development normal.</p>
+                  </div>
+                  <div class="a-block">
+                    <span class="a-label">ACTION:</span>
+                    <p id="action-sat" class="a-text text-secondary">Awaiting convective threshold...</p>
+                  </div>
+                </div>
+                <div class="card-telemetry" id="telem-sat">
+                  INSAT-3DR Infrared: -10°C cloud top · Cooling rate nominal
+                </div>
+              </div>
+
+              <div class="cascade-arrow">➔</div>
+
+              <!-- 3. Radar Card -->
+              <div class="cascade-card" id="card-radar">
+                <div class="card-head">
+                  <span class="card-icon">📡</span>
+                  <div class="card-meta">
+                    <span class="card-stage-tag">STAGE 3 · GROUND SENSOR</span>
+                    <h4>Radar Analysis</h4>
+                  </div>
+                  <span id="status-radar" class="card-status status-standby">STANDBY</span>
+                </div>
+                <div class="card-body">
+                  <div class="q-block">
+                    <span class="q-label">QUESTION:</span>
+                    <p class="q-text">Is it becoming a dangerous storm?</p>
+                  </div>
+                  <div class="d-block">
+                    <span class="d-label">DECISION:</span>
+                    <p id="decision-radar" class="d-text">Precipitation echoes low.</p>
+                  </div>
+                  <div class="a-block">
+                    <span class="a-label">ACTION:</span>
+                    <p id="action-radar" class="a-text text-secondary">Awaiting radar cell formation...</p>
+                  </div>
+                </div>
+                <div class="card-telemetry" id="telem-radar">
+                  DWR-HYD Begumpet: 15 dBZ · No convective core detected
+                </div>
+              </div>
+
+              <div class="cascade-arrow">➔</div>
+
+              <!-- 4. Lightning Prediction Card -->
+              <div class="cascade-card" id="card-lightning">
+                <div class="card-head">
+                  <span class="card-icon">⚡</span>
+                  <div class="card-meta">
+                    <span class="card-stage-tag">STAGE 4 · ML INFERENCE</span>
+                    <h4>Lightning Prediction</h4>
+                  </div>
+                  <span id="status-lightning" class="card-status status-standby">STANDBY</span>
+                </div>
+                <div class="card-body">
+                  <div class="q-block">
+                    <span class="q-label">QUESTION:</span>
+                    <p class="q-text">Is electrical activity likely?</p>
+                  </div>
+                  <div class="d-block">
+                    <span class="d-label">DECISION:</span>
+                    <p id="decision-lightning" class="d-text">Lightning probability 0%.</p>
+                  </div>
+                  <div class="a-block">
+                    <span class="a-label">ACTION:</span>
+                    <p id="action-lightning" class="a-text text-secondary">Awaiting electrical charge...</p>
+                  </div>
+                </div>
+                <div class="card-telemetry" id="telem-lightning">
+                  XGBoost Classifier: 0% risk band LOW
+                </div>
+              </div>
+
+              <div class="cascade-arrow">➔</div>
+
+              <!-- 5. Movement Prediction Card -->
+              <div class="cascade-card" id="card-tracking">
+                <div class="card-head">
+                  <span class="card-icon">🧭</span>
+                  <div class="card-meta">
+                    <span class="card-stage-tag">STAGE 5 · KINEMATICS</span>
+                    <h4>Movement Prediction</h4>
+                  </div>
+                  <span id="status-tracking" class="card-status status-standby">STANDBY</span>
+                </div>
+                <div class="card-body">
+                  <div class="q-block">
+                    <span class="q-label">QUESTION:</span>
+                    <p class="q-text">Where will the storm move?</p>
+                  </div>
+                  <div class="d-block">
+                    <span class="d-label">DECISION:</span>
+                    <p id="decision-tracking" class="d-text">Stationary background conditions.</p>
+                  </div>
+                  <div class="a-block">
+                    <span class="a-label">ACTION:</span>
+                    <p id="action-tracking" class="a-text text-secondary">Monitoring urban vector...</p>
+                  </div>
+                </div>
+                <div class="card-telemetry" id="telem-tracking">
+                  Kinematic Vector: Speed 0 km/h · No urban impact
+                </div>
+              </div>
+
+              <div class="cascade-arrow">➔</div>
+
+              <!-- 6. Final Warning Card -->
+              <div class="cascade-card" id="card-warning">
+                <div class="card-head">
+                  <span class="card-icon">🚨</span>
+                  <div class="card-meta">
+                    <span class="card-stage-tag">STAGE 6 · CIVIL DEFENSE</span>
+                    <h4>Final Warning</h4>
+                  </div>
+                  <span id="status-warning" class="card-status status-standby">STANDBY</span>
+                </div>
+                <div class="card-body">
+                  <div class="q-block">
+                    <span class="q-label">QUESTION:</span>
+                    <p class="q-text">Should emergency alerts trigger?</p>
+                  </div>
+                  <div class="d-block">
+                    <span class="d-label">DECISION:</span>
+                    <p id="decision-warning" class="d-text">No active hazard. Standby.</p>
+                  </div>
+                  <div class="a-block">
+                    <span class="a-label">ACTION:</span>
+                    <p id="action-warning" class="a-text text-secondary">Warning Issued: NO</p>
+                  </div>
+                </div>
+                <div class="card-telemetry" id="telem-warning">
+                  Citizen Sirens: Armed · SMS Broadcast: Ready
+                </div>
+              </div>
+
             </div>
-            <div class="q-kpi-card">
-              <span class="q-lbl">ATMOSPHERIC ENERGY</span>
-              <span id="kpi-cape" class="q-val text-crimson">450 J/kg</span>
-              <span id="kpi-cape-sub" class="q-sub">Convective Available Potential Energy</span>
+
+            <!-- Real-Time Decision Execution Terminal -->
+            <div class="cascade-terminal">
+              <div class="terminal-bar">
+                <span class="term-dot dot-red"></span>
+                <span class="term-dot dot-yellow"></span>
+                <span class="term-dot dot-green"></span>
+                <span class="term-title">AI DECISION REASONING STREAM</span>
+              </div>
+              <div class="terminal-log" id="cascade-log">
+                <span class="log-time">[08:00:00 IST]</span> SYSTEM INITIALIZED. NWP soundings indicate stable atmosphere. All cascading stages synchronized.
+              </div>
             </div>
           </div>
 
-          <!-- Tactical GIS Radar Canvas Centerpiece -->
+          <!-- =============================================================
+               EVENT TIMELINE VIEW (Story progression by timestamp)
+               ============================================================= -->
+          <div class="timeline-visual-panel">
+            <div class="timeline-v-header">
+              <span class="badge-accent">CHRONOLOGICAL EVENT LOG</span>
+              <h3>Decision Timeline Progression</h3>
+            </div>
+            <div class="timeline-track">
+              <div class="t-step active" id="tstep-1" data-step="0">
+                <div class="t-time">14:00</div>
+                <div class="t-node"></div>
+                <div class="t-label">Atmosphere Favorable</div>
+                <div class="t-sub">NWP Instability Detected</div>
+              </div>
+              <div class="t-step" id="tstep-2" data-step="1">
+                <div class="t-time">14:15</div>
+                <div class="t-node"></div>
+                <div class="t-label">Cloud Growth Detected</div>
+                <div class="t-sub">Satellite Glaciation</div>
+              </div>
+              <div class="t-step" id="tstep-3" data-step="2">
+                <div class="t-time">14:25</div>
+                <div class="t-node"></div>
+                <div class="t-label">Strong Convection Detected</div>
+                <div class="t-sub">Radar Core &gt;45 dBZ</div>
+              </div>
+              <div class="t-step" id="tstep-4" data-step="3">
+                <div class="t-time">14:30</div>
+                <div class="t-node"></div>
+                <div class="t-label">Lightning Probability 84%</div>
+                <div class="t-sub">XGBoost Electrification</div>
+              </div>
+              <div class="t-step" id="tstep-5" data-step="4">
+                <div class="t-time">14:32</div>
+                <div class="t-node"></div>
+                <div class="t-label">Movement Predicted</div>
+                <div class="t-sub">NE Vector at 42 km/h</div>
+              </div>
+              <div class="t-step" id="tstep-6" data-step="5">
+                <div class="t-time">14:33</div>
+                <div class="t-node"></div>
+                <div class="t-label">Warning Issued</div>
+                <div class="t-sub">SMS &amp; Sirens Dispatched</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =============================================================
+               TACTICAL GIS RADAR CANVAS CENTERPIECE
+               ============================================================= -->
           <div class="gis-container">
             <div class="gis-header">
               <div class="gis-title">
                 <span class="gis-badge">TACTICAL GIS RADAR CANVAS</span>
-                <h3>Hyderabad Metropolitan Radar Scope &amp; Ward Vulnerability</h3>
+                <h3>Hyderabad Metropolitan Radar Scope &amp; Ward Impact</h3>
               </div>
               <div class="gis-telemetry">
                 <span>BEGUMPET RADAR: 17.3850°N, 78.4867°E</span>
@@ -261,123 +518,44 @@
               </div>
             </div>
           </div>
+
+          <!-- Quick Decision Metrics Bar -->
+          <div class="quick-kpi-row">
+            <div class="q-kpi-card">
+              <span class="q-lbl">NEAREST IMPACT ETA</span>
+              <span id="kpi-eta" class="q-val text-cyan">-- MIN</span>
+              <span id="kpi-eta-sub" class="q-sub">Cell tracking outside urban bounds</span>
+            </div>
+            <div class="q-kpi-card">
+              <span class="q-lbl">LIGHTNING PROBABILITY</span>
+              <span id="kpi-lightning" class="q-val text-amber">0%</span>
+              <span id="kpi-lightning-sub" class="q-sub">Lightning Formation Likelihood</span>
+            </div>
+            <div class="q-kpi-card">
+              <span class="q-lbl">POPULATION EXPOSED</span>
+              <span id="kpi-population" class="q-val text-primary">0</span>
+              <span id="kpi-population-sub" class="q-sub">Citizens in active impact sectors</span>
+            </div>
+            <div class="q-kpi-card">
+              <span class="q-lbl">ATMOSPHERIC ENERGY</span>
+              <span id="kpi-cape" class="q-val text-crimson">450 J/kg</span>
+              <span id="kpi-cape-sub" class="q-sub">Atmosphere Suitable For Storm Formation</span>
+            </div>
+          </div>
+
         </section>
 
         <!-- =================================================================
-             2. EXECUTIVE DASHBOARD VIEW
-             ================================================================= -->
-        <section id="view-executive" class="view-pane">
-          <div class="section-title">
-            <span class="badge-accent">EXECUTIVE OVERVIEW</span>
-            <h2>Disaster Management Incident Commander Summary</h2>
-            <p>High-level situational awareness for GHMC commissioners, emergency coordinators, and response commanders.</p>
-          </div>
-
-          <!-- 6 Large KPI Cards -->
-          <div class="exec-kpi-grid">
-            <div class="exec-card">
-              <span class="exec-label">OVERALL THREAT SCORE</span>
-              <div class="exec-num-wrap">
-                <span id="exec-score" class="exec-num text-primary">12</span>
-                <span class="exec-unit">/100</span>
-              </div>
-              <div class="progress-track"><div id="exec-score-bar" class="progress-bar" style="width: 12%;"></div></div>
-              <span class="exec-sub">Weighted multi-criteria physical risk score</span>
-            </div>
-
-            <div class="exec-card">
-              <span class="exec-label">CURRENT RISK LEVEL</span>
-              <span id="exec-risk-level" class="exec-badge badge-normal">NORMAL</span>
-              <span id="exec-risk-desc" class="exec-sub">Baseline conditions; no evacuation required</span>
-            </div>
-
-            <div class="exec-card">
-              <span class="exec-label">LIGHTNING PROBABILITY</span>
-              <div class="exec-num-wrap">
-                <span id="exec-lightning" class="exec-num text-amber">0</span>
-                <span class="exec-unit">%</span>
-              </div>
-              <div class="progress-track"><div id="exec-lightning-bar" class="progress-bar bar-amber" style="width: 0%;"></div></div>
-              <span class="exec-sub">AI strike likelihood in next 45 minutes</span>
-            </div>
-
-            <div class="exec-card">
-              <span class="exec-label">NEAREST IMPACT ETA</span>
-              <div class="exec-num-wrap">
-                <span id="exec-eta" class="exec-num text-cyan">--</span>
-                <span class="exec-unit">MIN</span>
-              </div>
-              <span id="exec-eta-sub" class="exec-sub">Countdown to urban core boundary arrival</span>
-            </div>
-
-            <div class="exec-card">
-              <span class="exec-label">AFFECTED REGIONS</span>
-              <span id="exec-regions" class="exec-num-text text-primary">0 Wards</span>
-              <span id="exec-regions-sub" class="exec-sub">Serilingampally, Kukatpally, HITEC City</span>
-            </div>
-
-            <div class="exec-card">
-              <span class="exec-label">ACTIVE EMERGENCY ALERTS</span>
-              <span id="exec-alerts" class="exec-num-text text-emerald">STANDBY (0)</span>
-              <span class="exec-sub">Civil sirens, push alerts, and SMS broadcasts</span>
-            </div>
-          </div>
-
-          <!-- How The Prediction Works Simplified Guide -->
-          <div class="how-it-works-panel">
-            <h3>How The Prediction Works</h3>
-            <div class="steps-flow">
-              <div class="flow-item">
-                <div class="step-num">1</div>
-                <div class="step-icon">🌡️</div>
-                <h4>Weather Analyzed</h4>
-                <p>Ground stations measure temperature, humidity, and rising warm air energy.</p>
-              </div>
-              <div class="flow-item">
-                <div class="step-num">2</div>
-                <div class="step-icon">🛰️</div>
-                <h4>Satellite Tracking</h4>
-                <p>Space sensors track rapid cloud freezing and vertical growth speed.</p>
-              </div>
-              <div class="flow-item">
-                <div class="step-num">3</div>
-                <div class="step-icon">⚡</div>
-                <h4>Lightning AI</h4>
-                <p>Machine learning estimates strike probability from ice collision dynamics.</p>
-              </div>
-              <div class="flow-item">
-                <div class="step-num">4</div>
-                <div class="step-icon">📡</div>
-                <h4>Radar Movement</h4>
-                <p>Doppler radar calculates storm speed, direction, and city arrival times.</p>
-              </div>
-              <div class="flow-item">
-                <div class="step-num">5</div>
-                <div class="step-icon">🧠</div>
-                <h4>Risk Calculated</h4>
-                <p>All measurements fuse into a single composite threat score.</p>
-              </div>
-              <div class="flow-item">
-                <div class="step-num">6</div>
-                <div class="step-icon">🚨</div>
-                <h4>Alerts Broadcast</h4>
-                <p>Citizens receive immediate bilingual alerts before severe impact.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- =================================================================
-             3. PREDICTION ENGINE VIEW
+             2. AI DECISION PIPELINE VIEW (Simplified Terminology & 12 Cards)
              ================================================================= -->
         <section id="view-prediction" class="view-pane">
           <div class="section-title">
-            <span class="badge-accent">PREDICTION INPUTS &amp; EXPLAINABILITY</span>
-            <h2>Atmospheric &amp; Kinematic Threat Matrix</h2>
-            <p>Every prediction input, current measured value, operational status, and contribution to the final risk score.</p>
+            <span class="badge-accent">AI DECISION PIPELINE</span>
+            <h2>How The System Evaluates Threat Parameters</h2>
+            <p>Every prediction input, measured value, operational status, and contribution to the final risk score in clear language.</p>
           </div>
 
-          <!-- 12 Prediction Input Cards -->
+          <!-- 12 Prediction Input Cards with Plain-English Labels -->
           <div class="prediction-grid">
             
             <div class="pred-card">
@@ -436,7 +614,7 @@
 
             <div class="pred-card">
               <div class="pred-top">
-                <span class="pred-name">⚡ Lightning Probability</span>
+                <span class="pred-name">⚡ Lightning Formation Likelihood</span>
                 <span id="pred-light-status" class="pred-status status-ok">LOW</span>
               </div>
               <div class="pred-val" id="pred-light-val">0%</div>
@@ -445,7 +623,7 @@
 
             <div class="pred-card">
               <div class="pred-top">
-                <span class="pred-name">📡 Radar Reflectivity</span>
+                <span class="pred-name">📡 Strong Storm Core Detected</span>
                 <span id="pred-radar-status" class="pred-status status-ok">CLEAR</span>
               </div>
               <div class="pred-val" id="pred-radar-val">15 dBZ</div>
@@ -489,10 +667,53 @@
             </div>
 
           </div>
+
+          <!-- How The Cascading Prediction Works (Simplified Flow) -->
+          <div class="how-it-works-panel" style="margin-top: 24px;">
+            <h3>How The Cascading Architecture Works</h3>
+            <div class="steps-flow">
+              <div class="flow-item">
+                <div class="step-num">1</div>
+                <div class="step-icon">🌧️</div>
+                <h4>NWP Atmospheric Analysis</h4>
+                <p>Ground stations measure temperature, humidity, and atmospheric instability.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">2</div>
+                <div class="step-icon">🛰️</div>
+                <h4>INSAT-3DR Satellite</h4>
+                <p>Space sensors monitor vertical cloud growth and cooling rates.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">3</div>
+                <div class="step-icon">📡</div>
+                <h4>Doppler Weather Radar</h4>
+                <p>Ground radar detects convective structures, precipitation cores, and velocities.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">4</div>
+                <div class="step-icon">⚡</div>
+                <h4>XGBoost Lightning AI</h4>
+                <p>Machine learning predicts strike likelihood from electrical charge conditions.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">5</div>
+                <div class="step-icon">🧭</div>
+                <h4>Kinematic Tracking</h4>
+                <p>Calculates storm trajectory, speed, and exact municipal arrival times.</p>
+              </div>
+              <div class="flow-item">
+                <div class="step-num">6</div>
+                <div class="step-icon">🚨</div>
+                <h4>Civil Warning Issued</h4>
+                <p>Triggers bilingual alerts via sirens, SMS, and NDMA push notifications.</p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <!-- =================================================================
-             4. LIVE MONITORING VIEW
+             3. LIVE MONITORING VIEW
              ================================================================= -->
         <section id="view-monitoring" class="view-pane">
           <div class="section-title">
@@ -539,7 +760,7 @@
               <div class="sensor-stats">
                 <div class="s-row"><span>Active Stations:</span><strong>24 Municipal Sites</strong></div>
                 <div class="s-row"><span>Mean Surface Pressure:</span><strong>1000.6 hPa</strong></div>
-                <div class="s-row"><span>Convective Instability (CAPE):</span><strong id="live-cape">-- J/kg</strong></div>
+                <div class="s-row"><span>Atmosphere Energy (CAPE):</span><strong id="live-cape">-- J/kg</strong></div>
                 <div class="s-row"><span>Convective Inhibition (CIN):</span><strong>10.0 J/kg</strong></div>
               </div>
             </div>
@@ -547,7 +768,7 @@
         </section>
 
         <!-- =================================================================
-             5. ALERT CENTER VIEW (Bilingual Broadcast & Dynamic XAI Panel)
+             4. ALERT CENTER VIEW (Bilingual Broadcast & Dynamic XAI Panel)
              ================================================================= -->
         <section id="view-alerts" class="view-pane">
           <div class="section-title">
@@ -625,7 +846,7 @@
         </section>
 
         <!-- =================================================================
-             6. IMPACT & ARRIVAL CENTER VIEW (Dedicated Timetable & Countdowns)
+             5. IMPACT & ARRIVAL CENTER VIEW (Dedicated Timetable & Countdowns)
              ================================================================= -->
         <section id="view-impact" class="view-pane">
           <div class="section-title">
@@ -652,110 +873,6 @@
                 <!-- Populated dynamically -->
               </tbody>
             </table>
-          </div>
-        </section>
-
-        <!-- =================================================================
-             7. HISTORICAL EVENTS VIEW (Database Audit Telemetry)
-             ================================================================= -->
-        <section id="view-history" class="view-pane">
-          <div class="section-title">
-            <span class="badge-accent">AUDIT REPOSITORY</span>
-            <h2>Database Event Telemetry &amp; Verification Logs</h2>
-            <p>Immutable execution records persisted to SQLite/PostgreSQL for post-event forensic review and disaster management auditing.</p>
-          </div>
-
-          <div class="history-controls">
-            <span id="history-count-badge" class="history-badge">-- RECORDS RECORDED</span>
-            <button id="btn-refresh-history" class="btn-ctrl">🔄 REFRESH DATABASE</button>
-          </div>
-
-          <div class="history-table-wrap">
-            <table class="history-table">
-              <thead>
-                <tr>
-                  <th>RUN ID</th>
-                  <th>TIMESTAMP (UTC)</th>
-                  <th>EVENT PHASE</th>
-                  <th>THREAT LEVEL</th>
-                  <th>RISK SCORE</th>
-                  <th>LIGHTNING PROB</th>
-                  <th>CAPE (J/kg)</th>
-                  <th>CLOUD TOP TEMP</th>
-                  <th>ALERT BROADCAST</th>
-                </tr>
-              </thead>
-              <tbody id="history-table-body">
-                <tr><td colspan="9" class="table-loading">Querying database telemetry...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- =================================================================
-             8. SYSTEM STATUS CENTER VIEW (Service Health & Diagnostics)
-             ================================================================= -->
-        <section id="view-status" class="view-pane">
-          <div class="section-title">
-            <span class="badge-accent">INFRASTRUCTURE HEALTH</span>
-            <h2>System Status &amp; Operational Telemetry</h2>
-            <p>Live health metrics across all microservices, databases, ML inference engines, and external sensor data streams.</p>
-          </div>
-
-          <div class="status-grid">
-            <div class="status-card">
-              <div class="status-top">
-                <span class="status-name">Backend API Gateway</span>
-                <span class="status-pill pill-green">OPERATIONAL</span>
-              </div>
-              <p class="status-detail">FastAPI high-performance server running version 2.0.0 on Python 3.14.</p>
-              <span class="status-metric">Response Latency: &lt; 12 ms</span>
-            </div>
-
-            <div class="status-card">
-              <div class="status-top">
-                <span class="status-name">Database Engine</span>
-                <span class="status-pill pill-green">CONNECTED</span>
-              </div>
-              <p class="status-detail">SQLAlchemy ORM with persistent SQLite / PostgreSQL table logging.</p>
-              <span class="status-metric">Connection Pool: Active</span>
-            </div>
-
-            <div class="status-card">
-              <div class="status-top">
-                <span class="status-name">Satellite Ingestion Feed</span>
-                <span class="status-pill pill-green">STREAMING</span>
-              </div>
-              <p class="status-detail">ISRO MOSDAC INSAT-3DR geostationary infrared thermal data stream.</p>
-              <span class="status-metric">Ingestion Interval: 15 Minutes</span>
-            </div>
-
-            <div class="status-card">
-              <div class="status-top">
-                <span class="status-name">Doppler Radar Station</span>
-                <span class="status-pill pill-green">ONLINE</span>
-              </div>
-              <p class="status-detail">IMD Begumpet (DWR-HYD) S-band dual-polarization volume scan.</p>
-              <span class="status-metric">Scan Radius: 100 km</span>
-            </div>
-
-            <div class="status-card">
-              <div class="status-top">
-                <span class="status-name">Prediction ML Engine</span>
-                <span class="status-pill pill-green">LOADED</span>
-              </div>
-              <p class="status-detail">Supervised XGBoost lightning model calibrated against Deccan soundings.</p>
-              <span class="status-metric">Inference Time: 3.2 ms</span>
-            </div>
-
-            <div class="status-card">
-              <div class="status-top">
-                <span class="status-name">Alert Dissemination Hub</span>
-                <span class="status-pill pill-green">STANDBY</span>
-              </div>
-              <p class="status-detail">Municipal cell broadcast SMS and street siren audio system gateway.</p>
-              <span class="status-metric">Channels: 4 Active</span>
-            </div>
           </div>
         </section>
 

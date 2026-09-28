@@ -233,13 +233,54 @@
     btnBroadcastAlert: document.getElementById('btn-broadcast-alert'),
     dispatchFeedback: document.getElementById('dispatch-feedback'),
 
-    // Impact Timetable (View 6)
-    impactTableBody: document.getElementById('impact-table-body'),
+    // Cascading Early Warning Engine Elements
+    btnStartCascade: document.getElementById('btn-start-cascade'),
+    btnEmergencyBypass: document.getElementById('btn-emergency-bypass'),
+    btnSidebarEmergency: document.getElementById('btn-sidebar-emergency'),
+    emergencyBypassNotice: document.getElementById('emergency-bypass-notice'),
+    cascadeLog: document.getElementById('cascade-log'),
 
-    // Historical Database Telemetry (View 7)
-    historyCountBadge: document.getElementById('history-count-badge'),
-    btnRefreshHistory: document.getElementById('btn-refresh-history'),
-    historyTableBody: document.getElementById('history-table-body'),
+    // Cascading Cards
+    cardNwp: document.getElementById('card-nwp'),
+    cardSat: document.getElementById('card-sat'),
+    cardRadar: document.getElementById('card-radar'),
+    cardLightning: document.getElementById('card-lightning'),
+    cardTracking: document.getElementById('card-tracking'),
+    cardWarning: document.getElementById('card-warning'),
+
+    statusNwp: document.getElementById('status-nwp'),
+    statusSat: document.getElementById('status-sat'),
+    statusRadar: document.getElementById('status-radar'),
+    statusLightning: document.getElementById('status-lightning'),
+    statusTracking: document.getElementById('status-tracking'),
+    statusWarning: document.getElementById('status-warning'),
+
+    decisionNwp: document.getElementById('decision-nwp'),
+    decisionSat: document.getElementById('decision-sat'),
+    decisionRadar: document.getElementById('decision-radar'),
+    decisionLightning: document.getElementById('decision-lightning'),
+    decisionTracking: document.getElementById('decision-tracking'),
+    decisionWarning: document.getElementById('decision-warning'),
+
+    actionNwp: document.getElementById('action-nwp'),
+    actionSat: document.getElementById('action-sat'),
+    actionRadar: document.getElementById('action-radar'),
+    actionLightning: document.getElementById('action-lightning'),
+    actionTracking: document.getElementById('action-tracking'),
+    actionWarning: document.getElementById('action-warning'),
+
+    telemNwp: document.getElementById('telem-nwp'),
+    telemSat: document.getElementById('telem-sat'),
+    telemRadar: document.getElementById('telem-radar'),
+    telemLightning: document.getElementById('telem-lightning'),
+    telemTracking: document.getElementById('telem-tracking'),
+    telemWarning: document.getElementById('telem-warning'),
+
+    // Timeline Steps
+    timelineSteps: document.querySelectorAll('.t-step'),
+
+    // Impact Timetable (View 5)
+    impactTableBody: document.getElementById('impact-table-body'),
   };
 
   const ctx = DOM.canvas ? DOM.canvas.getContext('2d') : null;
@@ -1034,47 +1075,222 @@
   }
 
   // =========================================================================
-  // 13. DATABASE TELEMETRY LOADER (VIEW 7)
+  // 13. CASCADING EARLY WARNING ENGINE (HOW THE SYSTEM THINKS)
   // =========================================================================
 
-  async function loadDatabaseTelemetry() {
-    if (!DOM.historyTableBody) return;
-    try {
-      const res = await fetch('/api/v1/database/history?limit=15');
-      if (!res.ok) return;
-      const data = await res.json();
-      const rows = data.history || [];
+  let cascadeTimer = null;
+  let isCascading = false;
 
-      if (DOM.historyCountBadge) {
-        DOM.historyCountBadge.textContent = `${data.count || rows.length} RUNS RECORDED`;
+  function resetCascadeCards() {
+    const cards = [DOM.cardNwp, DOM.cardSat, DOM.cardRadar, DOM.cardLightning, DOM.cardTracking, DOM.cardWarning];
+    cards.forEach((c) => {
+      if (c) c.classList.remove('card-active', 'card-complete', 'card-alert');
+    });
+    if (DOM.emergencyBypassNotice) DOM.emergencyBypassNotice.style.display = 'none';
+
+    if (DOM.statusNwp) { DOM.statusNwp.textContent = 'MONITORING'; DOM.statusNwp.className = 'card-status status-monitoring'; }
+    if (DOM.statusSat) { DOM.statusSat.textContent = 'STANDBY'; DOM.statusSat.className = 'card-status status-standby'; }
+    if (DOM.statusRadar) { DOM.statusRadar.textContent = 'STANDBY'; DOM.statusRadar.className = 'card-status status-standby'; }
+    if (DOM.statusLightning) { DOM.statusLightning.textContent = 'STANDBY'; DOM.statusLightning.className = 'card-status status-standby'; }
+    if (DOM.statusTracking) { DOM.statusTracking.textContent = 'STANDBY'; DOM.statusTracking.className = 'card-status status-standby'; }
+    if (DOM.statusWarning) { DOM.statusWarning.textContent = 'STANDBY'; DOM.statusWarning.className = 'card-status status-standby'; }
+
+    if (DOM.decisionNwp) DOM.decisionNwp.textContent = 'Atmosphere suitable for storm formation.';
+    if (DOM.decisionSat) DOM.decisionSat.textContent = 'Cloud development normal.';
+    if (DOM.decisionRadar) DOM.decisionRadar.textContent = 'Precipitation echoes low.';
+    if (DOM.decisionLightning) DOM.decisionLightning.textContent = 'Lightning probability 0%.';
+    if (DOM.decisionTracking) DOM.decisionTracking.textContent = 'Stationary background conditions.';
+    if (DOM.decisionWarning) DOM.decisionWarning.textContent = 'No active hazard. Standby.';
+
+    if (DOM.actionNwp) DOM.actionNwp.textContent = 'Evaluating soundings...';
+    if (DOM.actionSat) DOM.actionSat.textContent = 'Awaiting convective threshold...';
+    if (DOM.actionRadar) DOM.actionRadar.textContent = 'Awaiting radar cell formation...';
+    if (DOM.actionLightning) DOM.actionLightning.textContent = 'Awaiting electrical charge...';
+    if (DOM.actionTracking) DOM.actionTracking.textContent = 'Monitoring urban vector...';
+    if (DOM.actionWarning) DOM.actionWarning.textContent = 'Warning Issued: NO';
+
+    DOM.timelineSteps.forEach((node) => node.classList.remove('active', 'completed'));
+    if (DOM.timelineSteps[0]) DOM.timelineSteps[0].classList.add('active');
+  }
+
+  function startCascadingSimulation() {
+    if (cascadeTimer) {
+      clearTimeout(cascadeTimer);
+      cascadeTimer = null;
+    }
+    isCascading = true;
+    resetCascadeCards();
+
+    if (DOM.btnStartCascade) {
+      DOM.btnStartCascade.innerHTML = '<span class="btn-icon">⏳</span> CASCADING SIMULATION IN PROGRESS...';
+      DOM.btnStartCascade.disabled = true;
+    }
+
+    // STEP 1: NWP Analysis (t=0s to t=2s)
+    if (DOM.cardNwp) DOM.cardNwp.classList.add('card-active');
+    if (DOM.statusNwp) { DOM.statusNwp.textContent = 'ANALYZING...'; DOM.statusNwp.className = 'card-status status-active'; }
+    if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:00:00 IST]</span> Reading atmospheric data... Analyzing CAPE... Analyzing humidity... Analyzing wind shear...';
+    if (DOM.telemNwp) DOM.telemNwp.textContent = 'Reading AWS network... CAPE: 2,450 J/kg · RH: 82% · Shear: 25.7 m/s';
+    setStep(0);
+
+    // STEP 2: Satellite Analysis (t=2s to t=4s)
+    cascadeTimer = setTimeout(() => {
+      if (DOM.cardNwp) {
+        DOM.cardNwp.classList.remove('card-active');
+        DOM.cardNwp.classList.add('card-complete');
       }
+      if (DOM.statusNwp) { DOM.statusNwp.textContent = 'TRIGGERED (OK)'; DOM.statusNwp.className = 'card-status status-complete'; }
+      if (DOM.decisionNwp) DOM.decisionNwp.textContent = '✔ Conditions suitable for thunderstorm formation.';
+      if (DOM.actionNwp) DOM.actionNwp.textContent = 'Triggering Satellite Analysis →';
 
-      DOM.historyTableBody.innerHTML = '';
-      if (rows.length === 0) {
-        DOM.historyTableBody.innerHTML = '<tr><td colspan="9" class="table-loading">No nowcasts recorded yet.</td></tr>';
-        return;
-      }
+      if (DOM.timelineSteps[0]) DOM.timelineSteps[0].classList.add('completed');
+      if (DOM.timelineSteps[1]) DOM.timelineSteps[1].classList.add('active');
 
-      rows.forEach((r) => {
-        const tr = document.createElement('tr');
-        const ts = (r.timestamp || '').slice(11, 19) || '--:--:--';
-        const isAlert = r.alert_issued;
+      if (DOM.cardSat) DOM.cardSat.classList.add('card-active');
+      if (DOM.statusSat) { DOM.statusSat.textContent = 'ANALYZING...'; DOM.statusSat.className = 'card-status status-active'; }
+      if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:15:00 IST]</span> Reading INSAT-3DR data... Monitoring cloud tops... Monitoring cooling rates...';
+      if (DOM.telemSat) DOM.telemSat.textContent = 'INSAT-3DR Infrared: Rapid cooling observed (-10.5°C/hr)';
+      setStep(1);
 
-        tr.innerHTML = `
-          <td>#${r.id || '--'}</td>
-          <td>${ts}</td>
-          <td>Step ${r.scenario_step !== undefined ? r.scenario_step : '--'}</td>
-          <td><strong>${r.risk_level || 'NORMAL'}</strong></td>
-          <td>${Math.round(r.risk_score || 0)}</td>
-          <td>${Math.round(r.lightning_probability || 0)}%</td>
-          <td>${Math.round(r.cape || 0)}</td>
-          <td>${r.cloud_top_temp !== null && r.cloud_top_temp !== undefined ? r.cloud_top_temp.toFixed(1) : '--'}</td>
-          <td><span class="ward-chip ${isAlert ? 'status-impact' : 'status-normal'}">${isAlert ? 'DISPATCHED' : 'CLEAR'}</span></td>
-        `;
-        DOM.historyTableBody.appendChild(tr);
-      });
-    } catch (e) {
-      console.warn('Database history query paused:', e);
+      // STEP 3: Radar Analysis (t=4s to t=6s)
+      cascadeTimer = setTimeout(() => {
+        if (DOM.cardSat) {
+          DOM.cardSat.classList.remove('card-active');
+          DOM.cardSat.classList.add('card-complete');
+        }
+        if (DOM.statusSat) { DOM.statusSat.textContent = 'TRIGGERED (OK)'; DOM.statusSat.className = 'card-status status-complete'; }
+        if (DOM.decisionSat) DOM.decisionSat.textContent = '✔ Rapid cloud growth detected.';
+        if (DOM.actionSat) DOM.actionSat.textContent = 'Triggering Radar Analysis →';
+
+        if (DOM.timelineSteps[1]) DOM.timelineSteps[1].classList.add('completed');
+        if (DOM.timelineSteps[2]) DOM.timelineSteps[2].classList.add('active');
+
+        if (DOM.cardRadar) DOM.cardRadar.classList.add('card-active');
+        if (DOM.statusRadar) { DOM.statusRadar.textContent = 'ANALYZING...'; DOM.statusRadar.className = 'card-status status-active'; }
+        if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:25:00 IST]</span> Reading Doppler radar... Tracking storm cells... Measuring reflectivity...';
+        if (DOM.telemRadar) DOM.telemRadar.textContent = 'DWR-HYD Begumpet: Reflectivity 54 dBZ · Strong convective structure';
+        setStep(2);
+
+        // STEP 4: Lightning Prediction (t=6s to t=8s)
+        cascadeTimer = setTimeout(() => {
+          if (DOM.cardRadar) {
+            DOM.cardRadar.classList.remove('card-active');
+            DOM.cardRadar.classList.add('card-complete');
+          }
+          if (DOM.statusRadar) { DOM.statusRadar.textContent = 'TRIGGERED (OK)'; DOM.statusRadar.className = 'card-status status-complete'; }
+          if (DOM.decisionRadar) DOM.decisionRadar.textContent = '✔ Strong storm structure detected.';
+          if (DOM.actionRadar) DOM.actionRadar.textContent = 'Triggering Lightning Prediction →';
+
+          if (DOM.timelineSteps[2]) DOM.timelineSteps[2].classList.add('completed');
+          if (DOM.timelineSteps[3]) DOM.timelineSteps[3].classList.add('active');
+
+          if (DOM.cardLightning) DOM.cardLightning.classList.add('card-active');
+          if (DOM.statusLightning) { DOM.statusLightning.textContent = 'ANALYZING...'; DOM.statusLightning.className = 'card-status status-active'; }
+          if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:30:00 IST]</span> Running XGBoost model... Estimating electrical charge... Predicting strike probability...';
+          if (DOM.telemLightning) DOM.telemLightning.textContent = 'XGBoost Electrification: Dipole charge confirmed (Probability: 84%)';
+          setStep(3);
+
+          // STEP 5: Movement Prediction (t=8s to t=10s)
+          cascadeTimer = setTimeout(() => {
+            if (DOM.cardLightning) {
+              DOM.cardLightning.classList.remove('card-active');
+              DOM.cardLightning.classList.add('card-complete');
+            }
+            if (DOM.statusLightning) { DOM.statusLightning.textContent = 'TRIGGERED (OK)'; DOM.statusLightning.className = 'card-status status-complete'; }
+            if (DOM.decisionLightning) DOM.decisionLightning.textContent = '✔ Lightning probability: 84%';
+            if (DOM.actionLightning) DOM.actionLightning.textContent = 'Triggering Movement Prediction →';
+
+            if (DOM.timelineSteps[3]) DOM.timelineSteps[3].classList.add('completed');
+            if (DOM.timelineSteps[4]) DOM.timelineSteps[4].classList.add('active');
+
+            if (DOM.cardTracking) DOM.cardTracking.classList.add('card-active');
+            if (DOM.statusTracking) { DOM.statusTracking.textContent = 'ANALYZING...'; DOM.statusTracking.className = 'card-status status-active'; }
+            if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:32:00 IST]</span> Tracking trajectory... Calculating speed... Estimating arrival time...';
+            if (DOM.telemTracking) DOM.telemTracking.textContent = 'Vector Extrapolation: ENE (68°) · Speed: 42 km/h';
+            setStep(4);
+
+            // STEP 6: Final Warning (t=10s to t=12s)
+            cascadeTimer = setTimeout(() => {
+              if (DOM.cardTracking) {
+                DOM.cardTracking.classList.remove('card-active');
+                DOM.cardTracking.classList.add('card-complete');
+              }
+              if (DOM.statusTracking) { DOM.statusTracking.textContent = 'TRIGGERED (OK)'; DOM.statusTracking.className = 'card-status status-complete'; }
+              if (DOM.decisionTracking) DOM.decisionTracking.textContent = '✔ Storm moving northeast at 42 km/h.';
+              if (DOM.actionTracking) DOM.actionTracking.textContent = 'Impact: Kukatpally (15m), Serilingampally (22m), Khairatabad (31m) →';
+
+              if (DOM.timelineSteps[4]) DOM.timelineSteps[4].classList.add('completed');
+              if (DOM.timelineSteps[5]) DOM.timelineSteps[5].classList.add('active');
+
+              if (DOM.cardWarning) DOM.cardWarning.classList.add('card-alert');
+              if (DOM.statusWarning) { DOM.statusWarning.textContent = 'WARNING ISSUED'; DOM.statusWarning.className = 'card-status status-alert'; }
+              if (DOM.decisionWarning) DOM.decisionWarning.textContent = '🚨 84% Lightning Risk · Arrival: 15-30 Min';
+              if (DOM.actionWarning) DOM.actionWarning.textContent = 'Warning Issued: YES (Sirens & SMS Active)';
+              if (DOM.telemWarning) DOM.telemWarning.textContent = 'Dissemination Active: Kukatpally, Serilingampally, Khairatabad';
+
+              if (DOM.cascadeLog) {
+                DOM.cascadeLog.innerHTML = '<span class="log-time" style="color:var(--crimson)">[14:33:00 IST]</span> 🚨 <strong>WARNING GENERATED.</strong> Lightning Risk: 84%. Affected Zones: Kukatpally, Serilingampally, Khairatabad. Recommended Action: Move indoors immediately.';
+              }
+              setStep(5);
+
+              isCascading = false;
+              if (DOM.btnStartCascade) {
+                DOM.btnStartCascade.innerHTML = '<span class="btn-icon">↺</span> REPLAY CASCADING SIMULATION';
+                DOM.btnStartCascade.disabled = false;
+              }
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      }, 2000);
+    }, 2000);
+  }
+
+  function triggerEmergencyBypass() {
+    if (cascadeTimer) {
+      clearTimeout(cascadeTimer);
+      cascadeTimer = null;
+    }
+    isCascading = false;
+
+    if (DOM.emergencyBypassNotice) {
+      DOM.emergencyBypassNotice.style.display = 'flex';
+    }
+
+    if (DOM.cardNwp) { DOM.cardNwp.className = 'cascade-card'; if (DOM.statusNwp) DOM.statusNwp.textContent = 'BYPASSED'; }
+    if (DOM.cardSat) { DOM.cardSat.className = 'cascade-card'; if (DOM.statusSat) DOM.statusSat.textContent = 'BYPASSED'; }
+    if (DOM.cardRadar) { DOM.cardRadar.className = 'cascade-card'; if (DOM.statusRadar) DOM.statusRadar.textContent = 'BYPASSED'; }
+
+    if (DOM.cardLightning) {
+      DOM.cardLightning.className = 'cascade-card card-alert';
+      if (DOM.statusLightning) { DOM.statusLightning.textContent = 'EMERGENCY SPIKE'; DOM.statusLightning.className = 'card-status status-alert'; }
+      if (DOM.decisionLightning) DOM.decisionLightning.textContent = '⚡ Sudden Lightning Formation Detected (96%)';
+      if (DOM.actionLightning) DOM.actionLightning.textContent = 'Bypassing sequence → IMMEDIATE WARNING';
+    }
+
+    if (DOM.cardTracking) {
+      DOM.cardTracking.className = 'cascade-card card-alert';
+      if (DOM.statusTracking) { DOM.statusTracking.textContent = 'IMMINENT IMPACT'; DOM.statusTracking.className = 'card-status status-alert'; }
+      if (DOM.decisionTracking) DOM.decisionTracking.textContent = 'Immediate collision course over HITEC City';
+    }
+
+    if (DOM.cardWarning) {
+      DOM.cardWarning.className = 'cascade-card card-alert';
+      if (DOM.statusWarning) { DOM.statusWarning.textContent = 'EMERGENCY BROADCAST'; DOM.statusWarning.className = 'card-status status-alert'; }
+      if (DOM.decisionWarning) DOM.decisionWarning.textContent = '⚡ Immediate Warning Dispatched (Sirens + Push)';
+      if (DOM.actionWarning) DOM.actionWarning.textContent = 'Warning Issued: YES (EMERGENCY OVERRIDE)';
+    }
+
+    DOM.timelineSteps.forEach((node) => node.classList.add('active', 'completed'));
+
+    if (DOM.cascadeLog) {
+      DOM.cascadeLog.innerHTML = '<span class="log-time" style="color:var(--crimson)">[EMERGENCY OVERRIDE]</span> ⚡ <strong>Emergency Bypass Activated:</strong> Sudden dangerous lightning strike formation detected. Full siren alert broadcast across Greater Hyderabad.';
+    }
+
+    setStep(5);
+
+    if (DOM.btnStartCascade) {
+      DOM.btnStartCascade.innerHTML = '<span class="btn-icon">▶</span> START CASCADING SIMULATION';
+      DOM.btnStartCascade.disabled = false;
     }
   }
 
@@ -1083,6 +1299,19 @@
   // =========================================================================
 
   function bindEventListeners() {
+    // Cascading Simulation & Emergency Bypass
+    if (DOM.btnStartCascade) DOM.btnStartCascade.addEventListener('click', startCascadingSimulation);
+    if (DOM.btnEmergencyBypass) DOM.btnEmergencyBypass.addEventListener('click', triggerEmergencyBypass);
+    if (DOM.btnSidebarEmergency) DOM.btnSidebarEmergency.addEventListener('click', triggerEmergencyBypass);
+
+    // Timeline Step Node Clicks
+    DOM.timelineSteps.forEach((stepNode) => {
+      stepNode.addEventListener('click', () => {
+        const stepIdx = parseInt(stepNode.getAttribute('data-step') || '0', 10);
+        setStep(stepIdx);
+      });
+    });
+
     if (DOM.btnTimelinePrev) DOM.btnTimelinePrev.addEventListener('click', () => changeStep(-1));
     if (DOM.btnTimelineNext) DOM.btnTimelineNext.addEventListener('click', () => changeStep(1));
     if (DOM.btnTimelinePlay) DOM.btnTimelinePlay.addEventListener('click', toggleSimulation);
