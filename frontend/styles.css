@@ -3633,160 +3633,203 @@ body {
   line-height: 1.45;
 }
 
-/* Citizen Warning Modal Popup */
-.citizen-warning-popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.85);
-  backdrop-filter: blur(8px);
+/* Native Smartphone Citizen Alert Card */
+.citizen-active-alert-card {
+  margin: 12px 0 16px 0;
+  background: linear-gradient(135deg, rgba(31, 8, 12, 0.98) 0%, rgba(20, 4, 8, 0.98) 100%);
+  border: 1.5px solid #ef4444;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: 0 8px 30px rgba(239, 68, 68, 0.3), inset 0 0 15px rgba(239, 68, 68, 0.15);
+  animation: pulse-danger-border 2s infinite ease-in-out;
+}
+
+@keyframes pulse-danger-border {
+  0%, 100% { border-color: #ef4444; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.35); }
+  50% { border-color: #f87171; box-shadow: 0 8px 36px rgba(248, 113, 113, 0.55); }
+}
+
+.caac-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 20px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.25);
 }
 
-.popup-inner {
-  background: linear-gradient(135deg, #1f080c 0%, #0d0305 100%);
-  border: 2px solid #ef4444;
-  border-radius: var(--radius-lg);
-  max-width: 500px;
-  width: 100%;
-  padding: 28px;
-  box-shadow: 0 20px 60px rgba(239, 68, 68, 0.35);
-  animation: pop-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+.caac-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-@keyframes pop-in {
-  from { transform: scale(0.92); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.popup-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.popup-siren {
-  font-size: 2.2rem;
-  margin-bottom: 8px;
+.caac-siren-icon {
+  font-size: 1.5rem;
   animation: pulse-dot 0.8s infinite;
 }
 
-.popup-header h2 {
-  font-size: 1.3rem;
-  font-weight: 900;
+.caac-header h3 {
+  font-size: 0.92rem;
+  font-weight: 800;
   color: #ef4444;
   letter-spacing: 0.02em;
+  margin: 0;
 }
 
-.popup-key-stats {
+.caac-sub {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: #fca5a5;
+  display: block;
+}
+
+.caac-badge {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.caac-metrics-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  background: rgba(5, 2, 3, 0.6);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  margin-bottom: 18px;
-}
-
-.stat-col {
-  text-align: center;
-}
-
-.sc-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  color: #fca5a5;
-}
-
-.sc-val {
-  font-family: var(--font-mono);
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: #ffffff;
-  margin-top: 4px;
-}
-
-.popup-affected {
-  background: rgba(5, 2, 3, 0.6);
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  margin-bottom: 18px;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
-.pa-label {
+.caac-metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.caac-m-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: #fca5a5;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.caac-m-val {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 900;
+  margin: 2px 0;
+}
+
+.caac-m-sub {
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.caac-affected-box {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+
+.caac-aff-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: #fca5a5;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.caac-affected-box strong {
+  font-size: 0.78rem;
+  color: #ffffff;
+  display: block;
+  line-height: 1.3;
+}
+
+.caac-safety-instructions {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.caac-inst-head {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  text-transform: uppercase;
+  font-weight: 800;
   color: #fca5a5;
+  margin-bottom: 6px;
+}
+
+.caac-inst-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.72rem;
+  color: #e2e8f0;
+  line-height: 1.45;
+}
+
+.caac-inst-list li {
   margin-bottom: 4px;
 }
 
-.pa-areas {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #fecdd3;
-}
-
-.popup-instructions {
-  margin-bottom: 22px;
-}
-
-.pi-title {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  color: #fca5a5;
-  margin-bottom: 8px;
-}
-
-.safety-list {
-  list-style: none;
+.caac-actions {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.safety-list li {
-  font-size: 0.82rem;
-  color: #fecdd3;
-  display: flex;
-  align-items: center;
   gap: 8px;
 }
 
-.safety-list li::before {
-  content: '⚠';
-  color: #fbbf24;
-  font-size: 0.75rem;
-}
-
-.popup-actions {
-  display: flex;
-  justify-content: center;
-}
-
-.btn-ack-popup {
-  padding: 12px 30px;
-  background: #ef4444;
+.caac-btn-ack {
+  flex: 1;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
   color: #ffffff;
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  border: none;
-  border-radius: var(--radius-sm);
+  padding: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.2s ease;
 }
 
-.btn-ack-popup:hover {
+.caac-btn-ack:hover {
   background: #dc2626;
-  box-shadow: 0 0 16px rgba(239, 68, 68, 0.6);
 }
+
+.caac-btn-call {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #dc2626;
+  border: 1px solid #f87171;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.caac-btn-call:hover {
+  background: #b91c1c;
+}
+
 
 @media (max-width: 900px) {
   .hero-banner-content {

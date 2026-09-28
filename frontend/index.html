@@ -244,136 +244,7 @@
             </div>
           </div>
 
-          <!-- =================================================================
-               XGBOOST V1 TIME-SERIES STREAM ENGINE (IMAGE 2, 4, 5 EXACT MATCH)
-               ================================================================= -->
-          <div class="stream-engine-card" id="stream-engine-card">
-            <div class="stream-engine-header">
-              <div class="stream-title-group">
-                <div class="stream-chip-icon">⚡</div>
-                <div>
-                  <h3>XGBoost V1 Time-Series Stream Engine (Half-Hourly CSV Playback)</h3>
-                  <p>Analyzes half-hourly temporal telemetry series, detects threats prior to failure, and calculates estimated time of disaster</p>
-                </div>
-              </div>
 
-              <div class="stream-header-actions">
-                <button class="stream-tab-btn active" id="tab-stream-csv">✓ CSV Stream Playback</button>
-                <button class="stream-tab-btn" id="tab-stream-form">⚡ V1 Feature Form</button>
-                <button class="stream-tab-btn" id="tab-stream-raw">&lt;&gt; Raw Text Format</button>
-              </div>
-            </div>
-
-            <div class="stream-main-grid">
-              <!-- Left Playback Controls -->
-              <div class="stream-controls-box">
-                <div class="stream-box-title">
-                  <div>
-                    <strong>⏱ Half-Hourly CSV Stream Playback Controls</strong>
-                    <p>Sequentially processes the loaded CSV rows and triggers siren instantly when threat threshold is crossed</p>
-                  </div>
-                  <button class="btn-upload-csv" id="btn-upload-custom-csv" title="Upload a custom telemetry CSV file">
-                    📤 Upload Custom CSV
-                  </button>
-                </div>
-
-                <div class="stream-slider-row">
-                  <span>Current Row [ <strong id="stream-row-curr" class="row-counter">4 / 192</strong> ]</span>
-                  <span>Timestamp: <strong id="stream-timestamp" class="row-timestamp">2026-09-03 01:30:00</strong></span>
-                </div>
-
-                <input type="range" id="stream-slider" class="stream-progress-slider" min="1" max="192" value="4" title="Seek to specific time-series telemetry row">
-
-                <div class="stream-buttons-row">
-                  <button id="btn-play-stream" class="btn-play-stream">
-                    ▶ PLAY TIME-SERIES STREAM
-                  </button>
-                  <button id="btn-stop-stream" class="btn-stop-stream" title="Stop time-series stream playback">
-                    ⏹ Stop Stream
-                  </button>
-                  <button id="btn-step-stream" class="btn-step-next">
-                    ▷▷ Step Next (+30m)
-                  </button>
-
-                  <div class="stream-speed-pills">
-                    <span class="stream-speed-label">Speed:</span>
-                    <button class="speed-pill-btn active" data-speed="1">1x</button>
-                    <button class="speed-pill-btn" data-speed="2">2x</button>
-                    <button class="speed-pill-btn" data-speed="5">5x</button>
-                    <button class="speed-pill-btn" data-speed="10">10x</button>
-                  </div>
-                </div>
-
-                <!-- Telemetry Row Feature Values (Exact Image 2 Match) -->
-                <div class="stream-telemetry-row">
-                  <div class="st-node">
-                    <span class="st-lbl">rain_mm_per_hr</span>
-                    <strong class="st-val" id="st-rain-hr">2.3</strong>
-                  </div>
-                  <div class="st-node">
-                    <span class="st-lbl">rain_accum_24h</span>
-                    <strong class="st-val" id="st-accum-24">4.8 mm</strong>
-                  </div>
-                  <div class="st-node">
-                    <span class="st-lbl">rain_accum_7d</span>
-                    <strong class="st-val" id="st-accum-7d">4.8 mm</strong>
-                  </div>
-                  <div class="st-node">
-                    <span class="st-lbl">rain_current_hr</span>
-                    <strong class="st-val" id="st-current-hr">2.3</strong>
-                  </div>
-                  <div class="st-node">
-                    <span class="st-lbl">rain_accum_3d</span>
-                    <strong class="st-val" id="st-accum-3d">4.8 mm</strong>
-                  </div>
-                  <div class="st-node">
-                    <span class="st-lbl">soil_moisture</span>
-                    <strong class="st-val" id="st-soil-moist">2.5</strong>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Right Stream Analysis Card -->
-              <div class="stream-analysis-card">
-                <div class="sa-header">
-                  <h4>⚡ Live stream analysis</h4>
-                  <span id="sa-status-badge" class="sa-status-badge">PLAYBACK PAUSED</span>
-                </div>
-
-                <div class="sa-details">
-                  <div class="sa-row-meta">
-                    <span class="text-muted">Row Being Analysed:</span>
-                    <strong id="sa-row-num" class="text-cyan">Row [ 4 / 192 ]</strong>
-                  </div>
-                  <div class="sa-row-meta">
-                    <span class="text-muted">Timestamp:</span>
-                    <strong id="sa-timestamp" class="text-amber">2026-09-03 01:30:00</strong>
-                  </div>
-                  <div class="sa-row-meta">
-                    <span class="text-muted">Live Risk Score:</span>
-                    <strong id="sa-risk-score" class="text-emerald">11%</strong>
-                  </div>
-                </div>
-
-                <div class="sa-pred-box">
-                  <span class="sa-pred-lbl">ML PREDICTED OUTPUT</span>
-                  <div id="sa-pred-badge" class="sa-pred-badge">NO PREDICTION YET</div>
-                </div>
-
-                <div class="sa-pred-box" style="margin-top: 2px;">
-                  <span class="sa-pred-lbl">⚡ LIVE TELEMETRY &amp; SCORE BREAKDOWN (EVERY ROW)</span>
-                  <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-secondary); display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px;">
-                    <div>rain_mm_per_hr: <span id="sb-rain-hr" class="text-white">2.3</span></div>
-                    <div>rain_current_hr: <span id="sb-current-hr" class="text-white">2.3</span></div>
-                    <div>rain_accum_24h: <span id="sb-accum-24" class="text-white">4.8 mm</span></div>
-                    <div>rain_accum_3d: <span id="sb-accum-3d" class="text-white">4.8 mm</span></div>
-                    <div>rain_accum_7d: <span id="sb-accum-7d" class="text-white">4.8 mm</span></div>
-                    <div>soil_moisture: <span id="sb-soil-moist" class="text-white">2.5</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           <!-- Hero Simulation Controller Bar -->
           <div class="simulation-hero-banner">
@@ -1304,28 +1175,7 @@
                 <span class="status-battery">📶 5G · 🔋 98%</span>
               </div>
 
-              <!-- Warning State Popup (Visible on Warning Issued) -->
-              <div id="citizen-warning-popup" class="citizen-warning-popup" style="display: none;">
-                <div class="popup-head">
-                  <span class="popup-siren-icon">⚠</span>
-                  <strong>SEVERE THUNDERSTORM WARNING</strong>
-                </div>
-                <div class="popup-key-stats">
-                  <div><span>Lightning Probability:</span> <strong>84%</strong></div>
-                  <div><span>Expected Arrival:</span> <strong>30 Minutes</strong></div>
-                  <div><span>Affected Areas:</span> <strong>Kukatpally, Miyapur, Secunderabad</strong></div>
-                </div>
-                <div class="popup-instructions">
-                  <strong>Safety Instructions:</strong>
-                  <ul>
-                    <li>Move indoors immediately.</li>
-                    <li>Avoid open areas and fields.</li>
-                    <li>Avoid metal objects and power lines.</li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Citizen App Header (Image 3 Header) -->
+              <!-- Citizen App Header -->
               <div class="c-portal-navbar">
                 <button class="c-portal-back-btn" id="btn-c-portal-back" title="Back to Command Center">&lt;</button>
                 <div class="c-portal-brand">
@@ -1335,7 +1185,7 @@
                 <button class="c-portal-refresh-btn" id="btn-citizen-refresh" title="Refresh Live Citizen Feed">↺</button>
               </div>
 
-              <!-- Top Status Card (Image 3 Exact Match) -->
+              <!-- Top Status Card -->
               <div class="c-status-top-card" id="c-status-top-card">
                 <div class="c-stc-header">
                   <span>SYSTEM STATUS: <strong id="c-top-status-text">NORMAL</strong></span>
@@ -1351,6 +1201,59 @@
                 <button class="btn-evacuate-action" id="btn-navigate-safe">
                   🧭 NAVIGATE TO SAFE PLACE (<span id="c-nav-mode">PREPAREDNESS MODE</span>)
                 </button>
+              </div>
+
+              <!-- Native Smartphone In-App Emergency Alert Card -->
+              <div id="citizen-active-alert-card" class="citizen-active-alert-card" style="display: none;">
+                <div class="caac-header">
+                  <div class="caac-title-row">
+                    <span class="caac-siren-icon">🚨</span>
+                    <div>
+                      <h3 id="caac-headline">SEVERE THUNDERSTORM WARNING</h3>
+                      <span class="caac-sub" id="caac-agency">CIVIL DEFENSE LEVEL · NDMA / IMD / GHMC</span>
+                    </div>
+                  </div>
+                  <span class="caac-badge" id="caac-status-badge">ACTIVE EMERGENCY</span>
+                </div>
+
+                <div class="caac-metrics-grid">
+                  <div class="caac-metric">
+                    <span class="caac-m-label">LIGHTNING PROBABILITY</span>
+                    <strong class="caac-m-val text-crimson" id="caac-lightning-prob">96%</strong>
+                    <span class="caac-m-sub">Dangerous Ground Strikes</span>
+                  </div>
+                  <div class="caac-metric">
+                    <span class="caac-m-label">EXPECTED ARRIVAL</span>
+                    <strong class="caac-m-val text-amber" id="caac-arrival-time">Immediate (demo)</strong>
+                    <span class="caac-m-sub">Rapid Convective Motion</span>
+                  </div>
+                </div>
+
+                <div class="caac-affected-box">
+                  <span class="caac-aff-label">📍 AFFECTED WARDS &amp; CORRIDORS</span>
+                  <strong id="caac-affected-areas">Greater Hyderabad Metropolitan Area (Kukatpally, Miyapur, HITEC City)</strong>
+                </div>
+
+                <div class="caac-safety-instructions">
+                  <div class="caac-inst-head">
+                    <span>🛡️ MANDATORY SAFETY PROTOCOLS</span>
+                  </div>
+                  <ul class="caac-inst-list">
+                    <li><strong>Move indoors immediately</strong> into a solid structure or home.</li>
+                    <li><strong>Avoid open areas</strong>, rooftops, fields, and isolated trees.</li>
+                    <li><strong>Keep clear of metal fixtures</strong>, fences, and power cables.</li>
+                    <li><strong>Pull over safely</strong> if driving; stay inside the vehicle away from power lines.</li>
+                  </ul>
+                </div>
+
+                <div class="caac-actions">
+                  <button class="caac-btn-ack" id="btn-ack-citizen-alert">
+                    ✓ ACKNOWLEDGE ALERT
+                  </button>
+                  <a href="tel:112" class="caac-btn-call">
+                    📞 CALL 112 SOS
+                  </a>
+                </div>
               </div>
 
               <!-- GIS Evacuation Map Card (Image 3 Exact Match) -->

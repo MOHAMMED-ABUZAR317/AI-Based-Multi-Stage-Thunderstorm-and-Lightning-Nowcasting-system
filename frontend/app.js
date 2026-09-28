@@ -386,15 +386,19 @@
     // Emergency Bypass Elements
     btnTriggerBypassAction: document.getElementById('btn-trigger-bypass-action'),
 
-    // Citizen Portal Elements & Prominent Red Alert Card
+    // Citizen Portal Elements & In-App Native Alert Card
+    citizenActiveAlertCard: document.getElementById('citizen-active-alert-card'),
+    caacHeadline: document.getElementById('caac-headline'),
+    caacAgency: document.getElementById('caac-agency'),
+    caacLightningProb: document.getElementById('caac-lightning-prob'),
+    caacArrivalTime: document.getElementById('caac-arrival-time'),
+    caacAffectedAreas: document.getElementById('caac-affected-areas'),
+    btnAckCitizenAlert: document.getElementById('btn-ack-citizen-alert'),
     citizenNormalState: document.getElementById('citizen-normal-state'),
     citizenWarningActiveState: document.getElementById('citizen-warning-active-state'),
     cWarnProb: document.getElementById('c-warn-prob'),
     cWarnEta: document.getElementById('c-warn-eta'),
     cWarnAreas: document.getElementById('c-warn-areas'),
-    citizenWarningPopup: document.getElementById('citizen-warning-popup'),
-    btnAckCitizenPopup: document.getElementById('btn-ack-citizen-popup'),
-
     citizenRedAlertCard: document.getElementById('citizen-red-alert-card'),
     cRedArea: document.getElementById('c-red-area'),
     cRedEta: document.getElementById('c-red-eta'),
@@ -2244,7 +2248,7 @@
     if (DOM.cShelterDesc) DOM.cShelterDesc.textContent = 'Elevated bedrock ridge, zero debris accumulation vector';
 
     if (DOM.citizenRedAlertCard) DOM.citizenRedAlertCard.style.display = 'none';
-    if (DOM.citizenWarningPopup) DOM.citizenWarningPopup.style.display = 'none';
+    if (DOM.citizenActiveAlertCard) DOM.citizenActiveAlertCard.style.display = 'none';
 
     // Hero banner status
     if (DOM.heroStatusPill) DOM.heroStatusPill.classList.remove('active');
@@ -2291,6 +2295,7 @@
 
     if (DOM.heroStatusPill) DOM.heroStatusPill.classList.remove('active');
     if (DOM.heroStatusText) DOM.heroStatusText.textContent = 'SIMULATION STOPPED';
+    if (DOM.citizenActiveAlertCard) DOM.citizenActiveAlertCard.style.display = 'none';
 
     if (streamPlaybackTimer) {
       toggleStreamPlayback();
@@ -2798,6 +2803,15 @@
           if (DOM.cShelterTitle) DOM.cShelterTitle.textContent = 'Gachibowli High Ground Shelter';
           if (DOM.cShelterDesc) DOM.cShelterDesc.textContent = 'Elevated bedrock ridge, zero debris accumulation vector';
 
+          // Show Native In-App Citizen Alert Card inside Citizen Portal
+          if (DOM.citizenActiveAlertCard) {
+            DOM.citizenActiveAlertCard.style.display = 'block';
+            if (DOM.caacHeadline) DOM.caacHeadline.textContent = 'SEVERE THUNDERSTORM & LIGHTNING WARNING';
+            if (DOM.caacLightningProb) DOM.caacLightningProb.textContent = dataset.probPercent || '84%';
+            if (DOM.caacArrivalTime) DOM.caacArrivalTime.textContent = dataset.etaMinutes || 'Within 30 Minutes';
+            if (DOM.caacAffectedAreas) DOM.caacAffectedAreas.textContent = dataset.targetArea || 'Patancheru, Miyapur, Kukatpally, Secunderabad';
+          }
+
           // Play 5 Times Alert Pop Sound
           playFivePopSound();
 
@@ -2860,10 +2874,10 @@
       });
     }
 
-    // Acknowledge Citizen Warning Popup
-    if (DOM.btnAckCitizenPopup) {
-      DOM.btnAckCitizenPopup.addEventListener('click', () => {
-        if (DOM.citizenWarningPopup) DOM.citizenWarningPopup.style.display = 'none';
+    // Acknowledge Citizen Alert Card
+    if (DOM.btnAckCitizenAlert) {
+      DOM.btnAckCitizenAlert.addEventListener('click', () => {
+        if (DOM.citizenActiveAlertCard) DOM.citizenActiveAlertCard.style.display = 'none';
       });
     }
 
@@ -2987,14 +3001,24 @@
     if (DOM.fwStatus) DOM.fwStatus.textContent = 'SENT TO CITIZENS (EMERGENCY OVERRIDE)';
 
     // Automatically Update Citizen Portal to Warning State
-    if (DOM.citizenNormalState) DOM.citizenNormalState.style.display = 'none';
-    if (DOM.citizenWarningActiveState) DOM.citizenWarningActiveState.style.display = 'block';
-    if (DOM.cWarnProb) DOM.cWarnProb.textContent = '96%';
-    if (DOM.cWarnEta) DOM.cWarnEta.textContent = 'IMMEDIATE';
-    if (DOM.cWarnAreas) DOM.cWarnAreas.textContent = 'Greater Hyderabad Metropolitan Area';
+    if (DOM.citizenActiveAlertCard) {
+      DOM.citizenActiveAlertCard.style.display = 'block';
+    }
+    if (DOM.caacHeadline) DOM.caacHeadline.textContent = 'SEVERE THUNDERSTORM & LIGHTNING EMERGENCY';
+    if (DOM.caacLightningProb) DOM.caacLightningProb.textContent = '96%';
+    if (DOM.caacArrivalTime) DOM.caacArrivalTime.textContent = 'Immediate (Active Convection)';
+    if (DOM.caacAffectedAreas) DOM.caacAffectedAreas.textContent = 'Greater Hyderabad Metropolitan Area (High-Density Corridors)';
 
-    // Show popup & play 5-pop alert sound
-    if (DOM.citizenWarningPopup) DOM.citizenWarningPopup.style.display = 'flex';
+    if (DOM.cStatusTopCard) DOM.cStatusTopCard.classList.add('danger');
+    if (DOM.cTopStatusText) DOM.cTopStatusText.textContent = 'EMERGENCY WARNING ACTIVE';
+    if (DOM.cTopStatusDot) DOM.cTopStatusDot.classList.add('danger');
+    if (DOM.cTopStatusIcon) DOM.cTopStatusIcon.textContent = '🚨';
+    if (DOM.cTopHeadline) DOM.cTopHeadline.textContent = 'CRITICAL CONVECTIVE WARNING';
+    if (DOM.cTopDesc) DOM.cTopDesc.textContent = 'Severe cloud-to-ground lightning strike risk active across urban sectors.';
+    if (DOM.cNavMode) DOM.cNavMode.textContent = 'EMERGENCY SHELTER MODE';
+
+    // Switch view to Citizen Portal so the user sees the alert displayed right inside the Citizen Portal!
+    switchView('view-alerts');
     playFivePopSound();
 
     // Voice announcement
@@ -3120,6 +3144,23 @@
           if (res.ok) {
             DOM.dispatchFeedback.textContent = '✓ Emergency alert broadcast successfully dispatched and recorded to DB.';
             DOM.dispatchFeedback.style.color = 'var(--emerald)';
+
+            // Update in-app Citizen Portal card with the dispatched alert
+            if (DOM.citizenActiveAlertCard) {
+              DOM.citizenActiveAlertCard.style.display = 'block';
+              if (DOM.caacHeadline) DOM.caacHeadline.textContent = payload.headline;
+              if (DOM.caacLightningProb) DOM.caacLightningProb.textContent = '96%';
+              if (DOM.caacArrivalTime) DOM.caacArrivalTime.textContent = 'Within 15-30 Minutes';
+              if (DOM.caacAffectedAreas) DOM.caacAffectedAreas.textContent = payload.target_zones;
+            }
+            if (DOM.cStatusTopCard) DOM.cStatusTopCard.classList.add('danger');
+            if (DOM.cTopStatusText) DOM.cTopStatusText.textContent = 'ACTIVE EMERGENCY WARNING';
+            if (DOM.cTopStatusDot) DOM.cTopStatusDot.classList.add('danger');
+            if (DOM.cTopStatusIcon) DOM.cTopStatusIcon.textContent = '🚨';
+            if (DOM.cTopHeadline) DOM.cTopHeadline.textContent = payload.headline;
+            if (DOM.cTopDesc) DOM.cTopDesc.textContent = payload.message_en;
+            if (DOM.cNavMode) DOM.cNavMode.textContent = 'EVACUATION MODE';
+
             setTimeout(() => {
               if (DOM.dispatchFeedback) DOM.dispatchFeedback.textContent = '';
             }, 4000);
