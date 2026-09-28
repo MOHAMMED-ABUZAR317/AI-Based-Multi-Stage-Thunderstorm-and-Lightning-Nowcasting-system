@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Hyderabad Route Demonstration — Not Operational</title>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: Arial, sans-serif;
+      }
+
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+
+      .panel {
+        position: absolute;
+        z-index: 1000;
+        top: 15px;
+        left: 15px;
+
+        width: 360px;
+        max-width: calc(100% - 30px);
+
+        background: rgba(255, 255, 255, 0.97);
+
+        padding: 16px;
+
+        border-radius: 15px;
+
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.25);
+      }
+
+      .panel h2 {
+        margin: 0 0 5px;
+        font-size: 21px;
+      }
+
+      .subtitle {
+        color: #555;
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+
+      .region {
+        background: #e3f2fd;
+        color: #0d47a1;
+        padding: 9px;
+        border-radius: 8px;
+        font-size: 12px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+      }
+
+      button {
+        width: 100%;
+        border: none;
+        padding: 11px;
+        margin: 4px 0;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+
+      .blue {
+        background: #1976d2;
+      }
+
+      .green {
+        background: #2e7d32;
+      }
+
+      .orange {
+        background: #ef6c00;
+      }
+
+      .red {
+        background: #c62828;
+      }
+
+      .dark {
+        background: #263238;
+      }
+
+      .purple {
+        background: #6a1b9a;
+      }
+
+      .status {
+        margin-top: 10px;
+        padding: 10px;
+
+        border-radius: 8px;
+
+        background: #f1f5f9;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+      }
+
+      .routeInfo {
+        display: none;
+
+        margin-top: 10px;
+        padding: 10px;
+
+        border-radius: 8px;
+
+        background: #e8f5e9;
+
+        font-size: 13px;
+
+        line-height: 1.6;
+      }
+
+      .legend {
+        margin-top: 10px;
+        font-size: 12px;
+      }
+
+      .dot {
+        display: inline-block;
+
+        width: 11px;
+        height: 11px;
+
+        border-radius: 50%;
+
+        margin-right: 4px;
+      }
+
+      .redDot {
+        background: #f44336;
+      }
+
+      .greenDot {
+        background: #2e7d32;
+      }
+
+      .blueDot {
+        background: #1976d2;
+      }
+
+      .demo-notice {
+        position: fixed;
+        z-index: 10000;
+        top: 8px;
+        left: 50%;
+        width: min(680px, calc(100% - 360px));
+        transform: translateX(-50%);
+        padding: 9px 12px;
+        border: 1px solid #795d31;
+        border-radius: 8px;
+        background: #342a1a;
+        color: #f6d397;
+        font: 700 12px/1.4 sans-serif;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="demo-notice" role="note">
+      DEMO ONLY — synthetic storm zones and illustrative routes; not a live warning,
+      verified shelter list, or official evacuation route.
+    </div>
+    <div id="map"></div>
+
+    <div class="panel">
+      <h2>⛈️ Hyderabad Route Demonstration</h2>
+
+      <div class="subtitle">Synthetic storm-zone and route visualization · not operational</div>
+
+      <div class="region">
+        <b>MAP REGION</b><br />
+        Hyderabad + Rangareddy + Medchal–Malkajgiri
+        <br />
+        Other districts are excluded.
+      </div>
+
+      <button class="blue" onclick="getMyLocation()">📍 My Location</button>
+
+      <button class="orange" onclick="testThunderstorm()">
+        ⚡ Test Thunderstorm
+      </button>
+
+      <button class="green" onclick="findSafeRegion()">
+        🛡️ Find Demo Destination
+      </button>
+
+      <button class="purple" onclick="routeRiskToSafe()">
+        🧭 Demo Zone → Destination Route
+      </button>
+
+      <button class="dark" onclick="startVoiceNavigation()">
+        🔊 Start Voice Navigation
+      </button>
+
+      <button class="red" onclick="stopVoiceNavigation()">
+        🔇 Stop Voice Navigation
+      </button>
+
+      <button class="blue" onclick="openGoogleMaps()">
+        🗺️ Open Google Maps
+      </button>
+
+      <div id="status" class="status">Loading Hyderabad Metro Region...</div>
+
+      <div id="routeInfo" class="routeInfo"></div>
+
+      <div class="legend">
+        <span class="dot redDot"></span>
+        Synthetic Storm Zone
+
+        <br />
+
+        <span class="dot greenDot"></span>
+        Safe Region
+
+        <br />
+
+        <span class="dot blueDot"></span>
+        Your Location
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+      /* =========================================================
+   CONFIGURATION
+========================================================= */
+
+      /*
+   Telangana Government GIS district layer.
+
+   We request ONLY:
+
+   Hyderabad
+   Rangareddy
+   Medchal Malkajgiri
+*/
+
+      const DISTRICT_API =
+        "https://tgrac.telangana.gov.in/arcgis/rest/services/" +
+        "RRR_Folder/RRR/MapServer/83/query";
+
+      const DISTRICT_NAMES = ["Hyderabad", "Rangareddy", "Medchal Malkajgiri"];
+
+      /* =========================================================
+   MAP
+========================================================= */
+
+      const map = L.map("map", {
+        zoomControl: true,
+        minZoom: 10,
+        maxZoom: 18,
+      }).setView([17.385, 78.4867], 11);
+
+      /* =========================================================
+   STREET MAP
+========================================================= */
+
+      const street = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution: "&copy; OpenStreetMap contributors",
+
+          maxZoom: 19,
+        },
+      );
+
+      /* =========================================================
+   SATELLITE MAP
+========================================================= */
+
+      const satellite = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+          "World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          attribution: "Tiles &copy; Esri",
+
+          maxZoom: 19,
+        },
+      );
+
+      /*
+   Satellite default.
+*/
+
+      satellite.addTo(map);
+
+      /* =========================================================
+   LAYER CONTROL
+========================================================= */
+
+      L.control
+        .layers(
+          {
+            "🛰️ Satellite": satellite,
+            "🗺️ Street Map": street,
+          },
+          {},
+          {
+            position: "topright",
+          },
+        )
+        .addTo(map);
+
+      /* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+      let regionGeoJSON = null;
+
+      let regionLayer = null;
+
+      let regionBounds = null;
+
+      let userMarker = null;
+
+      let routeLayer = null;
+
+      let currentLocation = null;
+
+      let currentDestination = null;
+
+      let selectedRiskLocation = null;
+
+      let stormMarkers = [];
+
+      let routeSteps = [];
+
+      let currentStep = 0;
+
+      let voiceEnabled = false;
+
+      let watchId = null;
+
+      /* =========================================================
+   LOAD THREE DISTRICTS
+========================================================= */
+
+      async function loadRegion() {
+        try {
+          const where = DISTRICT_NAMES.map(
+            (name) => "DISTRICT_N='" + name.replace(/'/g, "''") + "'",
+          ).join(" OR ");
+
+          const params = new URLSearchParams({
+            where: where,
+
+            outFields: "*",
+
+            returnGeometry: "true",
+
+            outSR: "4326",
+
+            f: "geojson",
+          });
+
+          const response = await fetch(DISTRICT_API + "?" + params.toString());
+
+          if (!response.ok) {
+            throw new Error("District API failed");
+          }
+
+          const data = await response.json();
+
+          if (!data.features || data.features.length === 0) {
+            throw new Error("No district polygons found");
+          }
+
+          regionGeoJSON = data;
+
+          drawRegion();
+        } catch (error) {
+          console.error(error);
+
+          document.getElementById("status").innerHTML =
+            "❌ Unable to load Hyderabad Metro Region.<br>" +
+            "Check your internet connection.";
+        }
+      }
+
+      /* =========================================================
+   DRAW THREE DISTRICTS
+========================================================= */
+
+      function drawRegion() {
+        /*
+       Draw selected districts.
+    */
+
+        regionLayer = L.geoJSON(regionGeoJSON, {
+          style: function (feature) {
+            const district = feature.properties?.DISTRICT_N || "";
+
+            let fill = "#1976d2";
+
+            if (district === "Hyderabad") {
+              fill = "#2196f3";
+            } else if (district === "Rangareddy") {
+              fill = "#43a047";
+            } else if (district === "Medchal Malkajgiri") {
+              fill = "#fb8c00";
+            }
+
+            return {
+              color: "#123",
+
+              weight: 3,
+
+              fillColor: fill,
+
+              fillOpacity: 0.12,
+            };
+          },
+
+          onEachFeature: function (feature, layer) {
+            const district = feature.properties?.DISTRICT_N || "District";
+
+            layer.bindPopup("<b>" + district + "</b>");
+          },
+        }).addTo(map);
+
+        regionBounds = regionLayer.getBounds();
+
+        /*
+       Fit complete three-district region.
+    */
+
+        map.fitBounds(regionBounds, {
+          padding: [30, 30],
+        });
+
+        /*
+       Prevent normal map movement
+       far outside the selected region.
+    */
+
+        map.setMaxBounds(regionBounds.pad(0.02));
+
+        map.options.maxBoundsViscosity = 1.0;
+
+        /*
+       Mask outside the three districts.
+    */
+
+        createOutsideMask();
+
+        document.getElementById("status").innerHTML =
+          "✅ Hyderabad Metro Region loaded.<br>" +
+          "Hyderabad + Rangareddy + Medchal–Malkajgiri.";
+      }
+
+      /* =========================================================
+   OUTSIDE MASK
+========================================================= */
+
+      function createOutsideMask() {
+        if (!regionGeoJSON) {
+          return;
+        }
+
+        /*
+       Large rectangle around Telangana.
+    */
+
+        const outer = [
+          [12, 72],
+
+          [12, 84],
+
+          [23, 84],
+
+          [23, 72],
+        ];
+
+        const holes = [];
+
+        regionGeoJSON.features.forEach((feature) => {
+          const geometry = feature.geometry;
+
+          if (!geometry) {
+            return;
+          }
+
+          /*
+               Polygon
+            */
+
+          if (geometry.type === "Polygon") {
+            const outerRing = geometry.coordinates[0];
+
+            holes.push(outerRing.map((p) => [p[1], p[0]]));
+          }
+
+          /*
+               MultiPolygon
+            */
+
+          if (geometry.type === "MultiPolygon") {
+            geometry.coordinates.forEach((polygon) => {
+              const outerRing = polygon[0];
+
+              holes.push(outerRing.map((p) => [p[1], p[0]]));
+            });
+          }
+        });
+
+        /*
+       White mask with the three
+       districts cut out.
+    */
+
+        L.polygon([outer, ...holes], {
+          stroke: false,
+
+          fillColor: "#ffffff",
+
+          fillOpacity: 0.88,
+
+          interactive: false,
+        }).addTo(map);
+      }
+
+      /* =========================================================
+   POINT IN POLYGON
+========================================================= */
+
+      function pointInPolygon(point, polygon) {
+        let inside = false;
+
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+          const xi = polygon[i][0];
+
+          const yi = polygon[i][1];
+
+          const xj = polygon[j][0];
+
+          const yj = polygon[j][1];
+
+          const intersect =
+            yi > point[1] !== yj > point[1] &&
+            point[0] < ((xj - xi) * (point[1] - yi)) / (yj - yi) + xi;
+
+          if (intersect) {
+            inside = !inside;
+          }
+        }
+
+        return inside;
+      }
+
+      /* =========================================================
+   CHECK WHETHER GPS IS INSIDE
+   THE THREE-DISTRICT REGION
+========================================================= */
+
+      function isInsideRegion(lat, lon) {
+        if (!regionGeoJSON) {
+          return false;
+        }
+
+        let inside = false;
+
+        regionGeoJSON.features.forEach((feature) => {
+          const geometry = feature.geometry;
+
+          if (!geometry) {
+            return;
+          }
+
+          /*
+               Polygon
+            */
+
+          if (geometry.type === "Polygon") {
+            const ring = geometry.coordinates[0];
+
+            const polygon = ring.map((p) => [p[0], p[1]]);
+
+            if (pointInPolygon([lon, lat], polygon)) {
+              inside = true;
+            }
+          }
+
+          /*
+               MultiPolygon
+            */
+
+          if (geometry.type === "MultiPolygon") {
+            geometry.coordinates.forEach((polygonData) => {
+              const ring = polygonData[0];
+
+              const polygon = ring.map((p) => [p[0], p[1]]);
+
+              if (pointInPolygon([lon, lat], polygon)) {
+                inside = true;
+              }
+            });
+          }
+        });
+
+        return inside;
+      }
+
+      /* =========================================================
+   SAFE REGIONS
+========================================================= */
+
+      const safeRegions = [
+        {
+          name: "Gachibowli Safe Region",
+
+          lat: 17.4401,
+
+          lon: 78.3489,
+        },
+
+        {
+          name: "Madhapur Safe Region",
+
+          lat: 17.4483,
+
+          lon: 78.3915,
+        },
+
+        {
+          name: "Secunderabad Safe Region",
+
+          lat: 17.4399,
+
+          lon: 78.4983,
+        },
+
+        {
+          name: "LB Nagar Safe Region",
+
+          lat: 17.3457,
+
+          lon: 78.5522,
+        },
+
+        {
+          name: "Shamshabad Safe Region",
+
+          lat: 17.2403,
+
+          lon: 78.4294,
+        },
+
+        {
+          name: "Kompally Safe Region",
+
+          lat: 17.54,
+
+          lon: 78.487,
+        },
+      ];
+
+      /* =========================================================
+   SAFE MARKERS
+========================================================= */
+
+      safeRegions.forEach((place) => {
+        L.circleMarker([place.lat, place.lon], {
+          radius: 9,
+
+          color: "#1b5e20",
+
+          fillColor: "#2e7d32",
+
+          fillOpacity: 0.9,
+        })
+          .addTo(map)
+          .bindPopup("<b>🛡️ Safe Region</b><br>" + place.name);
+      });
+
+      /* =========================================================
+   DEMO STORM LOCATIONS
+========================================================= */
+
+      const stormZones = [
+        {
+          name: "Kukatpally",
+
+          lat: 17.4849,
+
+          lon: 78.4138,
+        },
+
+        {
+          name: "Miyapur",
+
+          lat: 17.4969,
+
+          lon: 78.3573,
+        },
+
+        {
+          name: "Hyderabad Central",
+
+          lat: 17.385,
+
+          lon: 78.4867,
+        },
+
+        {
+          name: "Uppal",
+
+          lat: 17.405,
+
+          lon: 78.5591,
+        },
+
+        {
+          name: "Shamshabad",
+
+          lat: 17.2403,
+
+          lon: 78.4294,
+        },
+
+        {
+          name: "Kompally",
+
+          lat: 17.54,
+
+          lon: 78.487,
+        },
+      ];
+
+      /* =========================================================
+   HAVERSINE
+========================================================= */
+
+      function distanceKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+
+        const dLat = ((lat2 - lat1) * Math.PI) / 180;
+
+        const dLon = ((lon2 - lon1) * Math.PI) / 180;
+
+        const a =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos((lat1 * Math.PI) / 180) *
+            Math.cos((lat2 * Math.PI) / 180) *
+            Math.sin(dLon / 2) ** 2;
+
+        return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      }
+
+      /* =========================================================
+   GPS
+========================================================= */
+
+      function getMyLocation() {
+        if (!navigator.geolocation) {
+          alert("GPS is not supported.");
+
+          return;
+        }
+
+        document.getElementById("status").innerHTML =
+          "📍 Getting your location...";
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+
+            const lon = position.coords.longitude;
+
+            /*
+               IMPORTANT:
+               Only the three selected
+               districts are accepted.
+            */
+
+            if (!isInsideRegion(lat, lon)) {
+              document.getElementById("status").innerHTML =
+                "❌ Your location is outside the selected Hyderabad Metro Region.";
+
+              alert(
+                "This application covers only Hyderabad, Rangareddy and Medchal–Malkajgiri.",
+              );
+
+              return;
+            }
+
+            currentLocation = [lat, lon];
+
+            if (userMarker) {
+              map.removeLayer(userMarker);
+            }
+
+            userMarker = L.circleMarker([lat, lon], {
+              radius: 10,
+
+              color: "#0d47a1",
+
+              fillColor: "#1976d2",
+
+              fillOpacity: 1,
+
+              weight: 3,
+            })
+              .addTo(map)
+              .bindPopup("<b>📍 You are here</b>")
+              .openPopup();
+
+            map.setView([lat, lon], 15);
+
+            document.getElementById("status").innerHTML =
+              "📍 Your location is inside the selected region.";
+          },
+
+          (error) => {
+            document.getElementById("status").innerHTML =
+              "❌ Could not obtain GPS location.";
+          },
+
+          {
+            enableHighAccuracy: true,
+
+            timeout: 10000,
+
+            maximumAge: 3000,
+          },
+        );
+      }
+
+      /* =========================================================
+   FIND NEAREST SAFE REGION
+========================================================= */
+
+      function findSafeRegion() {
+        if (!currentLocation) {
+          alert("Click My Location first.");
+
+          return;
+        }
+
+        let nearest = null;
+
+        let shortest = Infinity;
+
+        safeRegions.forEach((place) => {
+          const distance = distanceKm(
+            currentLocation[0],
+            currentLocation[1],
+
+            place.lat,
+            place.lon,
+          );
+
+          if (distance < shortest) {
+            shortest = distance;
+
+            nearest = place;
+          }
+        });
+
+        currentDestination = [nearest.lat, nearest.lon];
+
+        routeRoad(
+          currentLocation,
+
+          currentDestination,
+
+          nearest.name,
+        );
+      }
+
+      /* =========================================================
+   RISK → SAFE
+========================================================= */
+
+      function routeRiskToSafe() {
+        if (!selectedRiskLocation) {
+          alert("Run Test Thunderstorm and click a red storm zone first.");
+
+          return;
+        }
+
+        let nearest = null;
+
+        let shortest = Infinity;
+
+        safeRegions.forEach((place) => {
+          const distance = distanceKm(
+            selectedRiskLocation.lat,
+
+            selectedRiskLocation.lon,
+
+            place.lat,
+
+            place.lon,
+          );
+
+          if (distance < shortest) {
+            shortest = distance;
+
+            nearest = place;
+          }
+        });
+
+        currentDestination = [nearest.lat, nearest.lon];
+
+        routeRoad(
+          [selectedRiskLocation.lat, selectedRiskLocation.lon],
+
+          currentDestination,
+
+          nearest.name,
+        );
+      }
+
+      /* =========================================================
+   ROAD ROUTING USING OSRM
+========================================================= */
+
+      async function routeRoad(start, destination, destinationName) {
+        /*
+       Verify start.
+    */
+
+        if (!isInsideRegion(start[0], start[1])) {
+          alert("Route start is outside the selected region.");
+
+          return;
+        }
+
+        /*
+       Verify destination.
+    */
+
+        if (!isInsideRegion(destination[0], destination[1])) {
+          alert("Destination is outside the selected region.");
+
+          return;
+        }
+
+        /*
+       Remove previous route.
+    */
+
+        if (routeLayer) {
+          map.removeLayer(routeLayer);
+
+          routeLayer = null;
+        }
+
+        document.getElementById("status").innerHTML =
+          "🚗 Calculating road route...";
+
+        const url =
+          "https://router.project-osrm.org/route/v1/driving/" +
+          start[1] +
+          "," +
+          start[0] +
+          ";" +
+          destination[1] +
+          "," +
+          destination[0] +
+          "?overview=full" +
+          "&geometries=geojson" +
+          "&steps=true";
+
+        try {
+          const response = await fetch(url);
+
+          const data = await response.json();
+
+          if (!data.routes || data.routes.length === 0) {
+            throw new Error("No route found");
+          }
+
+          const route = data.routes[0];
+
+          /*
+           Verify every route geometry
+           point remains inside the
+           selected three-district region.
+        */
+
+          let outside = false;
+
+          route.geometry.coordinates.forEach((coordinate) => {
+            const lon = coordinate[0];
+
+            const lat = coordinate[1];
+
+            if (!isInsideRegion(lat, lon)) {
+              outside = true;
+            }
+          });
+
+          if (outside) {
+            document.getElementById("status").innerHTML =
+              "⚠️ Route rejected because it leaves the selected region.";
+
+            return;
+          }
+
+          /*
+           Draw route.
+        */
+
+          routeLayer = L.geoJSON(route.geometry, {
+            style: {
+              color: "#00c853",
+
+              weight: 7,
+
+              opacity: 0.95,
+            },
+          }).addTo(map);
+
+          map.fitBounds(routeLayer.getBounds(), {
+            padding: [70, 70],
+          });
+
+          /*
+           Save voice navigation steps.
+        */
+
+          routeSteps = route.legs[0].steps;
+
+          currentStep = 0;
+
+          const distance = (route.distance / 1000).toFixed(2);
+
+          const minutes = Math.round(route.duration / 60);
+
+          const routeInfo = document.getElementById("routeInfo");
+
+          routeInfo.style.display = "block";
+
+          routeInfo.innerHTML =
+            "<b>🛡️ Destination:</b> " +
+            destinationName +
+            "<br>" +
+            "<b>📏 Distance:</b> " +
+            distance +
+            " km" +
+            "<br>" +
+            "<b>⏱️ Estimated time:</b> " +
+            minutes +
+            " minutes";
+
+          document.getElementById("status").innerHTML =
+            "✅ Road route calculated inside the selected region.";
+
+          if (voiceEnabled) {
+            speak("Route calculated. " + "Destination is " + destinationName);
+          }
+        } catch (error) {
+          console.error(error);
+
+          document.getElementById("status").innerHTML =
+            "❌ Road routing failed.";
+        }
+      }
+
+      /* =========================================================
+   THUNDERSTORM DEMO
+========================================================= */
+
+      function testThunderstorm() {
+        /*
+       Remove previous storm zones.
+    */
+
+        stormMarkers.forEach((marker) => {
+          map.removeLayer(marker);
+        });
+
+        stormMarkers = [];
+
+        /*
+       Add storm zones.
+    */
+
+        stormZones.forEach((zone) => {
+          const circle = L.circle([zone.lat, zone.lon], {
+            radius: 1800,
+
+            color: "#d50000",
+
+            fillColor: "#ff1744",
+
+            fillOpacity: 0.3,
+
+            weight: 3,
+          }).addTo(map);
+
+          circle.bindPopup(
+            "<b>⚡ THUNDERSTORM RISK</b>" +
+              "<br>" +
+              zone.name +
+              "<br><br>" +
+              "Click this zone to select it.",
+          );
+
+          circle.on("click", function () {
+            selectedRiskLocation = zone;
+
+            document.getElementById("status").innerHTML =
+              "⚠️ Selected risk area: " + zone.name;
+          });
+
+          stormMarkers.push(circle);
+        });
+
+        document.getElementById("status").innerHTML =
+          "DEMO ONLY: Synthetic zones displayed. The route is illustrative, not an official safety instruction.";
+
+        speak("Demonstration only. This simulated route is not an official safety instruction.");
+      }
+
+      /* =========================================================
+   VOICE
+========================================================= */
+
+      function speak(text) {
+        if (!("speechSynthesis" in window)) {
+          return;
+        }
+
+        speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        utterance.lang = "en-IN";
+
+        utterance.rate = 0.95;
+
+        utterance.pitch = 1;
+
+        speechSynthesis.speak(utterance);
+      }
+
+      /* =========================================================
+   START VOICE NAVIGATION
+========================================================= */
+
+      function startVoiceNavigation() {
+        if (!routeSteps.length) {
+          alert("Calculate a route first.");
+
+          return;
+        }
+
+        voiceEnabled = true;
+
+        currentStep = 0;
+
+        speak("Voice navigation started.");
+
+        speakCurrentStep();
+
+        /*
+       Continuous GPS.
+    */
+
+        if (navigator.geolocation) {
+          if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+          }
+
+          watchId = navigator.geolocation.watchPosition(
+            navigationGPS,
+
+            (error) => {
+              console.log("GPS error", error);
+            },
+
+            {
+              enableHighAccuracy: true,
+
+              maximumAge: 2000,
+
+              timeout: 10000,
+            },
+          );
+        }
+      }
+
+      /* =========================================================
+   STOP VOICE
+========================================================= */
+
+      function stopVoiceNavigation() {
+        voiceEnabled = false;
+
+        speechSynthesis.cancel();
+
+        if (watchId !== null) {
+          navigator.geolocation.clearWatch(watchId);
+
+          watchId = null;
+        }
+
+        document.getElementById("status").innerHTML =
+          "🔇 Voice navigation stopped.";
+      }
+
+      /* =========================================================
+   CURRENT VOICE STEP
+========================================================= */
+
+      function speakCurrentStep() {
+        if (!voiceEnabled) {
+          return;
+        }
+
+        if (currentStep >= routeSteps.length) {
+          speak("You have reached the safe region.");
+
+          voiceEnabled = false;
+
+          return;
+        }
+
+        const step = routeSteps[currentStep];
+
+        let text = "Continue";
+
+        if (step.maneuver) {
+          const type = step.maneuver.type;
+
+          const modifier = step.maneuver.modifier;
+
+          if (type === "turn") {
+            text = "Turn " + (modifier || "ahead");
+          } else if (type === "depart") {
+            text = "Start navigation";
+          } else if (type === "arrive") {
+            text = "You are arriving at your destination";
+          } else {
+            text = "Continue";
+          }
+        }
+
+        if (step.name && step.name.trim() !== "") {
+          text += " on " + step.name;
+        }
+
+        speak(text);
+      }
+
+      /* =========================================================
+   DEMO GPS VOICE NAVIGATION
+========================================================= */
+
+      function navigationGPS(position) {
+        if (!voiceEnabled) {
+          return;
+        }
+
+        const lat = position.coords.latitude;
+
+        const lon = position.coords.longitude;
+
+        /*
+       Region protection.
+    */
+
+        if (!isInsideRegion(lat, lon)) {
+          speak("Warning. You have left the selected Hyderabad Metro Region.");
+
+          return;
+        }
+
+        if (currentStep >= routeSteps.length) {
+          return;
+        }
+
+        const step = routeSteps[currentStep];
+
+        if (!step.maneuver || !step.maneuver.location) {
+          return;
+        }
+
+        const targetLon = step.maneuver.location[0];
+
+        const targetLat = step.maneuver.location[1];
+
+        const distance =
+          distanceKm(
+            lat,
+            lon,
+
+            targetLat,
+            targetLon,
+          ) * 1000;
+
+        /*
+       Speak next instruction
+       near the maneuver.
+    */
+
+        if (distance < 80) {
+          currentStep++;
+
+          speakCurrentStep();
+        }
+      }
+
+      /* =========================================================
+   GOOGLE MAPS
+========================================================= */
+
+      function openGoogleMaps() {
+        if (!currentLocation || !currentDestination) {
+          alert("Calculate a route first.");
+
+          return;
+        }
+
+        const origin = currentLocation[0] + "," + currentLocation[1];
+
+        const destination = currentDestination[0] + "," + currentDestination[1];
+
+        const url =
+          "https://www.google.com/maps/dir/?api=1" +
+          "&origin=" +
+          encodeURIComponent(origin) +
+          "&destination=" +
+          encodeURIComponent(destination) +
+          "&travelmode=driving";
+
+        window.open(url, "_blank");
+      }
+
+      /* =========================================================
+         SIMULATION SYNCHRONIZATION BRIDGE
+      ========================================================= */
+      let simStormMarker = null;
+      let simHazardPolygon = null;
+      let simTrajectoryLine = null;
+      let simWaypoints = [];
+
+      const WAYPOINTS = [
+        { name: "Patancheru (10 min)", lat: 17.5312, lon: 78.2644, eta: "10 mins" },
+        { name: "Miyapur (18 min)", lat: 17.4969, lon: 78.3573, eta: "18 mins" },
+        { name: "Kukatpally (27 min)", lat: 17.4849, lon: 78.4138, eta: "27 mins" },
+        { name: "Secunderabad (38 min)", lat: 17.4399, lon: 78.4983, eta: "38 mins" }
+      ];
+
+      function updateSimulationStage(stage, data) {
+        if (!map) return;
+
+        // Stage 1: Pre-convection NWP
+        if (stage === 1) {
+          if (simStormMarker) map.removeLayer(simStormMarker);
+          if (simHazardPolygon) map.removeLayer(simHazardPolygon);
+          if (simTrajectoryLine) map.removeLayer(simTrajectoryLine);
+          simWaypoints.forEach(w => map.removeLayer(w));
+          simWaypoints = [];
+
+          simStormMarker = L.circleMarker([17.5312, 78.2644], {
+            radius: 8,
+            color: "#eab308",
+            fillColor: "#fef08a",
+            fillOpacity: 0.8
+          }).addTo(map).bindPopup("<b>Stage 1: NWP Atmospheric Fuel</b><br>Instability rising over West Hyderabad outskirts").openPopup();
+
+          map.setView([17.48, 78.38], 11);
+        }
+
+        // Stage 2: Satellite Cooling
+        else if (stage === 2) {
+          if (simHazardPolygon) map.removeLayer(simHazardPolygon);
+          simHazardPolygon = L.circle([17.5312, 78.2644], {
+            radius: 3500,
+            color: "#f97316",
+            fillColor: "#fb923c",
+            fillOpacity: 0.35,
+            dashArray: "4, 4"
+          }).addTo(map);
+
+          if (simStormMarker) {
+            simStormMarker.setLatLng([17.52, 78.29]);
+            simStormMarker.setStyle({ color: "#ea580c", fillColor: "#f97316" });
+            simStormMarker.bindPopup("<b>Stage 2: Satellite Cloud Growth</b><br>INSAT-3DR: Rapid cooling to -52°C").openPopup();
+          }
+        }
+
+        // Stage 3: Radar Mature Storm
+        else if (stage === 3) {
+          if (simHazardPolygon) map.removeLayer(simHazardPolygon);
+          simHazardPolygon = L.circle([17.505, 78.33], {
+            radius: 6500,
+            color: "#ef4444",
+            fillColor: "#dc2626",
+            fillOpacity: 0.45
+          }).addTo(map);
+
+          if (simStormMarker) {
+            simStormMarker.setLatLng([17.505, 78.33]);
+            simStormMarker.setStyle({ color: "#b91c1c", fillColor: "#ef4444", radius: 12 });
+            simStormMarker.bindPopup("<b>Stage 3: DWR-HYD Radar Echo</b><br>Reflectivity: 58 dBZ · Mature Thunderstorm").openPopup();
+          }
+        }
+
+        // Stage 4: Lightning AI Model
+        else if (stage === 4) {
+          if (simHazardPolygon) {
+            simHazardPolygon.setStyle({ color: "#a855f7", fillColor: "#c084fc", fillOpacity: 0.55 });
+          }
+          if (simStormMarker) {
+            simStormMarker.setLatLng([17.4969, 78.3573]);
+            simStormMarker.setStyle({ color: "#7e22ce", fillColor: "#a855f7", radius: 14 });
+            simStormMarker.bindPopup("<b>Stage 4: XGBoost Lightning AI</b><br>⚡ High Strike Probability (84%)").openPopup();
+          }
+        }
+
+        // Stage 5 & Final Warning: Movement Trajectory & Hazard Zones
+        else if (stage >= 5) {
+          const latlngs = WAYPOINTS.map(w => [w.lat, w.lon]);
+          if (simTrajectoryLine) map.removeLayer(simTrajectoryLine);
+          simTrajectoryLine = L.polyline(latlngs, {
+            color: "#f59e0b",
+            weight: 4,
+            dashArray: "6, 6"
+          }).addTo(map);
+
+          simWaypoints.forEach(w => map.removeLayer(w));
+          simWaypoints = [];
+          WAYPOINTS.forEach(w => {
+            const m = L.circleMarker([w.lat, w.lon], {
+              radius: 7,
+              color: "#dc2626",
+              fillColor: "#f87171",
+              fillOpacity: 0.95
+            }).addTo(map).bindPopup("<b>" + w.name + "</b><br>ETA: " + w.eta);
+            simWaypoints.push(m);
+          });
+
+          if (simStormMarker) {
+            simStormMarker.setLatLng([17.4849, 78.4138]); // Kukatpally
+            simStormMarker.setStyle({ color: "#991b1b", fillColor: "#dc2626", radius: 16 });
+            simStormMarker.bindPopup("<b>Stage 5 & Final Warning</b><br>🚨 Threat: 84% Lightning Risk · Impact Path Locked").openPopup();
+          }
+
+          if (simHazardPolygon) {
+            simHazardPolygon.setLatLng([17.4849, 78.4138]);
+            simHazardPolygon.setRadius(9500);
+            simHazardPolygon.setStyle({ color: "#dc2626", fillColor: "#ef4444", fillOpacity: 0.4 });
+          }
+        }
+      }
+
+      window.addEventListener("message", function(e) {
+        if (!e.data || !e.data.type) return;
+        if (e.data.type === "SET_STAGE") {
+          updateSimulationStage(e.data.stage, e.data);
+        }
+      });
+
+      /* =========================================================
+   LOAD REGION
+========================================================= */
+
+      loadRegion();
+    </script>
+  </body>
+</html>
