@@ -47,39 +47,53 @@
           <span class="dataset-sub">Click to Load &amp; Simulate</span>
         </div>
         <div class="dataset-list" id="dataset-list-container">
-          <button class="dataset-btn active" data-dataset="dataset-1" data-event="0" title="Click to load Begumpet convective cell dataset">
-            <span class="event-indicator text-amber">⚡</span>
-            <div class="event-details">
-              <span class="event-name">Begumpet Cell (Severe)</span>
-              <span class="event-time">14:00 IST · 84% Lightning</span>
-            </div>
-          </button>
-          <button class="dataset-btn" data-dataset="dataset-2" data-event="1" title="Click to load HITEC Supercell dataset and trigger Extreme 5-Pop Alert">
-            <span class="event-indicator text-crimson">🚨</span>
-            <div class="event-details">
-              <span class="event-name">HITEC Supercell (Extreme)</span>
-              <span class="event-time">16:00 IST · 98% Risk (5-Pop)</span>
-            </div>
-          </button>
-          <button class="dataset-btn" data-dataset="dataset-3" data-event="2" title="Click to load Shamshabad Airport squall line dataset">
-            <span class="event-indicator text-amber">⛈️</span>
-            <div class="event-details">
-              <span class="event-name">Shamshabad Squall Line</span>
-              <span class="event-time">18:00 IST · 89% Gust Front</span>
-            </div>
-          </button>
-          <button class="dataset-btn" data-dataset="dataset-4" data-event="3" title="Click to load Secunderabad developing urban cell dataset">
-            <span class="event-indicator text-cyan">🌧️</span>
-            <div class="event-details">
-              <span class="event-name">Secunderabad Urban Cell</span>
-              <span class="event-time">15:15 IST · 68% Advisory</span>
-            </div>
-          </button>
-          <button class="dataset-btn" data-dataset="dataset-5" data-event="4" title="Click to load clear baseline stable atmosphere dataset">
+          <button class="dataset-btn active" data-dataset="dataset-1" data-event="0" title="Click to load Hyderabad Baseline Conditions">
             <span class="event-indicator text-emerald">☀️</span>
             <div class="event-details">
-              <span class="event-name">Deccan Calm (Equilibrium)</span>
-              <span class="event-time">11:00 IST · Baseline Safe</span>
+              <span class="event-name">Hyderabad Baseline Conditions</span>
+              <span class="event-time">11:00 IST · Normal Monitoring</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-dataset="dataset-2" data-event="1" title="Click to load Western Hyderabad Instability Event">
+            <span class="event-indicator text-amber">🟡</span>
+            <div class="event-details">
+              <span class="event-name">Western Hyderabad Instability</span>
+              <span class="event-time">12:30 IST · Fuel Alert Scenario</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-dataset="dataset-3" data-event="2" title="Click to load Madhapur Convective Development">
+            <span class="event-indicator text-amber">🟠</span>
+            <div class="event-details">
+              <span class="event-name">Madhapur Convective Development</span>
+              <span class="event-time">13:15 IST · Storm Growth Scenario</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-dataset="dataset-4" data-event="3" title="Click to load Gachibowli Severe Thunderstorm">
+            <span class="event-indicator text-crimson">⚡</span>
+            <div class="event-details">
+              <span class="event-name">Gachibowli Severe Thunderstorm</span>
+              <span class="event-time">14:00 IST · High Lightning Risk</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-dataset="dataset-5" data-event="4" title="Click to load HITEC City Supercell Track">
+            <span class="event-indicator text-crimson">🚨</span>
+            <div class="event-details">
+              <span class="event-name">HITEC City Supercell Track</span>
+              <span class="event-time">15:00 IST · Extreme Impact Scenario</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-dataset="dataset-6" data-event="5" title="Click to load Shamshabad Gust Front Event">
+            <span class="event-indicator text-cyan">💨</span>
+            <div class="event-details">
+              <span class="event-name">Shamshabad Gust Front Event</span>
+              <span class="event-time">16:30 IST · Storm Propagation</span>
+            </div>
+          </button>
+          <button class="dataset-btn" data-dataset="dataset-7" data-event="6" title="Click to load Secunderabad Lightning Corridor">
+            <span class="event-indicator text-purple">⚡</span>
+            <div class="event-details">
+              <span class="event-name">Secunderabad Lightning Corridor</span>
+              <span class="event-time">17:15 IST · Urban Lightning</span>
             </div>
           </button>
         </div>
@@ -152,21 +166,114 @@
           <!-- Hero Simulation Controller Bar -->
           <div class="simulation-hero-banner">
             <div class="hero-left">
-              <span class="hero-badge">THE STORYTELLING ENGINE</span>
+              <div class="hero-tags-row">
+                <span class="hero-badge">THE STORYTELLING ENGINE</span>
+                <button id="btn-jury-mode" class="btn-jury-mode active" title="Toggle Jury Demonstration Mode to highlight key architectural innovations">
+                  <span class="jury-badge-icon">⭐</span>
+                  <span id="jury-mode-label" class="jury-badge-text">JURY DEMONSTRATION MODE: ON</span>
+                </button>
+              </div>
               <h2>Cascading Thunderstorm Simulation</h2>
               <p>Watch how the AI evaluates atmospheric physics step-by-step. Each stage validates specific scientific criteria before waking up the next model.</p>
             </div>
+            
             <div class="hero-actions">
+              <!-- Speed Selector Dropdown -->
+              <div class="speed-control-container">
+                <label for="simulation-speed" class="speed-label">SPEED:</label>
+                <select id="simulation-speed" class="simulation-speed-select" title="Select cascading simulation progression speed">
+                  <option value="1">1x (Realistic Demo ~60-90s)</option>
+                  <option value="2" selected>2x (Standard Demo ~40s)</option>
+                  <option value="5">5x (Fast ~20s)</option>
+                  <option value="10">10x (Sprint ~10s)</option>
+                </select>
+                <span id="speed-display-tag" class="speed-display-tag">Simulation Speed: 2x</span>
+              </div>
+
               <button id="btn-start-cascade" class="btn-start-simulation-hero">
                 <span class="btn-hero-icon">▶</span> START AUTO SIMULATION
               </button>
+              
               <button id="btn-toggle-voice" class="btn-voice-toggle active" title="Toggle audio voice announcements">
                 <span class="voice-icon" id="voice-icon">🔊</span>
                 <span class="voice-text" id="voice-text">Voice On</span>
               </button>
+              
               <button id="btn-emergency-bypass" class="btn-emergency-bypass" title="Demonstrate emergency bypass on sudden lightning">
                 ⚡ EMERGENCY BYPASS
               </button>
+            </div>
+          </div>
+
+          <!-- WHOLE DAY EVENT TIMELINE CARD (Continuous Day Simulation) -->
+          <div class="whole-day-timeline-card">
+            <div class="wdt-header">
+              <div class="wdt-title-box">
+                <span class="wdt-badge">EVENT LIFECYCLE TIMELINE</span>
+                <h3>Continuous Full-Day Atmospheric Progression (Hyderabad Sector)</h3>
+              </div>
+              <div class="wdt-current-time">
+                <span class="wdt-time-label">SIMULATED EVENT TIME:</span>
+                <strong id="sim-event-clock" class="wdt-time-val text-amber">08:00 IST</strong>
+                <span id="sim-event-desc" class="wdt-time-phase">Atmospheric Equilibrium</span>
+              </div>
+            </div>
+            
+            <div class="wdt-track-wrapper">
+              <div class="wdt-track" id="wdt-track">
+                <div class="wdt-progress-line" id="wdt-progress-line" style="width: 0%;"></div>
+                
+                <div class="wdt-node active" data-time="08:00" data-pct="0">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">08:00</span>
+                  <span class="wdt-summary">Stable Conditions</span>
+                </div>
+                <div class="wdt-node" data-time="09:00" data-pct="11">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">09:00</span>
+                  <span class="wdt-summary">Moisture Increasing</span>
+                </div>
+                <div class="wdt-node" data-time="10:00" data-pct="22">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">10:00</span>
+                  <span class="wdt-summary">Instability Increasing</span>
+                </div>
+                <div class="wdt-node" data-time="11:00" data-pct="33">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">11:00</span>
+                  <span class="wdt-summary">Fuel Alert Triggered</span>
+                </div>
+                <div class="wdt-node" data-time="12:00" data-pct="44">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">12:00</span>
+                  <span class="wdt-summary">Rapid Cloud Growth</span>
+                </div>
+                <div class="wdt-node" data-time="13:00" data-pct="55">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">13:00</span>
+                  <span class="wdt-summary">Convective Core</span>
+                </div>
+                <div class="wdt-node" data-time="14:00" data-pct="66">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">14:00</span>
+                  <span class="wdt-summary">Lightning Risk Emerging</span>
+                </div>
+                <div class="wdt-node" data-time="14:30" data-pct="77">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">14:30</span>
+                  <span class="wdt-summary">Lightning Prob 84%</span>
+                </div>
+                <div class="wdt-node" data-time="15:00" data-pct="88">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">15:00</span>
+                  <span class="wdt-summary">Movement Forecast</span>
+                </div>
+                <div class="wdt-node" data-time="15:05" data-pct="100">
+                  <div class="wdt-dot"></div>
+                  <span class="wdt-hour">15:05</span>
+                  <span class="wdt-summary">Warning Dispatched</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -227,10 +334,22 @@
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 1</span>
-                  <h3>Numerical Weather Prediction (NWP)</h3>
+                  <div>
+                    <h3>Numerical Weather Prediction (NWP)</h3>
+                    <div class="stage-status-sub">STATUS: <span id="status-nwp-text" class="status-live-text">Awaiting Activation</span></div>
+                  </div>
                 </div>
-                <span class="stage-status-pill status-running" id="status-nwp">🟡 NWP ANALYSIS RUNNING</span>
-                <span class="card-time-badge" id="time-nwp">14:00 IST</span>
+                
+                <div class="stage-header-right">
+                  <div class="stage-progress-wrapper">
+                    <div class="stage-progress-bar">
+                      <div id="prog-bar-nwp" class="stage-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="prog-pct-nwp" class="stage-progress-pct">0%</span>
+                  </div>
+                  <span class="stage-status-pill status-standby" id="status-nwp">🟡 NWP STANDBY</span>
+                  <span class="card-time-badge" id="time-nwp">11:00 IST</span>
+                </div>
               </div>
 
               <div class="story-question-row">
@@ -241,49 +360,68 @@
               <!-- Animated Changing Values Ticker -->
               <div class="story-values-grid">
                 <div class="val-box">
-                  <span class="val-name">CAPE (Energy)</span>
-                  <span class="val-num text-amber" id="ticker-cape">500 J/kg</span>
-                  <span class="val-target">Threshold: &gt;1500 J/kg</span>
+                  <span class="val-name">Temperature</span>
+                  <span class="val-num text-amber" id="ticker-nwp-temp">29°C</span>
+                  <span class="val-target">Threshold: &gt;32°C</span>
                 </div>
                 <div class="val-box">
                   <span class="val-name">Relative Humidity</span>
-                  <span class="val-num text-cyan" id="ticker-hum">55%</span>
+                  <span class="val-num text-cyan" id="ticker-nwp-hum">65%</span>
                   <span class="val-target">Threshold: &gt;75%</span>
                 </div>
                 <div class="val-box">
-                  <span class="val-name">Wind Shear (0-6km)</span>
-                  <span class="val-num text-primary" id="ticker-shear">10 m/s</span>
-                  <span class="val-target">Threshold: &gt;18 m/s</span>
+                  <span class="val-name">CAPE (Instability)</span>
+                  <span class="val-num text-crimson" id="ticker-nwp-cape">900 J/kg</span>
+                  <span class="val-target">Threshold: &gt;1500 J/kg</span>
                 </div>
                 <div class="val-box">
                   <span class="val-name">Lifted Index</span>
-                  <span class="val-num text-emerald" id="ticker-li">-1.5 °C</span>
+                  <span class="val-num text-emerald" id="ticker-nwp-li">-1.5 °C</span>
                   <span class="val-target">Threshold: &lt;-3.0 °C</span>
+                </div>
+                <div class="val-box">
+                  <span class="val-name">Wind Shear (0-6km)</span>
+                  <span class="val-num text-primary" id="ticker-nwp-shear">10 m/s</span>
+                  <span class="val-target">Threshold: &gt;18 m/s</span>
                 </div>
               </div>
 
-              <!-- Calculated Parameters Summary -->
-              <div class="v-block" id="val-nwp">
-                <div class="v-label">Calculated Model Parameters</div>
-                <div class="v-val">CAPE: 1,800 J/kg · CIN: -28 J/kg · KI: 36.4°C · Prob: 78%</div>
+              <!-- 4-Facet Transparent Cascade Decision Matrix -->
+              <div class="cascade-decision-matrix">
+                <div class="cdm-item">
+                  <span class="cdm-lbl">CHECKING</span>
+                  <strong class="cdm-val text-primary" id="cdm-check-nwp">Temperature, Humidity, Instability, CAPE, Wind Shear</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">RESULT</span>
+                  <strong class="cdm-val text-cyan" id="cdm-res-nwp">Reading atmospheric soundings... Awaiting threshold breach</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">DECISION</span>
+                  <strong class="cdm-val text-amber" id="cdm-dec-nwp">Standby Monitoring</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">ACTION</span>
+                  <strong class="cdm-val text-emerald" id="cdm-act-nwp">Awaiting thermodynamic destabilization</strong>
+                </div>
               </div>
 
               <!-- Narrative & Alert Outcome -->
               <div class="story-outcome-row">
                 <div class="narrative-box">
                   <span class="nar-label">AI OBSERVATION:</span>
-                  <p id="nar-nwp" class="nar-text">Atmospheric instability increasing over West Hyderabad.</p>
+                  <p id="nar-nwp" class="nar-text">Atmospheric soundings indicate baseline stability across Greater Hyderabad.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-nwp">
-                  <span class="alert-chip fuel-chip" id="chip-nwp">🟡 FUEL ALERT: NWP indicates thunderstorm ingredients are present.</span>
-                  <span class="conditions-chip" id="cond-nwp">✓ CONDITIONS FAVORABLE</span>
+                  <span class="alert-chip fuel-chip" id="chip-nwp" style="display: none;">🟡 FUEL ALERT: Thunderstorm ingredients present.</span>
+                  <span class="conditions-chip" id="cond-nwp" style="display: none;">✓ CONDITIONS FAVORABLE</span>
                 </div>
               </div>
 
               <!-- Task Completion & Trigger Arrow -->
               <div class="story-card-footer" id="handoff-nwp">
-                <span class="handoff-complete">TASK COMPLETED</span>
-                <span class="handoff-trigger">TRIGGERING SATELLITE ANALYSIS...</span>
+                <span class="handoff-complete" id="handoff-comp-nwp">STAGE 1 PENDING</span>
+                <span class="handoff-trigger" id="handoff-trig-nwp">STANDBY</span>
                 <span class="animated-down-arrow">↓</span>
               </div>
             </div>
@@ -298,10 +436,22 @@
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 2</span>
-                  <h3>INSAT-3DR Geostationary Satellite</h3>
+                  <div>
+                    <h3>INSAT-3DR Geostationary Satellite</h3>
+                    <div class="stage-status-sub">STATUS: <span id="status-sat-text" class="status-live-text">Standby (Awaiting Fuel Alert)</span></div>
+                  </div>
                 </div>
-                <span class="stage-status-pill status-standby" id="status-sat">🟠 SATELLITE STANDBY</span>
-                <span class="card-time-badge" id="time-sat">14:15 IST</span>
+                
+                <div class="stage-header-right">
+                  <div class="stage-progress-wrapper">
+                    <div class="stage-progress-bar">
+                      <div id="prog-bar-sat" class="stage-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="prog-pct-sat" class="stage-progress-pct">0%</span>
+                  </div>
+                  <span class="stage-status-pill status-standby" id="status-sat">🟠 SATELLITE STANDBY</span>
+                  <span class="card-time-badge" id="time-sat">12:00 IST</span>
+                </div>
               </div>
 
               <div class="story-question-row">
@@ -313,48 +463,62 @@
               <div class="story-values-grid">
                 <div class="val-box">
                   <span class="val-name">Cloud Top Temp</span>
-                  <span class="val-num text-cyan" id="ticker-ctt">-28 °C</span>
+                  <span class="val-num text-cyan" id="ticker-sat-ctt">-28 °C</span>
                   <span class="val-target">Critical: &lt;-45 °C</span>
                 </div>
                 <div class="val-box">
                   <span class="val-name">Cooling Rate</span>
-                  <span class="val-num text-amber" id="ticker-cooling">2 °C/hr</span>
+                  <span class="val-num text-amber" id="ticker-sat-cooling">2 °C/hr</span>
                   <span class="val-target">Critical: &gt;6 °C/hr</span>
                 </div>
                 <div class="val-box">
-                  <span class="val-name">Cloud Expansion</span>
-                  <span class="val-num text-primary" id="ticker-expansion">+18 km²/hr</span>
-                  <span class="val-target">Rapid Spreading</span>
+                  <span class="val-name">Cloud Growth</span>
+                  <span class="val-num text-emerald" id="ticker-sat-growth">Cumulus</span>
+                  <span class="val-target">Vertical Ascent</span>
                 </div>
                 <div class="val-box">
-                  <span class="val-name">Convective Growth</span>
-                  <span class="val-num text-emerald" id="ticker-growth">Congestus</span>
-                  <span class="val-target">Tropopause Breach</span>
+                  <span class="val-name">Expansion Rate</span>
+                  <span class="val-num text-primary" id="ticker-sat-expansion">+18 km²/hr</span>
+                  <span class="val-target">Rapid Spreading</span>
                 </div>
               </div>
 
-              <!-- Calculated Parameters Summary -->
-              <div class="v-block" id="val-sat">
-                <div class="v-label">Calculated Model Parameters</div>
-                <div class="v-val">Cloud Top Temp: -52.0°C · Cooling Rate: -8.0°C/hr · Glaciation: 84%</div>
+              <!-- 4-Facet Transparent Cascade Decision Matrix -->
+              <div class="cascade-decision-matrix">
+                <div class="cdm-item">
+                  <span class="cdm-lbl">CHECKING</span>
+                  <strong class="cdm-val text-primary" id="cdm-check-sat">Cloud Cooling, Cloud Expansion, Tropopause Penetration</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">RESULT</span>
+                  <strong class="cdm-val text-cyan" id="cdm-res-sat">Standby: Awaiting stage 1 Fuel Alert trigger</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">DECISION</span>
+                  <strong class="cdm-val text-amber" id="cdm-dec-sat">Standby</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">ACTION</span>
+                  <strong class="cdm-val text-emerald" id="cdm-act-sat">Heavy infrared radiometric models idle to preserve compute</strong>
+                </div>
               </div>
 
               <!-- Narrative & Alert Outcome -->
               <div class="story-outcome-row">
                 <div class="narrative-box">
                   <span class="nar-label">AI OBSERVATION:</span>
-                  <p id="nar-sat" class="nar-text">Cloud tops rapidly cooling. Glaciation detected.</p>
+                  <p id="nar-sat" class="nar-text">Awaiting convective activation from numerical soundings.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-sat">
-                  <span class="alert-chip storm-chip" id="chip-sat">🟠 STORM DEVELOPMENT ALERT: Satellite confirms active cloud growth.</span>
-                  <span class="conditions-chip" id="cond-sat">✓ RAPID CLOUD DEVELOPMENT DETECTED</span>
+                  <span class="alert-chip storm-chip" id="chip-sat" style="display: none;">🟠 STORM DEVELOPMENT ALERT: Satellite confirms active growth.</span>
+                  <span class="conditions-chip" id="cond-sat" style="display: none;">✓ RAPID CLOUD DEVELOPMENT DETECTED</span>
                 </div>
               </div>
 
               <!-- Task Completion & Trigger Arrow -->
               <div class="story-card-footer" id="handoff-sat">
-                <span class="handoff-complete">TASK COMPLETED</span>
-                <span class="handoff-trigger">TRIGGERING RADAR ANALYSIS...</span>
+                <span class="handoff-complete" id="handoff-comp-sat">STAGE 2 PENDING</span>
+                <span class="handoff-trigger" id="handoff-trig-sat">STANDBY</span>
                 <span class="animated-down-arrow">↓</span>
               </div>
             </div>
@@ -369,10 +533,22 @@
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 3</span>
-                  <h3>DWR-HYD Doppler Weather Radar</h3>
+                  <div>
+                    <h3>DWR-HYD Doppler Weather Radar</h3>
+                    <div class="stage-status-sub">STATUS: <span id="status-radar-text" class="status-live-text">Standby (Awaiting Satellite Trigger)</span></div>
+                  </div>
                 </div>
-                <span class="stage-status-pill status-standby" id="status-radar">🔴 RADAR STANDBY</span>
-                <span class="card-time-badge" id="time-radar">14:25 IST</span>
+                
+                <div class="stage-header-right">
+                  <div class="stage-progress-wrapper">
+                    <div class="stage-progress-bar">
+                      <div id="prog-bar-radar" class="stage-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="prog-pct-radar" class="stage-progress-pct">0%</span>
+                  </div>
+                  <span class="stage-status-pill status-standby" id="status-radar">🔴 RADAR STANDBY</span>
+                  <span class="card-time-badge" id="time-radar">13:00 IST</span>
+                </div>
               </div>
 
               <div class="story-question-row">
@@ -384,48 +560,62 @@
               <div class="story-values-grid">
                 <div class="val-box">
                   <span class="val-name">Radar Reflectivity</span>
-                  <span class="val-num text-crimson" id="ticker-refl">20 dBZ</span>
+                  <span class="val-num text-crimson" id="ticker-radar-refl">20 dBZ</span>
                   <span class="val-target">Severe: &gt;45 dBZ</span>
                 </div>
                 <div class="val-box">
                   <span class="val-name">Echo Top Height</span>
-                  <span class="val-num text-amber" id="ticker-echo">5 km</span>
+                  <span class="val-num text-amber" id="ticker-radar-echo">5 km</span>
                   <span class="val-target">Severe: &gt;10 km</span>
                 </div>
                 <div class="val-box">
-                  <span class="val-name">Cell Strength</span>
-                  <span class="val-num text-cyan" id="ticker-strength">Developing</span>
-                  <span class="val-target">Mature Core</span>
+                  <span class="val-name">Storm Velocity</span>
+                  <span class="val-num text-cyan" id="ticker-radar-vel">18 km/h</span>
+                  <span class="val-target">Doppler Radial</span>
                 </div>
                 <div class="val-box">
-                  <span class="val-name">Storm Intensity</span>
-                  <span class="val-num text-emerald" id="ticker-intensity">Moderate Rain</span>
-                  <span class="val-target">Heavy Convective</span>
+                  <span class="val-name">Core Strength</span>
+                  <span class="val-num text-emerald" id="ticker-radar-core">Developing</span>
+                  <span class="val-target">Mature Supercell</span>
                 </div>
               </div>
 
-              <!-- Calculated Parameters Summary -->
-              <div class="v-block" id="val-radar">
-                <div class="v-label">Calculated Model Parameters</div>
-                <div class="v-val">Max Reflectivity: 58 dBZ · Echo Top: 11.0 km · VIL: 52 kg/m²</div>
+              <!-- 4-Facet Transparent Cascade Decision Matrix -->
+              <div class="cascade-decision-matrix">
+                <div class="cdm-item">
+                  <span class="cdm-lbl">CHECKING</span>
+                  <strong class="cdm-val text-primary" id="cdm-check-radar">Core Reflectivity, Echo Top, Vertically Integrated Liquid (VIL)</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">RESULT</span>
+                  <strong class="cdm-val text-cyan" id="cdm-res-radar">Doppler surveillance on standby awaiting satellite validation</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">DECISION</span>
+                  <strong class="cdm-val text-amber" id="cdm-dec-radar">Standby</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">ACTION</span>
+                  <strong class="cdm-val text-emerald" id="cdm-act-radar">Volume scan sweeps hold until convective core initiated</strong>
+                </div>
               </div>
 
               <!-- Narrative & Alert Outcome -->
               <div class="story-outcome-row">
                 <div class="narrative-box">
                   <span class="nar-label">AI OBSERVATION:</span>
-                  <p id="nar-radar" class="nar-text">Strong convective structure detected by Doppler sweep.</p>
+                  <p id="nar-radar" class="nar-text">Doppler radar monitoring background echoes.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-radar">
-                  <span class="alert-chip active-chip" id="chip-radar">🔴 ACTIVE STORM ALERT: Radar confirms mature thunderstorm.</span>
-                  <span class="conditions-chip" id="cond-radar">✓ ACTIVE THUNDERSTORM CONFIRMED</span>
+                  <span class="alert-chip active-chip" id="chip-radar" style="display: none;">🔴 ACTIVE STORM ALERT: Radar confirms mature thunderstorm.</span>
+                  <span class="conditions-chip" id="cond-radar" style="display: none;">✓ ACTIVE THUNDERSTORM CONFIRMED</span>
                 </div>
               </div>
 
               <!-- Task Completion & Trigger Arrow -->
               <div class="story-card-footer" id="handoff-radar">
-                <span class="handoff-complete">TASK COMPLETED</span>
-                <span class="handoff-trigger">TRIGGERING LIGHTNING MODEL...</span>
+                <span class="handoff-complete" id="handoff-comp-radar">STAGE 3 PENDING</span>
+                <span class="handoff-trigger" id="handoff-trig-radar">STANDBY</span>
                 <span class="animated-down-arrow">↓</span>
               </div>
             </div>
@@ -440,10 +630,22 @@
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 4</span>
-                  <h3>XGBoost Lightning AI Prediction</h3>
+                  <div>
+                    <h3>XGBoost Lightning AI Prediction</h3>
+                    <div class="stage-status-sub">STATUS: <span id="status-ltg-text" class="status-live-text">Standby (Awaiting Radar Confirmation)</span></div>
+                  </div>
                 </div>
-                <span class="stage-status-pill status-standby" id="status-lightning">⚡ LIGHTNING STANDBY</span>
-                <span class="card-time-badge" id="time-lightning">14:30 IST</span>
+                
+                <div class="stage-header-right">
+                  <div class="stage-progress-wrapper">
+                    <div class="stage-progress-bar">
+                      <div id="prog-bar-lightning" class="stage-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="prog-pct-lightning" class="stage-progress-pct">0%</span>
+                  </div>
+                  <span class="stage-status-pill status-standby" id="status-lightning">⚡ LIGHTNING STANDBY</span>
+                  <span class="card-time-badge" id="time-lightning">14:00 IST</span>
+                </div>
               </div>
 
               <div class="story-question-row">
@@ -454,49 +656,58 @@
               <!-- Animated Changing Values Ticker -->
               <div class="story-values-grid">
                 <div class="val-box">
-                  <span class="val-name">Charge Separation</span>
-                  <span class="val-num text-amber" id="ticker-charge">Dipole Active</span>
-                  <span class="val-target">Critical Polarity</span>
+                  <span class="val-name">Electric Field</span>
+                  <span class="val-num text-amber" id="ticker-ltg-efield">12 kV/m</span>
+                  <span class="val-target">Critical: &gt;75 kV/m</span>
                 </div>
                 <div class="val-box">
-                  <span class="val-name">Graupel Activity</span>
-                  <span class="val-num text-cyan" id="ticker-graupel">High Collisions</span>
-                  <span class="val-target">Mixed-Phase Zone</span>
-                </div>
-                <div class="val-box">
-                  <span class="val-name">Ice Crystal Activity</span>
-                  <span class="val-num text-primary" id="ticker-ice">Intense</span>
-                  <span class="val-target">Updraft Core</span>
+                  <span class="val-name">Flash Potential</span>
+                  <span class="val-num text-cyan" id="ticker-ltg-flash">Low Dipole</span>
+                  <span class="val-target">Graupel Collisions</span>
                 </div>
                 <div class="val-box highlight-box">
                   <span class="val-name">Lightning Probability</span>
-                  <span class="val-num text-crimson" id="ticker-prob">12%</span>
+                  <span class="val-num text-crimson" id="ticker-ltg-prob">12%</span>
                   <span class="val-target">Warning Threshold: &gt;75%</span>
                 </div>
               </div>
 
-              <!-- Calculated Parameters Summary -->
-              <div class="v-block" id="val-lightning">
-                <div class="v-label">Calculated Model Parameters</div>
-                <div class="v-val">XGBoost Prob: 84% · Est. Rate: 46 strikes/min · Polarity: 88% -CG</div>
+              <!-- 4-Facet Transparent Cascade Decision Matrix -->
+              <div class="cascade-decision-matrix">
+                <div class="cdm-item">
+                  <span class="cdm-lbl">CHECKING</span>
+                  <strong class="cdm-val text-primary" id="cdm-check-ltg">Electric Field Gradient, Mixed-Phase Hydrometeors, Ground Charge</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">RESULT</span>
+                  <strong class="cdm-val text-cyan" id="cdm-res-ltg">Awaiting mature convective cell confirmation</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">DECISION</span>
+                  <strong class="cdm-val text-amber" id="cdm-dec-ltg">Standby</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">ACTION</span>
+                  <strong class="cdm-val text-emerald" id="cdm-act-ltg">XGBoost electrification tensor models primed</strong>
+                </div>
               </div>
 
               <!-- Narrative & Alert Outcome -->
               <div class="story-outcome-row">
                 <div class="narrative-box">
                   <span class="nar-label">AI OBSERVATION:</span>
-                  <p id="nar-lightning" class="nar-text">Electrical charge building rapidly. Ground strikes imminent.</p>
+                  <p id="nar-lightning" class="nar-text">Atmospheric charge within baseline equilibrium limits.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-lightning">
-                  <span class="alert-chip lightning-chip" id="chip-lightning">⚡ LIGHTNING RISK: Dangerous cloud-to-ground lightning likely.</span>
-                  <span class="conditions-chip" id="cond-lightning">✓ HIGH LIGHTNING PROBABILITY</span>
+                  <span class="alert-chip lightning-chip" id="chip-lightning" style="display: none;">⚡ LIGHTNING RISK: Dangerous ground lightning likely.</span>
+                  <span class="conditions-chip" id="cond-lightning" style="display: none;">✓ HIGH LIGHTNING PROBABILITY</span>
                 </div>
               </div>
 
               <!-- Task Completion & Trigger Arrow -->
               <div class="story-card-footer" id="handoff-lightning">
-                <span class="handoff-complete">TASK COMPLETED</span>
-                <span class="handoff-trigger">TRIGGERING MOVEMENT MODEL...</span>
+                <span class="handoff-complete" id="handoff-comp-lightning">STAGE 4 PENDING</span>
+                <span class="handoff-trigger" id="handoff-trig-lightning">STANDBY</span>
                 <span class="animated-down-arrow">↓</span>
               </div>
             </div>
@@ -511,10 +722,22 @@
               <div class="story-card-header">
                 <div class="story-header-left">
                   <span class="stage-number-tag">STAGE 5</span>
-                  <h3>Storm Tracking &amp; Kinematic Movement</h3>
+                  <div>
+                    <h3>Storm Tracking &amp; Kinematic Movement</h3>
+                    <div class="stage-status-sub">STATUS: <span id="status-mov-text" class="status-live-text">Standby (Awaiting Threat Confirmation)</span></div>
+                  </div>
                 </div>
-                <span class="stage-status-pill status-standby" id="status-tracking">🧭 MOVEMENT STANDBY</span>
-                <span class="card-time-badge" id="time-tracking">14:32 IST</span>
+                
+                <div class="stage-header-right">
+                  <div class="stage-progress-wrapper">
+                    <div class="stage-progress-bar">
+                      <div id="prog-bar-tracking" class="stage-progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="prog-pct-tracking" class="stage-progress-pct">0%</span>
+                  </div>
+                  <span class="stage-status-pill status-standby" id="status-tracking">🧭 MOVEMENT STANDBY</span>
+                  <span class="card-time-badge" id="time-tracking">15:00 IST</span>
+                </div>
               </div>
 
               <div class="story-question-row">
@@ -523,63 +746,81 @@
               </div>
 
               <!-- Kinematics & Projected Path Grid -->
-              <div class="movement-kinematics-grid">
-                <div class="k-item">
-                  <span class="k-label">CURRENT LOCATION</span>
-                  <strong class="k-val text-primary" id="kin-loc">West Hyderabad</strong>
+              <div class="story-values-grid">
+                <div class="val-box">
+                  <span class="val-name">Translation Speed</span>
+                  <span class="val-num text-amber" id="ticker-mov-speed">28 km/h</span>
+                  <span class="val-target">Steering Layer Flow</span>
                 </div>
-                <div class="k-item">
-                  <span class="k-label">MOVEMENT DIRECTION</span>
-                  <strong class="k-val text-cyan" id="kin-dir">North-East (45°)</strong>
+                <div class="val-box">
+                  <span class="val-name">Movement Direction</span>
+                  <span class="val-num text-cyan" id="ticker-mov-dir">North-East (45°)</span>
+                  <span class="val-target">Kinematic Vector</span>
                 </div>
-                <div class="k-item">
-                  <span class="k-label">TRANSLATION SPEED</span>
-                  <strong class="k-val text-amber" id="kin-speed">52 km/h</strong>
+                <div class="val-box">
+                  <span class="val-name">ETA to Urban Core</span>
+                  <span class="val-num text-emerald" id="ticker-mov-eta">45 mins</span>
+                  <span class="val-target">Impact Lead Time</span>
                 </div>
-                <div class="k-item">
-                  <span class="k-label">PROJECTED IMPACT PATH</span>
-                  <strong class="k-val text-crimson" id="kin-path">Patancheru ↓ Miyapur ↓ Kukatpally ↓ Secunderabad</strong>
+                <div class="val-box">
+                  <span class="val-name">Target Impact Zone</span>
+                  <span class="val-num text-crimson" id="ticker-mov-zone">West Hyderabad</span>
+                  <span class="val-target">Pocket Polygon</span>
                 </div>
               </div>
 
-              <!-- Arrival Times Timetable -->
+              <!-- Arrival Times Strip -->
               <div class="arrival-times-strip">
                 <span class="arrival-strip-title">HYPER-LOCAL ARRIVAL TIMES:</span>
                 <div class="arrival-chips-row">
                   <div class="arrival-chip">
                     <span class="ac-place">Patancheru</span>
-                    <strong class="ac-time">10 mins</strong>
+                    <strong class="ac-time" id="node-patancheru-time">10 mins</strong>
                   </div>
                   <div class="arrival-chip">
                     <span class="ac-place">Miyapur</span>
-                    <strong class="ac-time">18 mins</strong>
+                    <strong class="ac-time" id="node-miyapur-time">18 mins</strong>
                   </div>
                   <div class="arrival-chip">
                     <span class="ac-place">Kukatpally</span>
-                    <strong class="ac-time">27 mins</strong>
+                    <strong class="ac-time" id="node-kukatpally-time">27 mins</strong>
                   </div>
                   <div class="arrival-chip">
                     <span class="ac-place">Secunderabad</span>
-                    <strong class="ac-time">38 mins</strong>
+                    <strong class="ac-time" id="node-secunderabad-time">38 mins</strong>
                   </div>
                 </div>
               </div>
 
-              <!-- Calculated Parameters Summary -->
-              <div class="v-block" id="val-tracking">
-                <div class="v-label">Calculated Model Parameters</div>
-                <div class="v-val">Vector: ENE (68°) · Velocity: 52 km/h · Target: Patancheru, Miyapur, Kukatpally, Secunderabad</div>
+              <!-- 4-Facet Transparent Cascade Decision Matrix -->
+              <div class="cascade-decision-matrix">
+                <div class="cdm-item">
+                  <span class="cdm-lbl">CHECKING</span>
+                  <strong class="cdm-val text-primary" id="cdm-check-mov">Cell Advection Velocity, Extrapolation Vectors, Street Geofences</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">RESULT</span>
+                  <strong class="cdm-val text-cyan" id="cdm-res-mov">Awaiting kinematic trajectory calculation</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">DECISION</span>
+                  <strong class="cdm-val text-amber" id="cdm-dec-mov">Standby</strong>
+                </div>
+                <div class="cdm-item">
+                  <span class="cdm-lbl">ACTION</span>
+                  <strong class="cdm-val text-emerald" id="cdm-act-mov">Generating localized polygon hazard zones</strong>
+                </div>
               </div>
 
               <!-- Narrative & Alert Outcome -->
               <div class="story-outcome-row">
                 <div class="narrative-box">
                   <span class="nar-label">AI OBSERVATION:</span>
-                  <p id="nar-tracking" class="nar-text">Kinematic trajectory locked on North-East corridor.</p>
+                  <p id="nar-tracking" class="nar-text">Trajectory tracking stands by awaiting convective storm lock.</p>
                 </div>
                 <div class="alert-generated-box" id="alert-box-tracking">
-                  <span class="alert-chip hazard-chip" id="chip-tracking">📍 LOCALIZED HAZARD ZONES GENERATED</span>
-                  <span class="conditions-chip" id="cond-tracking">✓ IMPACT ZONES GENERATED</span>
+                  <span class="alert-chip hazard-chip" id="chip-tracking" style="display: none;">📍 LOCALIZED HAZARD ZONES GENERATED</span>
+                  <span class="conditions-chip" id="cond-tracking" style="display: none;">✓ IMPACT ZONES GENERATED</span>
                 </div>
               </div>
             </div>
@@ -590,14 +831,14 @@
             </div>
 
             <!-- FINAL WARNING PANEL -->
-            <div class="final-warning-master-card" id="final-warning-panel">
+            <div class="final-warning-master-card" id="final-warning-panel" style="display: none;">
               <div class="warning-master-header">
                 <div class="wm-siren-box">🚨</div>
                 <div class="wm-title-box">
                   <h2>WARNING ISSUED</h2>
                   <p>CIVIL DEFENSE LEVEL · BILINGUAL CITIZEN ALERT GENERATED</p>
                 </div>
-                <span class="wm-status-badge">SENT TO CITIZENS</span>
+                <span class="wm-status-badge" id="final-status">SENT TO CITIZENS</span>
               </div>
 
               <div class="warning-metrics-grid">
@@ -813,7 +1054,46 @@
                 <span class="live-pulse-badge" id="citizen-live-badge"><span class="blip"></span> LIVE</span>
               </div>
 
-              <!-- Primary Hazard Status Card (Normal: Green / Warning: Red) -->
+              <!-- RED ALERT CARD (Requirement 7: Display directly on Citizen Portal home screen) -->
+              <div id="citizen-red-alert-card" class="citizen-red-alert-card" style="display: none;">
+                <div class="cra-top-banner">
+                  <div class="cra-siren-flashing">🚨</div>
+                  <div class="cra-title-box">
+                    <h3>⚠ Severe Thunderstorm Warning</h3>
+                    <span class="cra-sub-dept">CIVIL DEFENSE &amp; DISASTER MANAGEMENT (IMD / NDMA)</span>
+                  </div>
+                  <button id="btn-citizen-mute" class="btn-cra-mute" title="Toggle Emergency Siren Sound">
+                    <span id="citizen-mute-icon">🔊</span>
+                    <span id="citizen-mute-text">Mute Sound</span>
+                  </button>
+                </div>
+
+                <div class="cra-metrics-grid">
+                  <div class="cra-metric-box">
+                    <span class="cra-m-lbl">AREA</span>
+                    <strong class="cra-m-val text-primary" id="c-red-area">Madhapur</strong>
+                  </div>
+                  <div class="cra-metric-box">
+                    <span class="cra-m-lbl">ETA</span>
+                    <strong class="cra-m-val text-amber" id="c-red-eta">22 Minutes</strong>
+                  </div>
+                  <div class="cra-metric-box">
+                    <span class="cra-m-lbl">LIGHTNING PROBABILITY</span>
+                    <strong class="cra-m-val text-crimson" id="c-red-prob">84%</strong>
+                  </div>
+                  <div class="cra-metric-box cra-status-box">
+                    <span class="cra-m-lbl">STATUS</span>
+                    <strong class="cra-m-val text-danger-pulse" id="c-red-status">Take Shelter Immediately</strong>
+                  </div>
+                </div>
+
+                <div class="cra-shelter-instruction">
+                  <span class="cra-inst-icon">⚡</span>
+                  <p>Dangerous cloud-to-ground lightning and microburst winds tracking into this sector. Move into a permanent enclosed structure immediately.</p>
+                </div>
+              </div>
+
+              <!-- Primary Hazard Status Card (Normal: Green / Standby Monitoring) -->
               <div id="citizen-threat-card" class="citizen-threat-card severity-normal">
                 <div class="c-threat-top">
                   <span class="c-hazard-type">WEATHER THREAT LEVEL</span>
