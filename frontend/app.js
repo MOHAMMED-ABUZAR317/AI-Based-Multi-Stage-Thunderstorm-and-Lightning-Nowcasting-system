@@ -235,6 +235,7 @@
 
     // Cascading Early Warning Engine Elements
     btnStartCascade: document.getElementById('btn-start-cascade'),
+    btnStopCascade: document.getElementById('btn-stop-cascade'),
     btnStartSimulationHero: document.getElementById('btn-start-simulation-hero'),
     btnEmergencyBypass: document.getElementById('btn-emergency-bypass'),
     btnSidebarEmergency: document.getElementById('btn-sidebar-emergency'),
@@ -498,6 +499,7 @@
     // Image 2, 4, 5: Stream Engine Playback
     streamEngineCard: document.getElementById('stream-engine-card'),
     btnPlayStream: document.getElementById('btn-play-stream'),
+    btnStopStream: document.getElementById('btn-stop-stream'),
     btnStepStream: document.getElementById('btn-step-stream'),
     streamSlider: document.getElementById('stream-slider'),
     streamRowCurr: document.getElementById('stream-row-curr'),
@@ -2256,6 +2258,45 @@
     if (DOM.timelineSteps[0]) DOM.timelineSteps[0].classList.add('active');
   }
 
+  function stopCascadingSimulation() {
+    clearAllCascadeTimeouts();
+    isCascading = false;
+
+    if (cascadeTimer) {
+      clearTimeout(cascadeTimer);
+      cascadeTimer = null;
+    }
+
+    if (simulationTimer) {
+      clearInterval(simulationTimer);
+      simulationTimer = null;
+      isSimulating = false;
+      if (DOM.btnTimelinePlay) DOM.btnTimelinePlay.textContent = '▶ AUTO SIMULATION';
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    if (DOM.btnStartSimulationHero) {
+      DOM.btnStartSimulationHero.classList.remove('running');
+      DOM.btnStartSimulationHero.innerHTML = '<span class="btn-hero-icon">▶</span> START AUTO SIMULATION';
+      DOM.btnStartSimulationHero.disabled = false;
+    }
+    if (DOM.btnStartCascade) {
+      DOM.btnStartCascade.classList.remove('running');
+      DOM.btnStartCascade.innerHTML = '<span class="btn-hero-icon">▶</span> START AUTO SIMULATION';
+      DOM.btnStartCascade.disabled = false;
+    }
+
+    if (DOM.heroStatusPill) DOM.heroStatusPill.classList.remove('active');
+    if (DOM.heroStatusText) DOM.heroStatusText.textContent = 'SIMULATION STOPPED';
+
+    if (streamPlaybackTimer) {
+      toggleStreamPlayback();
+    }
+  }
+
   function startCascadingSimulation(datasetId) {
     if (datasetId && DATASETS[datasetId]) {
       activeDatasetKey = datasetId;
@@ -2985,6 +3026,7 @@
     // Cascading Simulation & Emergency Bypass
     if (DOM.btnStartSimulationHero) DOM.btnStartSimulationHero.addEventListener('click', () => startCascadingSimulation());
     if (DOM.btnStartCascade) DOM.btnStartCascade.addEventListener('click', () => startCascadingSimulation());
+    if (DOM.btnStopCascade) DOM.btnStopCascade.addEventListener('click', stopCascadingSimulation);
     if (DOM.btnEmergencyBypass) DOM.btnEmergencyBypass.addEventListener('click', triggerEmergencyBypass);
     if (DOM.btnSidebarEmergency) DOM.btnSidebarEmergency.addEventListener('click', triggerEmergencyBypass);
     if (DOM.btnTriggerBypassAction) DOM.btnTriggerBypassAction.addEventListener('click', triggerEmergencyBypass);
@@ -3285,6 +3327,13 @@
 
     if (DOM.btnPlayStream) {
       DOM.btnPlayStream.addEventListener('click', toggleStreamPlayback);
+    }
+    if (DOM.btnStopStream) {
+      DOM.btnStopStream.addEventListener('click', () => {
+        if (streamPlaybackTimer) {
+          toggleStreamPlayback();
+        }
+      });
     }
     if (DOM.btnStepStream) {
       DOM.btnStepStream.addEventListener('click', () => stepStreamRow(1));
