@@ -276,6 +276,46 @@
     telemTracking: document.getElementById('telem-tracking'),
     telemWarning: document.getElementById('telem-warning'),
 
+    // Voice Control
+    btnToggleVoice: document.getElementById('btn-toggle-voice'),
+    voiceIcon: document.getElementById('voice-icon'),
+    voiceText: document.getElementById('voice-text'),
+
+    // Severe Lightning Modal (Command Center)
+    severeLightningModal: document.getElementById('severe-lightning-alert-modal'),
+    btnCloseLightningModal: document.getElementById('btn-close-lightning-modal'),
+    btnAckLightning: document.getElementById('btn-ack-lightning'),
+    btnGotoCitizen: document.getElementById('btn-goto-citizen'),
+    lightningModalProb: document.getElementById('lightning-modal-prob'),
+    lightningModalRate: document.getElementById('lightning-modal-rate'),
+    lightningModalThreat: document.getElementById('lightning-modal-threat'),
+
+    // Citizen Portal (View 5)
+    citizenExtremePopup: document.getElementById('citizen-extreme-popup'),
+    btnLangEn: document.getElementById('btn-lang-en'),
+    btnLangTe: document.getElementById('btn-lang-te'),
+    advisoryEn: document.getElementById('advisory-en'),
+    advisoryTe: document.getElementById('advisory-te'),
+    citizenThreatCard: document.getElementById('citizen-threat-card'),
+    citizenHeadline: document.getElementById('citizen-headline'),
+    citizenSeverityBadge: document.getElementById('citizen-severity-badge'),
+    citizenCountdownTimer: document.getElementById('citizen-countdown-timer'),
+
+    // Card Timestamps & Calculated Model Parameter Data Displays
+    timeNwp: document.getElementById('time-nwp'),
+    timeSat: document.getElementById('time-sat'),
+    timeRadar: document.getElementById('time-radar'),
+    timeLightning: document.getElementById('time-lightning'),
+    timeTracking: document.getElementById('time-tracking'),
+    timeWarning: document.getElementById('time-warning'),
+
+    valNwp: document.getElementById('val-nwp'),
+    valSat: document.getElementById('val-sat'),
+    valRadar: document.getElementById('val-radar'),
+    valLightning: document.getElementById('val-lightning'),
+    valTracking: document.getElementById('val-tracking'),
+    valWarning: document.getElementById('val-warning'),
+
     // Timeline Steps
     timelineSteps: document.querySelectorAll('.t-step'),
 
@@ -309,8 +349,10 @@
     datasetBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const eventIndex = parseInt(btn.getAttribute('data-event'), 10);
-        setStep(eventIndex);
+        const dsId = btn.getAttribute('data-dataset') || ('dataset-' + (parseInt(btn.getAttribute('data-event') || '0', 10) + 1));
+        // Switch to Command Center if not currently there so user sees the live model values
+        switchView('view-command');
+        loadDatasetAndSimulate(dsId);
       });
     });
 
@@ -1075,18 +1117,429 @@
   }
 
   // =========================================================================
-  // 13. CASCADING EARLY WARNING ENGINE (HOW THE SYSTEM THINKS)
+  // =========================================================================
+  // 13. AUDIO SYNTHESIS & VOICE ANNOUNCEMENT ENGINE
   // =========================================================================
 
+  let voiceEnabled = true;
+
+  function speakAnnouncement(text) {
+    if (!voiceEnabled) return;
+    if (!('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
+      utterance.lang = 'en-US';
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn('Speech synthesis unavailable:', e);
+    }
+  }
+
+  function playPopSound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const actx = new AudioCtx();
+      const osc = actx.createOscillator();
+      const gain = actx.createGain();
+
+      osc.type = 'sine';
+      const now = actx.currentTime;
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.08);
+
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      osc.connect(gain);
+      gain.connect(actx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.09);
+    } catch (e) {
+      console.warn('Web Audio error:', e);
+    }
+  }
+
+  function playFivePopSound() {
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        playPopSound();
+      }, i * 220);
+    }
+  }
+
+  // =========================================================================
+  // 14. SAMPLE DATASETS DEFINITION (HYDERABAD METROPOLITAN AREA)
+  // =========================================================================
+
+  const DATASETS = Object.freeze({
+    'dataset-1': {
+      id: 'dataset-1',
+      name: 'Begumpet Severe Cell',
+      category: 'SEVERE CONVECTIVE STORM',
+      isExtreme: false,
+      hasSevereLightning: true,
+      lightningData: {
+        prob: '84%',
+        rate: '46 strikes/min',
+        threat: 'HIGH HAZARD'
+      },
+      stages: [
+        {
+          time: '14:00 IST',
+          voice: 'Alert detected at 14:00 hours. High atmospheric instability observed. Triggering Satellite Evolution Analysis.',
+          decision: '✔ Atmospheric instability confirmed. CAPE > 2400 J/kg.',
+          action: 'Triggering Satellite Analysis →',
+          telem: 'Reading AWS network... CAPE: 2,450 J/kg · RH: 82% · Shear: 25.7 m/s',
+          val: 'CAPE: 2,450 J/kg · CIN: -32 J/kg · KI: 36.4°C · Prob: 78%',
+          log: '<span class="log-time">[14:00:00 IST]</span> Reading atmospheric sounding... CAPE 2,450 J/kg breaches initiation threshold. Triggering Satellite Analysis.'
+        },
+        {
+          time: '14:15 IST',
+          voice: 'Alert detected at 14:15 hours. Rapid cloud top cooling observed. Triggering Doppler Radar Tracking.',
+          decision: '✔ Rapid cloud top glaciation detected (-10.5°C/hr).',
+          action: 'Triggering Radar Analysis →',
+          telem: 'INSAT-3DR Infrared: Rapid cooling observed (-10.5°C/hr)',
+          val: 'Cloud Top Temp: -48.2°C · Cooling Rate: -10.5°C/hr · Glaciation: 82%',
+          log: '<span class="log-time">[14:15:00 IST]</span> INSAT-3DR Infrared: Rapid cooling observed (-10.5°C/hr). Cumulus congestus breaching tropopause.'
+        },
+        {
+          time: '14:25 IST',
+          voice: 'Alert detected at 14:25 hours. High radar reflectivity detected. Triggering XGBoost Lightning Prediction.',
+          decision: '✔ Deep core reflectivity verified (54 dBZ).',
+          action: 'Triggering Lightning Prediction →',
+          telem: 'DWR-HYD Begumpet: Reflectivity 54 dBZ · Strong convective structure',
+          val: 'Max Reflectivity: 54 dBZ · Echo Top: 14.8 km · VIL: 48 kg/m²',
+          log: '<span class="log-time">[14:25:00 IST]</span> DWR Begumpet: Reflectivity 54 dBZ · Echo top 14.8 km. Triggering XGBoost Electrification Model.'
+        },
+        {
+          time: '14:30 IST',
+          voice: 'Severe lightning alert detected at 14:30 hours. High strike probability. Triggering Storm Vector Tracking.',
+          decision: '✔ XGBoost strike probability: 84% (Severe).',
+          action: 'Triggering Movement Prediction →',
+          telem: 'XGBoost Electrification: Dipole charge confirmed (Probability: 84%)',
+          val: 'XGBoost Prob: 84% · Est. Rate: 46 strikes/min · Polarity: 88% -CG',
+          log: '<span class="log-time" style="color:var(--crimson)">[14:30:00 IST]</span> ⚡ <strong>CRITICAL ALERT:</strong> Severe lightning detected. Strike probability 84% (46 strikes/min).'
+        },
+        {
+          time: '14:32 IST',
+          voice: 'Storm movement vector locked at 14:32 hours. Triggering Warning Dissemination Engine.',
+          decision: '✔ Storm moving northeast at 42 km/h toward Secunderabad.',
+          action: 'Impact: Begumpet (14m), Secunderabad (22m), Malkajgiri (30m) →',
+          telem: 'Vector Extrapolation: ENE (68°) · Speed: 42 km/h',
+          val: 'Vector: ENE (68°) · Velocity: 42 km/h · Target: Secunderabad, Begumpet',
+          log: '<span class="log-time">[14:32:00 IST]</span> Vector Extrapolation: Trajectory locked toward Secunderabad. Velocity 42 km/h.'
+        },
+        {
+          time: '14:33 IST',
+          voice: 'Final warning generated at 14:33 hours. Severe risk warning dispatched.',
+          decision: '🚨 84% Lightning Risk · Arrival: 14-25 Min.',
+          action: 'Warning Issued: YES (Sirens & SMS Active)',
+          telem: 'Dissemination Active: Secunderabad, Begumpet, Malkajgiri',
+          val: 'Threat Level: SEVERE · Lead Time: 22 Mins · Broadcast: Sirens + Push Active',
+          log: '<span class="log-time" style="color:var(--crimson)">[14:33:00 IST]</span> 🚨 <strong>WARNING GENERATED:</strong> Severe Thunderstorm Warning active across Begumpet and Secunderabad.'
+        }
+      ]
+    },
+    'dataset-2': {
+      id: 'dataset-2',
+      name: 'HITEC Supercell (Extreme)',
+      category: 'EXTREME SUPERCELL OUTBREAK',
+      isExtreme: true,
+      hasSevereLightning: true,
+      lightningData: {
+        prob: '98%',
+        rate: '92 strikes/min',
+        threat: 'EXTREME HAZARD'
+      },
+      stages: [
+        {
+          time: '15:00 IST',
+          voice: 'Alert detected at 15:00 hours. Extreme atmospheric destabilization. Triggering Satellite Evolution Analysis.',
+          decision: '✔ Extreme instability detected. CAPE > 3800 J/kg.',
+          action: 'Triggering Satellite Analysis →',
+          telem: 'Reading AWS network... CAPE: 3,850 J/kg · CIN: -12 J/kg · KI: 42.1°C',
+          val: 'CAPE: 3,850 J/kg · CIN: -12 J/kg · KI: 42.1°C · Prob: 95%',
+          log: '<span class="log-time">[15:00:00 IST]</span> Severe boundary layer heating breaches cap. Supercell conditions identified over Western Corridor.'
+        },
+        {
+          time: '15:15 IST',
+          voice: 'Alert detected at 15:15 hours. Violent cloud top glaciation detected. Triggering Doppler Radar Tracking.',
+          decision: '✔ Violent cloud top glaciation (-18.2°C/hr). Overshooting top.',
+          action: 'Triggering Radar Analysis →',
+          telem: 'INSAT-3DR Infrared: Cloud top cooling -18.2°C/hr · CTT -64.8°C',
+          val: 'Cloud Top Temp: -64.8°C · Cooling Rate: -18.2°C/hr · Glaciation: 96%',
+          log: '<span class="log-time">[15:15:00 IST]</span> INSAT-3DR: Overshooting convective top identified over Patancheru. Tropopause breach detected.'
+        },
+        {
+          time: '15:25 IST',
+          voice: 'Alert detected at 15:25 hours. Hail core and extreme reflectivity observed. Triggering XGBoost Lightning Prediction.',
+          decision: '✔ Mesocyclonic reflectivity core verified (65 dBZ). Hail signature.',
+          action: 'Triggering Lightning Prediction →',
+          telem: 'DWR Begumpet: Reflectivity 65 dBZ · Echo top 17.5 km · Hail core',
+          val: 'Max Reflectivity: 65 dBZ · Echo Top: 17.5 km · VIL: 68 kg/m² · Hail Core',
+          log: '<span class="log-time">[15:25:00 IST]</span> DWR Begumpet: Extreme reflectivity core 65 dBZ with bounded weak echo region.'
+        },
+        {
+          time: '15:30 IST',
+          voice: 'Severe lightning alert detected at 15:30 hours. Extreme lightning strike surge imminent. Triggering Storm Vector Tracking.',
+          decision: '✔ XGBoost strike probability: 98% (Extreme Supercell Surge).',
+          action: 'Triggering Movement Prediction →',
+          telem: 'XGBoost Electrification: Severe dipole surge (Probability: 98% · 92 strikes/min)',
+          val: 'XGBoost Prob: 98% · Est. Rate: 92 strikes/min · Violent Ground Strikes',
+          log: '<span class="log-time" style="color:var(--crimson)">[15:30:00 IST]</span> ⚡ <strong>CRITICAL ALERT:</strong> Extreme lightning surge detected. Strike probability 98% (92 strikes/min).'
+        },
+        {
+          time: '15:32 IST',
+          voice: 'Storm movement vector locked at 15:32 hours. Supercell tracking east toward HITEC City. Triggering Warning Dissemination Engine.',
+          decision: '✔ Supercell tracking east at 56 km/h directly into Cyberabad.',
+          action: 'Impact: Gachibowli (8m), HITEC City (12m), Madhapur (16m) →',
+          telem: 'Vector Extrapolation: E (82°) · Speed: 56 km/h',
+          val: 'Vector: E (82°) · Velocity: 56 km/h · Target: Serilingampally, HITEC City, Gachibowli',
+          log: '<span class="log-time">[15:32:00 IST]</span> Vector Extrapolation: Cell tracking east at 56 km/h. Direct impact trajectory on high-density IT corridor.'
+        },
+        {
+          time: '15:33 IST',
+          voice: 'Emergency warning generated at 15:33 hours. Extreme risk threat. Sounding civilian defense sirens.',
+          decision: '🚨 98% Extreme Risk · Supercell Microburst & Lightning Imminent',
+          action: 'Warning Issued: YES (EMERGENCY BROADCAST + SIRENS)',
+          telem: 'Dissemination Active: HITEC City, Gachibowli, Kondapur, Serilingampally',
+          val: 'Threat Level: EXTREME · Lead Time: 12 Mins · 🚨 EXTREME EMERGENCY POPUP ACTIVE',
+          log: '<span class="log-time" style="color:var(--crimson)">[15:33:00 IST]</span> 🚨 <strong>EXTREME RISK GENERATED:</strong> Supercell Outbreak imminent. Municipal sirens and mobile popups active.'
+        }
+      ]
+    },
+    'dataset-3': {
+      id: 'dataset-3',
+      name: 'Shamshabad Squall Line',
+      category: 'CONVECTIVE GUST FRONT',
+      isExtreme: false,
+      hasSevereLightning: true,
+      lightningData: {
+        prob: '89%',
+        rate: '58 strikes/min',
+        threat: 'HIGH HAZARD'
+      },
+      stages: [
+        {
+          time: '16:00 IST',
+          voice: 'Alert detected at 16:00 hours. Squall line pre-convective conditions. Triggering Satellite Evolution Analysis.',
+          decision: '✔ Convective available potential energy 2,820 J/kg.',
+          action: 'Triggering Satellite Analysis →',
+          telem: 'Reading AWS network... CAPE: 2,820 J/kg · CIN: -25 J/kg · KI: 38.6°C',
+          val: 'CAPE: 2,820 J/kg · CIN: -25 J/kg · KI: 38.6°C · Prob: 82%',
+          log: '<span class="log-time">[16:00:00 IST]</span> Pre-frontal squall line thermodynamics confirm high initiation probability.'
+        },
+        {
+          time: '16:15 IST',
+          voice: 'Alert detected at 16:15 hours. Rapid linear cloud band growth. Triggering Doppler Radar Tracking.',
+          decision: '✔ Rapid linear cloud cooling (-12.1°C/hr). Squall arc forming.',
+          action: 'Triggering Radar Analysis →',
+          telem: 'INSAT-3DR Infrared: Cloud top cooling -12.1°C/hr · Linear band',
+          val: 'Cloud Top Temp: -52.4°C · Cooling Rate: -12.1°C/hr · Glaciation: 86%',
+          log: '<span class="log-time">[16:15:00 IST]</span> INSAT-3DR: Organized convective squall line expanding 32 km in length.'
+        },
+        {
+          time: '16:25 IST',
+          voice: 'Alert detected at 16:25 hours. Intense bow echo and gust front detected. Triggering XGBoost Lightning Prediction.',
+          decision: '✔ Bow echo signature (58 dBZ) with 74 km/h gust front.',
+          action: 'Triggering Lightning Prediction →',
+          telem: 'DWR Begumpet: Reflectivity 58 dBZ · Gust front 74 km/h',
+          val: 'Max Reflectivity: 58 dBZ · Gust Front: 74 km/h · Squall Arc: 32 km',
+          log: '<span class="log-time">[16:25:00 IST]</span> DWR Begumpet: Bow echo with severe radial wind shear along leading edge.'
+        },
+        {
+          time: '16:30 IST',
+          voice: 'Severe lightning alert detected at 16:30 hours. High strike rate along gust front. Triggering Storm Vector Tracking.',
+          decision: '✔ XGBoost strike probability: 89% along gust line.',
+          action: 'Triggering Movement Prediction →',
+          telem: 'XGBoost Electrification: Linear charge separation (Probability: 89%)',
+          val: 'XGBoost Prob: 89% · Est. Rate: 58 strikes/min · High CG Density',
+          log: '<span class="log-time" style="color:var(--crimson)">[16:30:00 IST]</span> ⚡ <strong>CRITICAL ALERT:</strong> Severe lightning detected along Shamshabad squall line.'
+        },
+        {
+          time: '16:32 IST',
+          voice: 'Storm movement vector locked at 16:32 hours. Squall advancing northeast at 48 km/h. Triggering Warning Dissemination Engine.',
+          decision: '✔ Squall line advancing northeast at 48 km/h toward Airport.',
+          action: 'Impact: Shamshabad Airport (10m), Rajendranagar (18m), Charminar (26m) →',
+          telem: 'Vector Extrapolation: NE (45°) · Speed: 48 km/h',
+          val: 'Vector: NE (45°) · Velocity: 48 km/h · Target: Airport, Rajendranagar, Charminar',
+          log: '<span class="log-time">[16:32:00 IST]</span> Vector Extrapolation: Trajectory directly crossing Rajiv Gandhi International Airport runway corridor.'
+        },
+        {
+          time: '16:33 IST',
+          voice: 'Final warning generated at 16:33 hours. Severe squall warning dispatched to Aviation & GHMC.',
+          decision: '🚨 89% Lightning & Wind Hazard · Arrival: 10-18 Min',
+          action: 'Warning Issued: YES (Airport Ground Stop + City Sirens)',
+          telem: 'Dissemination Active: Shamshabad, Rajendranagar, Falaknuma, Charminar',
+          val: 'Threat Level: SEVERE · Lead Time: 18 Mins · Broadcast: Airport Stop + Sirens',
+          log: '<span class="log-time" style="color:var(--crimson)">[16:33:00 IST]</span> 🚨 <strong>WARNING GENERATED:</strong> Severe Squall and Lightning Warning dispatched to RGIA and GHMC South.'
+        }
+      ]
+    },
+    'dataset-4': {
+      id: 'dataset-4',
+      name: 'Secunderabad Convective Cell',
+      category: 'MODERATE CONVECTIVE CELL',
+      isExtreme: false,
+      hasSevereLightning: false,
+      stages: [
+        {
+          time: '13:30 IST',
+          voice: 'Alert detected at 13:30 hours. Moderate atmospheric instability. Triggering Satellite Evolution Analysis.',
+          decision: '✔ Moderate instability detected. CAPE 1,840 J/kg.',
+          action: 'Triggering Satellite Analysis →',
+          telem: 'Reading AWS network... CAPE: 1,840 J/kg · CIN: -48 J/kg · KI: 32.8°C',
+          val: 'CAPE: 1,840 J/kg · CIN: -48 J/kg · KI: 32.8°C · Prob: 64%',
+          log: '<span class="log-time">[13:30:00 IST]</span> Moderate convective instability detected over Northern Cantonment.'
+        },
+        {
+          time: '13:45 IST',
+          voice: 'Alert detected at 13:45 hours. Moderate cloud growth observed. Triggering Doppler Radar Tracking.',
+          decision: '✔ Moderate cloud cooling (-7.2°C/hr). Isolated cell growth.',
+          action: 'Triggering Radar Analysis →',
+          telem: 'INSAT-3DR Infrared: Cloud top cooling -7.2°C/hr · Isolated cell',
+          val: 'Cloud Top Temp: -38.6°C · Cooling Rate: -7.2°C/hr · Glaciation: 68%',
+          log: '<span class="log-time">[13:45:00 IST]</span> INSAT-3DR: Moderate vertical development observed over Bowenpally.'
+        },
+        {
+          time: '13:55 IST',
+          voice: 'Alert detected at 13:55 hours. Moderate radar reflectivity observed. Triggering XGBoost Lightning Prediction.',
+          decision: '✔ Moderate reflectivity core (46 dBZ).',
+          action: 'Triggering Lightning Prediction →',
+          telem: 'DWR Begumpet: Reflectivity 46 dBZ · Echo top 11.2 km',
+          val: 'Max Reflectivity: 46 dBZ · Echo Top: 11.2 km · Moderate Updraft',
+          log: '<span class="log-time">[13:55:00 IST]</span> DWR Begumpet: Isolated cell with 46 dBZ core reflectivity.'
+        },
+        {
+          time: '14:00 IST',
+          voice: 'Evaluating electrification at 14:00 hours. Moderate strike potential. Triggering Storm Vector Tracking.',
+          decision: '✔ XGBoost strike probability: 68% (Moderate).',
+          action: 'Triggering Movement Prediction →',
+          telem: 'XGBoost Electrification: Moderate charge separation (Probability: 68%)',
+          val: 'XGBoost Prob: 68% · Est. Rate: 22 strikes/min · Intra-cloud dominant',
+          log: '<span class="log-time">[14:00:00 IST]</span> XGBoost Model: Strike probability 68% (predominantly intra-cloud).'
+        },
+        {
+          time: '14:02 IST',
+          voice: 'Storm movement vector locked at 14:02 hours. Tracking north-northeast. Triggering Warning Dissemination Engine.',
+          decision: '✔ Storm tracking north-northeast at 35 km/h.',
+          action: 'Impact: Malkajgiri (16m), Alwal (24m), Medchal (35m) →',
+          telem: 'Vector Extrapolation: NNE (30°) · Speed: 35 km/h',
+          val: 'Vector: NNE (30°) · Velocity: 35 km/h · Target: Malkajgiri, Secunderabad',
+          log: '<span class="log-time">[14:02:00 IST]</span> Vector Extrapolation: Cell tracking NNE at 35 km/h toward Medchal corridor.'
+        },
+        {
+          time: '14:03 IST',
+          voice: 'Advisory warning issued at 14:03 hours. Moderate thunderstorm advisory active.',
+          decision: '🟡 68% Moderate Lightning Risk · Arrival: 16-25 Min',
+          action: 'Warning Issued: ADVISORY (Mobile App & Web Push)',
+          telem: 'Dissemination Active: Malkajgiri, Alwal, Secunderabad Station',
+          val: 'Threat Level: MODERATE · Lead Time: 28 Mins · Broadcast: Advisory Warning',
+          log: '<span class="log-time" style="color:var(--amber)">[14:03:00 IST]</span> 🟡 <strong>ADVISORY ISSUED:</strong> Moderate Thunderstorm Advisory for Secunderabad and Northern Zone.'
+        }
+      ]
+    },
+    'dataset-5': {
+      id: 'dataset-5',
+      name: 'Deccan Calm (Equilibrium)',
+      category: 'EQUILIBRIUM / CLEAR SKY',
+      isExtreme: false,
+      hasSevereLightning: false,
+      stages: [
+        {
+          time: '11:00 IST',
+          voice: 'Background monitoring at 11:00 hours. Atmosphere is stable. Thermodynamic equilibrium maintained.',
+          decision: 'Atmospheric stability strong. High CIN cap (-180 J/kg).',
+          action: 'Evaluating soundings... Background monitoring.',
+          telem: 'Reading AWS network... CAPE: 650 J/kg · CIN: -180 J/kg · KI: 18.2°C',
+          val: 'CAPE: 650 J/kg · CIN: -180 J/kg · KI: 18.2°C · Prob: 8%',
+          log: '<span class="log-time">[11:00:00 IST]</span> Thermodynamic sounding indicates stable atmosphere with capping inversion.'
+        },
+        {
+          time: '11:15 IST',
+          voice: 'Satellite review at 11:15 hours. Cloud tops normal. No convective growth.',
+          decision: 'Cloud development normal. No vertical growth.',
+          action: 'Awaiting convective threshold... (Standby)',
+          telem: 'INSAT-3DR Infrared: Cloud top temperature -8.4°C · Cooling: +0.5°C/hr',
+          val: 'Cloud Top Temp: -8.4°C · Cooling Rate: +0.5°C/hr · No Glaciation',
+          log: '<span class="log-time">[11:15:00 IST]</span> INSAT-3DR: Clear to scattered fair-weather cumulus. No glaciation.'
+        },
+        {
+          time: '11:25 IST',
+          voice: 'Doppler radar review at 11:25 hours. Precipitation echoes clear.',
+          decision: 'Precipitation echoes low (12 dBZ). No cells detected.',
+          action: 'Awaiting radar cell formation... (Standby)',
+          telem: 'DWR Begumpet: Reflectivity 12 dBZ (Ground clutter only)',
+          val: 'Max Reflectivity: 12 dBZ · Boundary Layer Clutter Only',
+          log: '<span class="log-time">[11:25:00 IST]</span> DWR Begumpet: Reflectivity below 15 dBZ initiation threshold.'
+        },
+        {
+          time: '11:30 IST',
+          voice: 'Electrification review at 11:30 hours. Zero lightning probability.',
+          decision: 'Lightning strike probability 4%. No electrical charge.',
+          action: 'Awaiting electrical charge... (Standby)',
+          telem: 'XGBoost Electrification: Negligible charge separation (Probability: 4%)',
+          val: 'XGBoost Prob: 4% · Zero Strike Potential · Background State',
+          log: '<span class="log-time">[11:30:00 IST]</span> XGBoost Model: Atmospheric charge zero. Strike probability 4%.'
+        },
+        {
+          time: '11:32 IST',
+          voice: 'Tracking review at 11:32 hours. Stationary equilibrium conditions.',
+          decision: 'Stationary background conditions. No storm track.',
+          action: 'Monitoring urban vector... (Standby)',
+          telem: 'Vector Extrapolation: Stationary / Dispersed',
+          val: 'Vector: Stationary / Dissipated · Velocity: 0 km/h',
+          log: '<span class="log-time">[11:32:00 IST]</span> Vector Extrapolation: No convective targets identified in Hyderabad region.'
+        },
+        {
+          time: '11:33 IST',
+          voice: 'Evaluation complete at 11:33 hours. Atmosphere remains calm. No warning required.',
+          decision: '✔ No active hazard. Metropolitan region safe.',
+          action: 'Warning Issued: NO (Routine Monitoring)',
+          telem: 'Dissemination Active: Routine Meteorological Watch',
+          val: 'Threat Level: EQUILIBRIUM · Lead Time: N/A · Status: Safe',
+          log: '<span class="log-time" style="color:var(--emerald)">[11:33:00 IST]</span> ✔ <strong>EQUILIBRIUM CONFIRMED:</strong> Clear weather across Greater Hyderabad.'
+        }
+      ]
+    }
+  });
+
+  let activeDatasetKey = 'dataset-1';
   let cascadeTimer = null;
   let isCascading = false;
 
-  function resetCascadeCards() {
+  function resetCascadeCards(datasetKey) {
+    const dsKey = datasetKey || activeDatasetKey;
+    const dataset = DATASETS[dsKey] || DATASETS['dataset-1'];
+
     const cards = [DOM.cardNwp, DOM.cardSat, DOM.cardRadar, DOM.cardLightning, DOM.cardTracking, DOM.cardWarning];
     cards.forEach((c) => {
       if (c) c.classList.remove('card-active', 'card-complete', 'card-alert');
     });
     if (DOM.emergencyBypassNotice) DOM.emergencyBypassNotice.style.display = 'none';
+    if (DOM.severeLightningModal) DOM.severeLightningModal.style.display = 'none';
+
+    // Populate initial timestamps from dataset
+    const stages = dataset.stages || [];
+    if (DOM.timeNwp && stages[0]) DOM.timeNwp.textContent = stages[0].time;
+    if (DOM.timeSat && stages[1]) DOM.timeSat.textContent = stages[1].time;
+    if (DOM.timeRadar && stages[2]) DOM.timeRadar.textContent = stages[2].time;
+    if (DOM.timeLightning && stages[3]) DOM.timeLightning.textContent = stages[3].time;
+    if (DOM.timeTracking && stages[4]) DOM.timeTracking.textContent = stages[4].time;
+    if (DOM.timeWarning && stages[5]) DOM.timeWarning.textContent = stages[5].time;
+
+    // Populate initial calculated values from dataset
+    if (DOM.valNwp && stages[0]) DOM.valNwp.querySelector('.v-val').textContent = stages[0].val;
+    if (DOM.valSat && stages[1]) DOM.valSat.querySelector('.v-val').textContent = stages[1].val;
+    if (DOM.valRadar && stages[2]) DOM.valRadar.querySelector('.v-val').textContent = stages[2].val;
+    if (DOM.valLightning && stages[3]) DOM.valLightning.querySelector('.v-val').textContent = stages[3].val;
+    if (DOM.valTracking && stages[4]) DOM.valTracking.querySelector('.v-val').textContent = stages[4].val;
+    if (DOM.valWarning && stages[5]) DOM.valWarning.querySelector('.v-val').textContent = stages[5].val;
 
     if (DOM.statusNwp) { DOM.statusNwp.textContent = 'MONITORING'; DOM.statusNwp.className = 'card-status status-monitoring'; }
     if (DOM.statusSat) { DOM.statusSat.textContent = 'STANDBY'; DOM.statusSat.className = 'card-status status-standby'; }
@@ -1095,7 +1548,7 @@
     if (DOM.statusTracking) { DOM.statusTracking.textContent = 'STANDBY'; DOM.statusTracking.className = 'card-status status-standby'; }
     if (DOM.statusWarning) { DOM.statusWarning.textContent = 'STANDBY'; DOM.statusWarning.className = 'card-status status-standby'; }
 
-    if (DOM.decisionNwp) DOM.decisionNwp.textContent = 'Atmosphere suitable for storm formation.';
+    if (DOM.decisionNwp) DOM.decisionNwp.textContent = stages[0]?.decision || 'Evaluating atmospheric soundings.';
     if (DOM.decisionSat) DOM.decisionSat.textContent = 'Cloud development normal.';
     if (DOM.decisionRadar) DOM.decisionRadar.textContent = 'Precipitation echoes low.';
     if (DOM.decisionLightning) DOM.decisionLightning.textContent = 'Lightning probability 0%.';
@@ -1113,129 +1566,197 @@
     if (DOM.timelineSteps[0]) DOM.timelineSteps[0].classList.add('active');
   }
 
-  function startCascadingSimulation() {
+  function startCascadingSimulation(datasetId) {
+    if (datasetId && DATASETS[datasetId]) {
+      activeDatasetKey = datasetId;
+    }
+    const dataset = DATASETS[activeDatasetKey] || DATASETS['dataset-1'];
+    const stages = dataset.stages;
+
     if (cascadeTimer) {
       clearTimeout(cascadeTimer);
       cascadeTimer = null;
     }
     isCascading = true;
-    resetCascadeCards();
+    resetCascadeCards(activeDatasetKey);
 
     if (DOM.btnStartCascade) {
-      DOM.btnStartCascade.innerHTML = '<span class="btn-icon">⏳</span> CASCADING SIMULATION IN PROGRESS...';
+      DOM.btnStartCascade.innerHTML = '<span class="btn-icon">⏳</span> EVALUATING: ' + dataset.name.toUpperCase();
       DOM.btnStartCascade.disabled = true;
     }
 
-    // STEP 1: NWP Analysis (t=0s to t=2s)
+    // ==========================================
+    // STAGE 1: NWP Atmospheric Instability
+    // ==========================================
     if (DOM.cardNwp) DOM.cardNwp.classList.add('card-active');
     if (DOM.statusNwp) { DOM.statusNwp.textContent = 'ANALYZING...'; DOM.statusNwp.className = 'card-status status-active'; }
-    if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:00:00 IST]</span> Reading atmospheric data... Analyzing CAPE... Analyzing humidity... Analyzing wind shear...';
-    if (DOM.telemNwp) DOM.telemNwp.textContent = 'Reading AWS network... CAPE: 2,450 J/kg · RH: 82% · Shear: 25.7 m/s';
+    if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = stages[0].log;
+    if (DOM.telemNwp) DOM.telemNwp.textContent = stages[0].telem;
+    if (DOM.valNwp) DOM.valNwp.querySelector('.v-val').textContent = stages[0].val;
+    if (DOM.timeNwp) DOM.timeNwp.textContent = stages[0].time;
+    speakAnnouncement(stages[0].voice);
     setStep(0);
 
-    // STEP 2: Satellite Analysis (t=2s to t=4s)
+    // ==========================================
+    // STAGE 2: Satellite Cloud Top Glaciation (t = 2s)
+    // ==========================================
     cascadeTimer = setTimeout(() => {
       if (DOM.cardNwp) {
         DOM.cardNwp.classList.remove('card-active');
         DOM.cardNwp.classList.add('card-complete');
       }
       if (DOM.statusNwp) { DOM.statusNwp.textContent = 'TRIGGERED (OK)'; DOM.statusNwp.className = 'card-status status-complete'; }
-      if (DOM.decisionNwp) DOM.decisionNwp.textContent = '✔ Conditions suitable for thunderstorm formation.';
-      if (DOM.actionNwp) DOM.actionNwp.textContent = 'Triggering Satellite Analysis →';
+      if (DOM.decisionNwp) DOM.decisionNwp.textContent = stages[0].decision;
+      if (DOM.actionNwp) DOM.actionNwp.textContent = stages[0].action;
 
       if (DOM.timelineSteps[0]) DOM.timelineSteps[0].classList.add('completed');
       if (DOM.timelineSteps[1]) DOM.timelineSteps[1].classList.add('active');
 
       if (DOM.cardSat) DOM.cardSat.classList.add('card-active');
       if (DOM.statusSat) { DOM.statusSat.textContent = 'ANALYZING...'; DOM.statusSat.className = 'card-status status-active'; }
-      if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:15:00 IST]</span> Reading INSAT-3DR data... Monitoring cloud tops... Monitoring cooling rates...';
-      if (DOM.telemSat) DOM.telemSat.textContent = 'INSAT-3DR Infrared: Rapid cooling observed (-10.5°C/hr)';
+      if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = stages[1].log;
+      if (DOM.telemSat) DOM.telemSat.textContent = stages[1].telem;
+      if (DOM.valSat) DOM.valSat.querySelector('.v-val').textContent = stages[1].val;
+      if (DOM.timeSat) DOM.timeSat.textContent = stages[1].time;
+      speakAnnouncement(stages[1].voice);
       setStep(1);
 
-      // STEP 3: Radar Analysis (t=4s to t=6s)
+      // ==========================================
+      // STAGE 3: Doppler Radar Reflectivity (t = 4s)
+      // ==========================================
       cascadeTimer = setTimeout(() => {
         if (DOM.cardSat) {
           DOM.cardSat.classList.remove('card-active');
           DOM.cardSat.classList.add('card-complete');
         }
         if (DOM.statusSat) { DOM.statusSat.textContent = 'TRIGGERED (OK)'; DOM.statusSat.className = 'card-status status-complete'; }
-        if (DOM.decisionSat) DOM.decisionSat.textContent = '✔ Rapid cloud growth detected.';
-        if (DOM.actionSat) DOM.actionSat.textContent = 'Triggering Radar Analysis →';
+        if (DOM.decisionSat) DOM.decisionSat.textContent = stages[1].decision;
+        if (DOM.actionSat) DOM.actionSat.textContent = stages[1].action;
 
         if (DOM.timelineSteps[1]) DOM.timelineSteps[1].classList.add('completed');
         if (DOM.timelineSteps[2]) DOM.timelineSteps[2].classList.add('active');
 
         if (DOM.cardRadar) DOM.cardRadar.classList.add('card-active');
         if (DOM.statusRadar) { DOM.statusRadar.textContent = 'ANALYZING...'; DOM.statusRadar.className = 'card-status status-active'; }
-        if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:25:00 IST]</span> Reading Doppler radar... Tracking storm cells... Measuring reflectivity...';
-        if (DOM.telemRadar) DOM.telemRadar.textContent = 'DWR-HYD Begumpet: Reflectivity 54 dBZ · Strong convective structure';
+        if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = stages[2].log;
+        if (DOM.telemRadar) DOM.telemRadar.textContent = stages[2].telem;
+        if (DOM.valRadar) DOM.valRadar.querySelector('.v-val').textContent = stages[2].val;
+        if (DOM.timeRadar) DOM.timeRadar.textContent = stages[2].time;
+        speakAnnouncement(stages[2].voice);
         setStep(2);
 
-        // STEP 4: Lightning Prediction (t=6s to t=8s)
+        // ==========================================
+        // STAGE 4: XGBoost Lightning Prediction (t = 6s)
+        // ==========================================
         cascadeTimer = setTimeout(() => {
           if (DOM.cardRadar) {
             DOM.cardRadar.classList.remove('card-active');
             DOM.cardRadar.classList.add('card-complete');
           }
           if (DOM.statusRadar) { DOM.statusRadar.textContent = 'TRIGGERED (OK)'; DOM.statusRadar.className = 'card-status status-complete'; }
-          if (DOM.decisionRadar) DOM.decisionRadar.textContent = '✔ Strong storm structure detected.';
-          if (DOM.actionRadar) DOM.actionRadar.textContent = 'Triggering Lightning Prediction →';
+          if (DOM.decisionRadar) DOM.decisionRadar.textContent = stages[2].decision;
+          if (DOM.actionRadar) DOM.actionRadar.textContent = stages[2].action;
 
           if (DOM.timelineSteps[2]) DOM.timelineSteps[2].classList.add('completed');
           if (DOM.timelineSteps[3]) DOM.timelineSteps[3].classList.add('active');
 
-          if (DOM.cardLightning) DOM.cardLightning.classList.add('card-active');
-          if (DOM.statusLightning) { DOM.statusLightning.textContent = 'ANALYZING...'; DOM.statusLightning.className = 'card-status status-active'; }
-          if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:30:00 IST]</span> Running XGBoost model... Estimating electrical charge... Predicting strike probability...';
-          if (DOM.telemLightning) DOM.telemLightning.textContent = 'XGBoost Electrification: Dipole charge confirmed (Probability: 84%)';
+          if (DOM.cardLightning) {
+            DOM.cardLightning.classList.add(dataset.hasSevereLightning ? 'card-alert' : 'card-active');
+          }
+          if (DOM.statusLightning) {
+            DOM.statusLightning.textContent = dataset.hasSevereLightning ? 'SEVERE ALERT' : 'ANALYZING...';
+            DOM.statusLightning.className = dataset.hasSevereLightning ? 'card-status status-alert' : 'card-status status-active';
+          }
+          if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = stages[3].log;
+          if (DOM.telemLightning) DOM.telemLightning.textContent = stages[3].telem;
+          if (DOM.valLightning) DOM.valLightning.querySelector('.v-val').textContent = stages[3].val;
+          if (DOM.timeLightning) DOM.timeLightning.textContent = stages[3].time;
+          speakAnnouncement(stages[3].voice);
           setStep(3);
 
-          // STEP 5: Movement Prediction (t=8s to t=10s)
+          // Command Center Severe Lightning Alert Modal
+          if (dataset.hasSevereLightning && DOM.severeLightningModal) {
+            if (DOM.lightningModalProb) DOM.lightningModalProb.textContent = dataset.lightningData?.prob || '84%';
+            if (DOM.lightningModalRate) DOM.lightningModalRate.textContent = dataset.lightningData?.rate || '46 strikes/min';
+            if (DOM.lightningModalThreat) DOM.lightningModalThreat.textContent = dataset.lightningData?.threat || 'HIGH HAZARD';
+            DOM.severeLightningModal.style.display = 'flex';
+          }
+
+          // ==========================================
+          // STAGE 5: Movement Tracking (t = 8s)
+          // ==========================================
           cascadeTimer = setTimeout(() => {
             if (DOM.cardLightning) {
               DOM.cardLightning.classList.remove('card-active');
-              DOM.cardLightning.classList.add('card-complete');
+              DOM.cardLightning.classList.add(dataset.hasSevereLightning ? 'card-alert' : 'card-complete');
             }
-            if (DOM.statusLightning) { DOM.statusLightning.textContent = 'TRIGGERED (OK)'; DOM.statusLightning.className = 'card-status status-complete'; }
-            if (DOM.decisionLightning) DOM.decisionLightning.textContent = '✔ Lightning probability: 84%';
-            if (DOM.actionLightning) DOM.actionLightning.textContent = 'Triggering Movement Prediction →';
+            if (DOM.statusLightning) {
+              DOM.statusLightning.textContent = dataset.hasSevereLightning ? 'CONFIRMED' : 'TRIGGERED (OK)';
+              DOM.statusLightning.className = dataset.hasSevereLightning ? 'card-status status-alert' : 'card-status status-complete';
+            }
+            if (DOM.decisionLightning) DOM.decisionLightning.textContent = stages[3].decision;
+            if (DOM.actionLightning) DOM.actionLightning.textContent = stages[3].action;
 
             if (DOM.timelineSteps[3]) DOM.timelineSteps[3].classList.add('completed');
             if (DOM.timelineSteps[4]) DOM.timelineSteps[4].classList.add('active');
 
             if (DOM.cardTracking) DOM.cardTracking.classList.add('card-active');
             if (DOM.statusTracking) { DOM.statusTracking.textContent = 'ANALYZING...'; DOM.statusTracking.className = 'card-status status-active'; }
-            if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = '<span class="log-time">[14:32:00 IST]</span> Tracking trajectory... Calculating speed... Estimating arrival time...';
-            if (DOM.telemTracking) DOM.telemTracking.textContent = 'Vector Extrapolation: ENE (68°) · Speed: 42 km/h';
+            if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = stages[4].log;
+            if (DOM.telemTracking) DOM.telemTracking.textContent = stages[4].telem;
+            if (DOM.valTracking) DOM.valTracking.querySelector('.v-val').textContent = stages[4].val;
+            if (DOM.timeTracking) DOM.timeTracking.textContent = stages[4].time;
+            speakAnnouncement(stages[4].voice);
             setStep(4);
 
-            // STEP 6: Final Warning (t=10s to t=12s)
+            // ==========================================
+            // STAGE 6: Multi-Stage Warning Dissemination (t = 10s)
+            // ==========================================
             cascadeTimer = setTimeout(() => {
               if (DOM.cardTracking) {
                 DOM.cardTracking.classList.remove('card-active');
                 DOM.cardTracking.classList.add('card-complete');
               }
               if (DOM.statusTracking) { DOM.statusTracking.textContent = 'TRIGGERED (OK)'; DOM.statusTracking.className = 'card-status status-complete'; }
-              if (DOM.decisionTracking) DOM.decisionTracking.textContent = '✔ Storm moving northeast at 42 km/h.';
-              if (DOM.actionTracking) DOM.actionTracking.textContent = 'Impact: Kukatpally (15m), Serilingampally (22m), Khairatabad (31m) →';
+              if (DOM.decisionTracking) DOM.decisionTracking.textContent = stages[4].decision;
+              if (DOM.actionTracking) DOM.actionTracking.textContent = stages[4].action;
 
               if (DOM.timelineSteps[4]) DOM.timelineSteps[4].classList.add('completed');
               if (DOM.timelineSteps[5]) DOM.timelineSteps[5].classList.add('active');
 
-              if (DOM.cardWarning) DOM.cardWarning.classList.add('card-alert');
-              if (DOM.statusWarning) { DOM.statusWarning.textContent = 'WARNING ISSUED'; DOM.statusWarning.className = 'card-status status-alert'; }
-              if (DOM.decisionWarning) DOM.decisionWarning.textContent = '🚨 84% Lightning Risk · Arrival: 15-30 Min';
-              if (DOM.actionWarning) DOM.actionWarning.textContent = 'Warning Issued: YES (Sirens & SMS Active)';
-              if (DOM.telemWarning) DOM.telemWarning.textContent = 'Dissemination Active: Kukatpally, Serilingampally, Khairatabad';
-
-              if (DOM.cascadeLog) {
-                DOM.cascadeLog.innerHTML = '<span class="log-time" style="color:var(--crimson)">[14:33:00 IST]</span> 🚨 <strong>WARNING GENERATED.</strong> Lightning Risk: 84%. Affected Zones: Kukatpally, Serilingampally, Khairatabad. Recommended Action: Move indoors immediately.';
+              if (DOM.cardWarning) {
+                DOM.cardWarning.classList.add(dataset.category.includes('EQUILIBRIUM') ? 'card-complete' : 'card-alert');
               }
+              if (DOM.statusWarning) {
+                DOM.statusWarning.textContent = dataset.category.includes('EQUILIBRIUM') ? 'SAFE' : (dataset.isExtreme ? 'EXTREME ALERT' : 'WARNING ISSUED');
+                DOM.statusWarning.className = dataset.category.includes('EQUILIBRIUM') ? 'card-status status-complete' : 'card-status status-alert';
+              }
+              if (DOM.decisionWarning) DOM.decisionWarning.textContent = stages[5].decision;
+              if (DOM.actionWarning) DOM.actionWarning.textContent = stages[5].action;
+              if (DOM.telemWarning) DOM.telemWarning.textContent = stages[5].telem;
+              if (DOM.valWarning) DOM.valWarning.querySelector('.v-val').textContent = stages[5].val;
+              if (DOM.timeWarning) DOM.timeWarning.textContent = stages[5].time;
+              if (DOM.cascadeLog) DOM.cascadeLog.innerHTML = stages[5].log;
+              speakAnnouncement(stages[5].voice);
               setStep(5);
+
+              // Extreme Risk Handling: Throw notification message with 5-times pop sound in citizen portal
+              if (dataset.isExtreme) {
+                if (DOM.citizenExtremePopup) DOM.citizenExtremePopup.style.display = 'flex';
+                if (DOM.citizenThreatCard) DOM.citizenThreatCard.className = 'citizen-threat-card severity-severe';
+                if (DOM.citizenHeadline) DOM.citizenHeadline.textContent = 'EXTREME SUPERCELL OUTBREAK — IMMEDIATE SHELTER REQUIRED';
+                if (DOM.citizenSeverityBadge) {
+                  DOM.citizenSeverityBadge.textContent = 'CRITICAL ALERT';
+                  DOM.citizenSeverityBadge.className = 'c-severity-badge badge-severe';
+                }
+                playFivePopSound();
+              } else {
+                if (DOM.citizenExtremePopup) DOM.citizenExtremePopup.style.display = 'none';
+              }
 
               isCascading = false;
               if (DOM.btnStartCascade) {
-                DOM.btnStartCascade.innerHTML = '<span class="btn-icon">↺</span> REPLAY CASCADING SIMULATION';
+                DOM.btnStartCascade.innerHTML = '<span class="btn-icon">↺</span> REPLAY EVALUATION (' + dataset.name.toUpperCase() + ')';
                 DOM.btnStartCascade.disabled = false;
               }
             }, 2000);
@@ -1243,6 +1764,82 @@
         }, 2000);
       }, 2000);
     }, 2000);
+  }
+
+  function loadDatasetAndSimulate(datasetId) {
+    if (!DATASETS[datasetId]) {
+      datasetId = 'dataset-1';
+    }
+    activeDatasetKey = datasetId;
+
+    // Highlight active dataset button in sidebar
+    if (DOM.datasetBtns) {
+      DOM.datasetBtns.forEach((btn) => {
+        const id = btn.getAttribute('data-dataset');
+        if (id === datasetId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    startCascadingSimulation(datasetId);
+  }
+
+  function initCitizenPortal() {
+    // Bilingual Tabs
+    if (DOM.btnLangEn && DOM.btnLangTe) {
+      DOM.btnLangEn.addEventListener('click', () => {
+        DOM.btnLangEn.classList.add('active');
+        DOM.btnLangTe.classList.remove('active');
+        if (DOM.advisoryEn) DOM.advisoryEn.style.display = 'block';
+        if (DOM.advisoryTe) DOM.advisoryTe.style.display = 'none';
+      });
+      DOM.btnLangTe.addEventListener('click', () => {
+        DOM.btnLangTe.classList.add('active');
+        DOM.btnLangEn.classList.remove('active');
+        if (DOM.advisoryEn) DOM.advisoryEn.style.display = 'none';
+        if (DOM.advisoryTe) DOM.advisoryTe.style.display = 'block';
+      });
+    }
+
+    // Severe Lightning Modal Controls
+    if (DOM.btnCloseLightningModal) {
+      DOM.btnCloseLightningModal.addEventListener('click', () => {
+        if (DOM.severeLightningModal) DOM.severeLightningModal.style.display = 'none';
+      });
+    }
+    if (DOM.btnAckLightning) {
+      DOM.btnAckLightning.addEventListener('click', () => {
+        if (DOM.severeLightningModal) DOM.severeLightningModal.style.display = 'none';
+      });
+    }
+    if (DOM.btnGotoCitizen) {
+      DOM.btnGotoCitizen.addEventListener('click', () => {
+        if (DOM.severeLightningModal) DOM.severeLightningModal.style.display = 'none';
+        switchView('view-alerts');
+      });
+    }
+
+    // Voice Announcements Toggle
+    if (DOM.btnToggleVoice) {
+      DOM.btnToggleVoice.addEventListener('click', () => {
+        voiceEnabled = !voiceEnabled;
+        if (voiceEnabled) {
+          DOM.btnToggleVoice.classList.add('active');
+          DOM.btnToggleVoice.classList.remove('muted');
+          if (DOM.voiceIcon) DOM.voiceIcon.textContent = '🔊';
+          if (DOM.voiceText) DOM.voiceText.textContent = 'Voice On';
+        } else {
+          DOM.btnToggleVoice.classList.remove('active');
+          DOM.btnToggleVoice.classList.add('muted');
+          if (DOM.voiceIcon) DOM.voiceIcon.textContent = '🔇';
+          if (DOM.voiceText) DOM.voiceText.textContent = 'Voice Muted';
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+      });
+    }
   }
 
   function triggerEmergencyBypass() {
@@ -1285,6 +1882,15 @@
     if (DOM.cascadeLog) {
       DOM.cascadeLog.innerHTML = '<span class="log-time" style="color:var(--crimson)">[EMERGENCY OVERRIDE]</span> ⚡ <strong>Emergency Bypass Activated:</strong> Sudden dangerous lightning strike formation detected. Full siren alert broadcast across Greater Hyderabad.';
     }
+
+    // Modal and voice trigger
+    if (DOM.severeLightningModal) {
+      if (DOM.lightningModalProb) DOM.lightningModalProb.textContent = '96%';
+      if (DOM.lightningModalRate) DOM.lightningModalRate.textContent = '88 strikes/min';
+      if (DOM.lightningModalThreat) DOM.lightningModalThreat.textContent = 'EMERGENCY OVERRIDE';
+      DOM.severeLightningModal.style.display = 'flex';
+    }
+    speakAnnouncement('Emergency bypass activated. Sudden dangerous lightning detected. Full siren alert broadcast across Greater Hyderabad.');
 
     setStep(5);
 
@@ -1368,6 +1974,8 @@
   function init() {
     initNavigation();
     bindEventListeners();
+    initCitizenPortal();
+    resetCascadeCards('dataset-1');
 
     // Start Operations Clocks
     updateOperationsClocks();
